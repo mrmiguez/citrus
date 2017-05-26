@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repox:exportedRecords xmlns:repox="http://repox.ist.utl.pt" set="fiu" batchsize="-1" total="1000">
+  <repox:record id="oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050832_00001" timestamp="2017-03-21">
+    <repox:metadata>
+      <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/  http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+        <dc:title>Alligator Joe watching the young alligators hatch</dc:title>
+        <dc:description>1 postcard, postally unused; caption: "Alligator Joe watching the Young Alligators Hatch."</dc:description>
+        <dc:identifier>FI07050832</dc:identifier>
+        <dc:creator>Lewis Carroll</dc:creator>
+        <dc:contributor>Buckethead</dc:contributor>
+        <dc:language>English</dc:language>
+        <dc:date>1974</dc:date>
+        <dc:subject>Alligators--Florida--Everglades.</dc:subject>
+        <dc:publisher>Miami, Florida: J.N. Chamberlain</dc:publisher>
+        <dc:publisher>Miami, Florida: J.N. Chamberlain</dc:publisher>
+        <dc:rights>Rights 4A</dc:rights>
+        <dc:identifier>http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001</dc:identifier>
+      </oai_dc:dc>
+    </repox:metadata>
+  </repox:record>
+  <repox:record id="oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050842_00001" timestamp="2017-03-21">
+    <repox:metadata>
+      <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/  http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+        <dc:title>View from highway, Royal Palm State Park, Homestead, Florida</dc:title>
+        <dc:description>1 postcard, postally used; caption: "View from highway, Royal Palm State Park, Homestead, Florida".</dc:description>
+        <dc:description>"The Park Contains 4000 Acres:–960 acres ceded by the State of Florida in 1915, 960 acres donated by Mrs. Henry M. Flagler, and 2080 acres ceded by the State of Florida in 1921. Trails provide access to the beauties and marvels of the tropical forest".</dc:description>
+        <dc:identifier>FI07050842</dc:identifier>
+        <dc:language>English</dc:language>
+        <dc:subject>Homestead (Fla.) ( lcsh )</dc:subject>
+        <dc:subject>Everglades (Fla.)</dc:subject>
+        <dc:coverage>Homestead (Fla.)</dc:coverage>
+        <dc:date>1972</dc:date>
+        <dc:creator>Karl Cassell</dc:creator>
+        <dc:contributor>Primus</dc:contributor>
+        <dc:publisher>Chicago: CT Co.</dc:publisher>
+        <dc:publisher>Chicago: CT Co.</dc:publisher>
+        <dc:rights>Rights 1C</dc:rights>
+        <dc:identifier>http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050842/00001</dc:identifier>
+      </oai_dc:dc>
+    </repox:metadata>
+  </repox:record>
+  <repox:record id="oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07040407_00001" timestamp="2017-03-21">
+    <repox:metadata>
+      <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/  http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+        <dc:title>Tropical Scenes, South of Florida, U.S.A.</dc:title>
+        <dc:description>1 postcard, postally unused; caption: "Tropical Scenes, South of Florida, U.S.A.", "Copyright 1891 by Geo. Barker."</dc:description>
+        <dc:identifier>FI07040407</dc:identifier>
+        <dc:language>English</dc:language>
+        <dc:creator>Alexander Hamilton</dc:creator>
+        <dc:contributor>Thee Oh Sees</dc:contributor>
+        <dc:subject>Tropical forests</dc:subject>
+        <dc:subject>Everglades (Fla.)</dc:subject>
+        <dc:publisher>Unidentified</dc:publisher>
+        <dc:publisher>Unidentified</dc:publisher>
+        <dc:rights>Rights E3</dc:rights>
+        <dc:identifier>http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07040407/00001</dc:identifier>
+      </oai_dc:dc>
+    </repox:metadata>
+  </repox:record>
+</repox:exportedRecords>
