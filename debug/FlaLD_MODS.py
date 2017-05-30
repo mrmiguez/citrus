@@ -7,7 +7,7 @@ from pymods import OAIReader
 from lxml import etree  # test
 
 PROVIDER = 'FSU'
-data_provider = 'FSU'
+dprovide = 'FSU'
 
 def write_json_ld(docs):
     with open('testData/fsu_digital_library-1.json', 'w') as jsonOutput:
@@ -22,23 +22,23 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
         sourceResource = {}
 
         # sourceResource.alternative
-        if record.metadata.titles[1:] is not None:
+        if len(record.metadata.titles) > 1:
             sourceResource['alternative'] = []
             if len(record.metadata.titles[1:]) >= 1:
                 for alternative_title in record.metadata.titles[1:]:
                     sourceResource['alternative'].append(alternative_title)
 
-        # # sourceResource.collection
-        # if record.collection() is not None:
-        #     collection = record.collection()
-        #     sourceResource['collection'] = {}
-        #     if 'title' in collection.keys():
-        #         sourceResource['collection']['name'] = collection['title']
-        #     if 'location' in collection.keys():
-        #         sourceResource['collection']['host'] = collection['location']
-        #     if 'url' in collection.keys():
-        #         sourceResource['collection']['_:id'] = collection['url']
-        #
+        # sourceResource.collection
+        if record.metadata.collection:
+            collection = record.metadata.collection
+            sourceResource['collection'] = {}
+            if collection.title:
+                sourceResource['collection']['name'] = collection.title
+            if collection.location:
+                sourceResource['collection']['host'] = collection.location
+            if collection.url:
+                sourceResource['collection']['_:id'] = collection.url
+
         # # sourceResource.contributor
         # try:
         #
@@ -98,71 +98,39 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
         #                     sourceResource['creator'].append({"name": name['text']})
         #         else:
         #             pass
-        #
-        # # sourceResource.date
-        # if record.date_constructor() is not None:
-        #     date = record.date_constructor()
-        #     if ' - ' in date:
-        #         sourceResource['date'] = {"displayDate": date,
-        #                                   "begin": date[0:4],
-        #                                   "end": date[-4:]}
-        #     else:
-        #         sourceResource['date'] = {"displayDate": date,
-        #                                   "begin": date,
-        #                                   "end": date}
-        #
-        # # sourceResource.description
-        # if record.abstract() is not None:
-        #     if len(record.abstract()) > 1:
-        #         sourceResource['description'] = []
-        #         for description in record.abstract():
-        #             sourceResource['description'].append(description)
-        #     else:
-        #         sourceResource['description'] = record.abstract()
-        #
-        # # sourceResource.extent
-        # if record.extent() is not None:
-        #     if len(record.extent()) > 1:
-        #         sourceResource['extent'] = []
-        #         for extent in record.extent():
-        #             sourceResource['extent'].append(extent)
-        #     else:
-        #         sourceResource['extent'] = record.extent()[0]
-        #
-        # # sourceResource.format
-        # if record.form() is not None:
-        #     if len(record.form()) > 1:
-        #         sourceResource['format'] = []
-        #         for form in record.form():
-        #             sourceResource['format'].append(form)
-        #     else:
-        #         sourceResource['format'] = record.form()[0]
-        #
-        # # sourceResource.genre
-        # if record.genre() is not None:
-        #     if len(record.genre()) > 1:
-        #         sourceResource['genre'] = []
-        #         for genre in record.genre():
-        #             genre_elem = {}
-        #             for key, value in genre.items():
-        #                 if 'term' == key:
-        #                     genre_elem['name'] = value
-        #                 elif 'valueURI' == key:
-        #                     genre_elem['@id'] = value
-        #             sourceResource['genre'].append(genre_elem)
-        #     else:
-        #         genre_elem = {}
-        #         for key, value in record.genre()[0].items():
-        #             if 'term' == key:
-        #                 genre_elem['name'] = value
-        #             elif 'valueURI' == key:
-        #                 genre_elem['@id'] = value
-        #         sourceResource['genre'] = genre_elem
-        #
-        # # sourceResource.identifier
-        # sourceResource['identifier'] = {"@id": record.purl_search(),
-        #                                 "text": record.local_identifier()}
-        #
+
+        # sourceResource.date
+        if record.metadata.dates:
+            date = record.metadata.dates[0].text
+            if ' - ' in date:
+                sourceResource['date'] = {"displayDate": date,
+                                          "begin": date[0:4],
+                                          "end": date[-4:]}
+            else:
+                sourceResource['date'] = {"displayDate": date,
+                                          "begin": date,
+                                          "end": date}
+
+        # sourceResource.description
+        if record.metadata.abstract:
+            sourceResource['description'] = [abstract.text for abstract in record.metadata.abstract]
+
+        # sourceResource.extent
+        if record.metadata.extent:
+            sourceResource['extent'] = record.metadata.extent
+
+        # sourceResource.format
+        if record.metadata.form:
+            sourceResource['format'] = record.metadata.form
+
+        # sourceResource.genre
+        if record.metadata.genre:
+            sourceResource['genre'] = [{'name': genre.text, '@id': genre.valueURI} for genre in record.metadata.genre]
+
+        # sourceResource.identifier
+        sourceResource['identifier'] = {"@id": record.metadata.purl,
+                                        "text": record.metadata.iid}
+
         # # sourceResource.language
         # if record.language() is not None:
         #     language_list = []
@@ -210,75 +178,56 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
         #         #                                       "long": long,
         #         #                                       "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License." })
         #
-        # # sourceResource.publisher
-        # if record.publisher() is not None:
-        #     if len(record.publisher()) > 1:
-        #         sourceResource['publisher'] = []
-        #         for publisher in record.publisher():
-        #             sourceResource['publisher'].append(publisher)
-        #     else:
-        #         sourceResource['publisher'] = record.publisher()[0]
-        #
-        # # sourceResource.relation
-        #
-        # # sourceResource.isReplacedBy
-        #
-        # # sourceResource.replaces
-        #
-        # # sourceResource.rights
-        # if record.rights() is not None:
-        #     if len(record.rights()) > 1:
-        #         sourceResource['rights'] = {"@id": record.rights()['URI'],
-        #                                     "text": record.rights()['text']}
-        #     else:
-        #         sourceResource['rights'] = record.rights()['text']
-        # else:
+        # sourceResource.publisher
+        if record.metadata.publisher:
+            sourceResource['publisher'] = record.metadata.publisher
+
+        # sourceResource.relation
+
+        # sourceResource.isReplacedBy
+
+        # sourceResource.replaces
+
+        # sourceResource.rights
+        if record.metadata.rights:
+            sourceResource['rights'] = [{"@id": rights.uri, "text": rights.text}
+                                        for rights in record.metadata.rights]
+        # else:  # TODO re-enable logging
         #     logging.warning('No sourceResource.rights - {0}'.format(record.pid_search()))
         #     continue
-        #
-        # # sourceResource.subject
-        # try:
-        #
-        #     if record.subject() is not None:
-        #         sourceResource['subject'] = []
-        #         for subject in record.subject():
-        #             non_alpha_char = re.compile("^[^a-zA-Z]+$")
-        #             if non_alpha_char.match(subject['text']) is None:
-        #
-        #                 if 'valueURI' in subject.keys():
-        #                     sourceResource['subject'].append({"@id": subject['valueURI'],
-        #                                                       "name": subject['text']})
-        #                 else:
-        #                     sourceResource['subject'].append({"name": subject['text']})
-        #             else:
-        #                 pass
-        #
-        # except TypeError as err:
-        #     logging.warning('sourceResource.subject: {0}, {1}\n'.format(err, record.pid_search()))
-        #     pass
-        #
-        # # sourceResource.title
-        # if record.title_constructor() is not None:
-        #     sourceResource['title'] = record.title_constructor()[0]
-        # else:
+
+        # sourceResource.subject
+        try:
+
+            if record.metadata.subjects:
+                sourceResource['subject'] = [{"@id": subject.uri, "name": subject.text}
+                                             for subject in record.metadata.subjects]
+        except TypeError as err:
+            # logging.warning('sourceResource.subject: {0}, {1}\n'.format(err, record.pid_search()))  # TODO re-enable logging
+            pass
+
+        # sourceResource.title
+        if record.metadata.titles:
+            sourceResource['title'] = record.metadata.titles[0]
+        # else:  # TODO - re-enable logging
         #     logging.warning('No sourceResource.title: {0}'.format(record.pid_search()))
         #     continue
-        #
-        # # sourceResource.type
-        # sourceResource['type'] = record.type_of_resource()
-        #
-        # # aggregation.dataProvider
-        # data_provider = dprovide
-        #
-        # # aggregation.intermediateProvider #TODO
-        #
-        # # aggregation.isShownAt
-        #
-        # # aggregation.preview
-        # pid = record.pid_search()
-        # preview = assets.thumbnail_service(pid, tn)
-        #
-        # # aggregation.provider
+
+        # sourceResource.type
+        sourceResource['type'] = record.metadata.type_of_resource
+
+        # aggregation.dataProvider
+        data_provider = dprovide
+
+        # aggregation.intermediateProvider  # TODO
+
+        # aggregation.isShownAt
+
+        # aggregation.preview
+        pid = record.metadata.pid
+        # preview = assets.thumbnail_service(pid, tn)  # TODO - re-enable thumbnail service
+
+        # aggregation.provider
 
         docs.append({"@context": "http://api.dp.la/items/context",
                      "sourceResource": sourceResource,
