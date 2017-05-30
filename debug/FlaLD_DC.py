@@ -22,65 +22,64 @@ def write_json_ld(docs):
         json.dump(docs, jsonOutput, indent=2)
 
 
-class OAI_QDC:
-
-    def __init__(self, input_file=None):
-        """
-        General constructor class.
-        :param input_file: file or directory of files to be accessed.
-        """
-        if input_file is not None:
-            self.input_file = input_file
-            self.tree = etree.parse(self.input_file)
-            self.root = self.tree.getroot()
-
-        record_list = []
-
-        if self.root.nsmap is not None:
-            self.nsmap = self.root.nsmap
-
-        if 'oai_dc' in self.nsmap:
-            for oai_record in self.root.iterfind('.//{0}record'.format(nameSpace_default['oai_dc'])):
-                #                record = OAI(oai_record)    # OOP testing
-                #                record_list.append(record)  #
-                record_list.append(oai_record)  # actually working line
-            self.nsroot = 'oai_dc'
-            self.set_spec = self.root.find('.//{0}setSpec'.format(nameSpace_default['oai_dc'])).text
-            oai_id = self.root.find('.//{0}header/{0}identifier'.format(nameSpace_default['oai_dc'])).text
-            oai_urn = ""
-            for part in oai_id.split(':')[:-1]:
-                oai_urn = oai_urn + ':' + part
-            self.oai_urn = oai_urn.strip(':')
-
-        elif 'repox' in self.nsmap:
-            for oai_record in self.root.iterfind('.//{0}record'.format(nameSpace_default['repox'])):
-                #                record = OAI(oai_record)    # OOP testing
-                #                record_list.append(record)  #
-                record_list.append(oai_record)  # actually working line
-            self.nsroot = 'repox'
-            self.set_spec = self.root.attrib['set']
-            oai_id = self.root.find('./{0}record'.format(nameSpace_default['repox'])).attrib['id']
-            oai_urn = ""
-            for part in oai_id.split(':')[:-1]:
-                oai_urn = oai_urn + ':' + part
-            self.oai_urn = oai_urn.strip(':')
-
-        self.record_list = record_list
-
-    def simple_lookup(record, elem):
-        if record.find('{0}'.format(elem)) is not None:
-            results = []
-            for item in record.findall('{0}'.format(elem)):
-                results.append(item.text)
-            return results
-
-    def split_lookup(record, elem, delimiter=';'):
-        if record.find('{0}'.format(elem)) is not None:
-            results = []
-            for item in record.findall('{0}'.format(elem)):
-                results.append(item.text.split(delimiter))
-            return results
-
+# class OAI_QDC:
+#
+#     def __init__(self, input_file=None):
+#         """
+#         General constructor class.
+#         :param input_file: file or directory of files to be accessed.
+#         """
+#         if input_file is not None:
+#             self.input_file = input_file
+#             self.tree = etree.parse(self.input_file)
+#             self.root = self.tree.getroot()
+#
+#         record_list = []
+#
+#         if self.root.nsmap is not None:
+#             self.nsmap = self.root.nsmap
+#
+#         if 'oai_dc' in self.nsmap:
+#             for oai_record in self.root.iterfind('.//{0}record'.format(nameSpace_default['oai_dc'])):
+#                 #                record = OAI(oai_record)    # OOP testing
+#                 #                record_list.append(record)  #
+#                 record_list.append(oai_record)  # actually working line
+#             self.nsroot = 'oai_dc'
+#             self.set_spec = self.root.find('.//{0}setSpec'.format(nameSpace_default['oai_dc'])).text
+#             oai_id = self.root.find('.//{0}header/{0}identifier'.format(nameSpace_default['oai_dc'])).text
+#             oai_urn = ""
+#             for part in oai_id.split(':')[:-1]:
+#                 oai_urn = oai_urn + ':' + part
+#             self.oai_urn = oai_urn.strip(':')
+#
+#         elif 'repox' in self.nsmap:
+#             for oai_record in self.root.iterfind('.//{0}record'.format(nameSpace_default['repox'])):
+#                 #                record = OAI(oai_record)    # OOP testing
+#                 #                record_list.append(record)  #
+#                 record_list.append(oai_record)  # actually working line
+#             self.nsroot = 'repox'
+#             self.set_spec = self.root.attrib['set']
+#             oai_id = self.root.find('./{0}record'.format(nameSpace_default['repox'])).attrib['id']
+#             oai_urn = ""
+#             for part in oai_id.split(':')[:-1]:
+#                 oai_urn = oai_urn + ':' + part
+#             self.oai_urn = oai_urn.strip(':')
+#
+#         self.record_list = record_list
+#
+#     def simple_lookup(record, elem):
+#         if record.find('{0}'.format(elem)) is not None:
+#             results = []
+#             for item in record.findall('{0}'.format(elem)):
+#                 results.append(item.text)
+#             return results
+#
+#     def split_lookup(record, elem, delimiter=';'):
+#         if record.find('{0}'.format(elem)) is not None:
+#             results = []
+#             for item in record.findall('{0}'.format(elem)):
+#                 results.append(item.text.split(delimiter))
+#             return results
 
 
 with open(sys.argv[1], encoding='utf-8') as data_in:
@@ -93,6 +92,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                 pass
 
         else:
+            oai_id = record.attrib['id']
 
             sourceResource = {}
 
@@ -106,8 +106,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                 for element in OAI_QDC.split_lookup(record, './/{0}contributor'.format(nameSpace_default['dc'])):
                     for name in element:
                         if len(name) > 0:
-                            sourceResource['contributor'].append({"name": name.strip(" ") })
-
+                            sourceResource['contributor'].append({"name": name.strip(" ")})
 
             # sourceResource.creator
             if OAI_QDC.simple_lookup(record, './/{0}creator'.format(nameSpace_default['dc'])) is not None:
@@ -116,11 +115,12 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                     for name in element:
                         # need to test for ( Contributor ) and ( contributor )
                         if len(name) > 0 and "ontributor )" not in name:
-                            sourceResource['creator'].append({"name": name.strip(" ") })
+                            sourceResource['creator'].append({"name": name.strip(" ")})
                         elif "ontributor )" in name:
                             if 'contributor' not in sourceResource.keys():
                                 sourceResource['contributor'] = []
-                                sourceResource['contributor'].append({"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
+                                sourceResource['contributor'].append(
+                                    {"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
                             else:
                                 sourceResource['contributor'].append(
                                     {"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
@@ -128,7 +128,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             # sourceResource.date
             date = OAI_QDC.simple_lookup(record, './/{0}date'.format(nameSpace_default['dc']))
             if date is not None:
-                sourceResource['date'] = { "begin": date, "end": date }
+                sourceResource['date'] = {"begin": date[0], "end": date[0]}
 
             # sourceResource.description
             description = []
@@ -164,10 +164,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                         else:
                             sourceResource['identifier'].append(ID)
                     except TypeError as err:
-                        with open('errorDump.txt', 'a') as dumpFile:
-                            dumpFile.write('TypeError - sourceResource.identifier: {0}, {1}\n'.format(ID, err))
-                            #dumpFile.write('{0}\n'.format(name))
-                            dumpFile.write(etree.tostring(record).decode('utf-8'))
+                        logging.warning('sourceResource.identifier: {0} - {1}\n'.format(err, oai_id))
                         pass
             else:
                 sourceResource['identifier'] = identifier
@@ -178,9 +175,9 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                 for element in OAI_QDC.split_lookup(record, './/{0}language'.format(nameSpace_default['dc'])):
                     for term in element:
                         if len(term) > 3:
-                            sourceResource['language'] = {"name": term }
+                            sourceResource['language'] = {"name": term}
                         else:
-                            sourceResource['language'] = { "iso_639_3": term }
+                            sourceResource['language'] = {"iso_639_3": term}
 
             # sourceResource.place : sourceResource['spatial']
             place = OAI_QDC.simple_lookup(record, './/{0}coverage'.format(nameSpace_default['dc']))
@@ -202,20 +199,26 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             rights = OAI_QDC.simple_lookup(record, './/{0}rights'.format(nameSpace_default['dc']))
             if rights is not None:
                 sourceResource['rights'] = rights
+            else:
+                logging.warning('No sourceResource.rights - {0}'.format(oai_id))
+                continue
 
             # sourceResource.subject
             if OAI_QDC.simple_lookup(record, './/{0}subject'.format(nameSpace_default['dc'])) is not None:
                 sourceResource['subject'] = []
                 for element in OAI_QDC.split_lookup(record, './/{0}subject'.format(nameSpace_default['dc'])):
                     for term in element:
-                        term = term.rstrip("( lcsh )")
+                        term = re.sub("\( lcsh \)$", '', term)
                         if len(term) > 0:
-                            sourceResource['subject'].append({"name": term.strip(" ") })
+                            sourceResource['subject'].append({"name": term.strip(" ")})
 
             # sourceResource.title
             title = OAI_QDC.simple_lookup(record, './/{0}title'.format(nameSpace_default['dc']))
             if title is not None:
                 sourceResource['title'] = title
+            else:
+                logging.warning('No sourceResource.rights - {0}'.format(oai_id))
+                continue
 
             # sourceResource.type
             if OAI_QDC.simple_lookup(record, './/{0}type'.format(nameSpace_default['dc'])) is not None:
@@ -228,28 +231,27 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             # webResource.fileFormat
 
             # aggregation.dataProvider
-            data_provider = "temp"
+            data_provider = dprovide
+
+            # aggregation.intermediateProvider
 
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = assets.thumbnail_service(PURL_match, tn)
 
             # aggregation.provider
-            provider = {"name": "TO BE DETERMINED",
-                        "@id": "DPLA provides?"}
+
             try:
                 docs.append({"@context": "http://api.dp.la/items/context",
                              "sourceResource": sourceResource,
                              "aggregatedCHO": "#sourceResource",
                              "dataProvider": data_provider,
                              "isShownAt": PURL_match,
-                             #"preview": preview, #need details on a thumbnail service
-                             "provider": provider})
+                             "preview": preview,
+                             "provider": PROVIDER})
             except NameError as err:
-                with open('errorDump.txt', 'a') as dumpFile:
-                    dumpFile.write('NameError - aggregation.preview: {0}\n'.format(err))
-                    # dumpFile.write('{0}\n'.format(name))
-                    dumpFile.write(etree.tostring(record).decode('utf-8'))
+                logging.warning('aggregation.preview: {0} - {1}\n'.format(err, oai_id))
                 pass
 
 
