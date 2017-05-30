@@ -2,12 +2,11 @@
 
 import sys
 import json
-import requests
 from pymods import OAIReader
-from lxml import etree  # test
 
-PROVIDER = 'FSU'
-dprovide = 'FSU'
+PROVIDER = 'FSU'  # temp
+dprovide = 'FSU'  # temp
+
 
 def write_json_ld(docs):
     with open('testData/fsu_digital_library-1.json', 'w') as jsonOutput:
@@ -39,65 +38,21 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             if collection.url:
                 sourceResource['collection']['_:id'] = collection.url
 
-        # # sourceResource.contributor
-        # try:
-        #
-        #     if record.name_constructor() is not None:
-        #         sourceResource['contributor'] = []
-        #         for name in record.name_constructor():
-        #
-        #             if any(key in name.keys() for key in ['roleText', 'roleCode']) is False:
-        #                 if 'valueURI' in name.keys():
-        #                     sourceResource['contributor'].append({"@id": name['valueURI'],
-        #                                                           "name": name['text']})
-        #                 else:
-        #                     sourceResource['contributor'].append({"name": name['text']})
-        #
-        #             elif 'roleText' in name.keys():
-        #                 if name['roleText'].lower() != 'creator':
-        #                     if 'valueURI' in name.keys():
-        #                         sourceResource['contributor'].append({"@id": name['valueURI'],
-        #                                                               "name": name['text']})
-        #                     else:
-        #                         sourceResource['contributor'].append({"name": name['text']})
-        #             elif 'roleCode' in name.keys():
-        #                 if name['roleCode'].lower() != 'cre':
-        #                     if 'valueURI' in name.keys():
-        #                         sourceResource['contributor'].append({"@id": name['valueURI'],
-        #                                                               "name": name['text']})
-        #                     else:
-        #                         sourceResource['contributor'].append({"name": name['text']})
-        #
-        #             else:
-        #                 pass
-        #
-        #         if len(sourceResource['contributor']) < 1:
-        #             del sourceResource['contributor']
-        #
-        # except KeyError as err:
-        #     logging.warning('sourceResource.contributor: {0}, {1}\n'.format(err, record.pid_search()))
-        #     pass
-        #
-        # if record.name_constructor() is not None:
-        #     sourceResource['creator'] = []
-        #     for name in record.name_constructor():
-        #
-        #         if 'roleText' in name.keys():
-        #             if name['roleText'].lower() == 'creator':
-        #                 if 'valueURI' in name.keys():
-        #                     sourceResource['creator'].append({"@id": name['valueURI'],
-        #                                                       "name": name['text']})
-        #                 else:
-        #                     sourceResource['creator'].append({"name": name['text']})
-        #         elif 'roleCode' in name.keys():
-        #             if name['roleCode'].lower() == 'cre':
-        #                 if 'valueURI' in name.keys():
-        #                     sourceResource['creator'].append({"@id": name['valueURI'],
-        #                                                       "name": name['text']})
-        #                 else:
-        #                     sourceResource['creator'].append({"name": name['text']})
-        #         else:
-        #             pass
+        # sourceResource.contributor
+        try:
+
+            if record.metadata.names:
+                sourceResource['contributor'] = [{"@id": name.uri, "name": name.text}
+                                                 for name in record.metadata.names
+                                                 if name.role != "Creator"]
+        except KeyError as err:
+            # logging.warning('sourceResource.contributor: {0}, {1}\n'.format(err, record.pid_search()))  # TODO re-enable logging
+            pass
+
+        # sourceResource.creator
+        if record.metadata.get_creators:
+            sourceResource['creator'] = [{"@id": name.uri, "name": name.text}
+                                         for name in record.metadata.get_creators]
 
         # sourceResource.date
         if record.metadata.dates:
@@ -113,7 +68,8 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
 
         # sourceResource.description
         if record.metadata.abstract:
-            sourceResource['description'] = [abstract.text for abstract in record.metadata.abstract]
+            sourceResource['description'] = [abstract.text
+                                             for abstract in record.metadata.abstract]
 
         # sourceResource.extent
         if record.metadata.extent:
@@ -125,59 +81,31 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
 
         # sourceResource.genre
         if record.metadata.genre:
-            sourceResource['genre'] = [{'name': genre.text, '@id': genre.valueURI} for genre in record.metadata.genre]
+            sourceResource['genre'] = [{'name': genre.text,
+                                        '@id': genre.valueURI}
+                                       for genre in record.metadata.genre]
 
         # sourceResource.identifier
         sourceResource['identifier'] = {"@id": record.metadata.purl,
                                         "text": record.metadata.iid}
 
-        # # sourceResource.language
-        # if record.language() is not None:
-        #     language_list = []
-        #     for language in record.language():
-        #         if len(language) > 1:
-        #             language_dict = {"name": language['text'],
-        #                              "iso_639_3": language['code']}
-        #         else:
-        #             if 'text' in language.keys():
-        #                 language_dict = {"name": language['text']}
-        #             else:
-        #                 pass
-        #         language_list.append(language_dict)
-        #     sourceResource['language'] = language_list
-        #
-        # # sourceResource.place : sourceResource['spatial']
-        # geo_code_list = record.geographic_code()
-        # if geo_code_list is not None:
-        #     sourceResource['spatial'] = []
-        #     for geo_code in geo_code_list:
-        #         code, lat, long, label = assets.tgn_cache(geo_code)
-        #         sourceResource['spatial'].append({"lat": lat,
-        #                                           "long": long,
-        #                                           "name": label,
-        #                                           "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."})
-        #
-        #         # tgn_prefix = 'http://vocab.getty.edu/tgn/'
-        #
-        #         '''
-        #         # Implementation using the schema.org namespace
-        #         # tgn_geometry = geo_code + '-geometry.jsonld'
-        #         # geometry = requests.get(tgn_prefix + tgn_geometry)
-        #         # geometry_json = json.loads(geometry.text)
-        #         # lat = geometry_json['http://schema.org/latitude']['@value']
-        #         # long = geometry_json['http://schema.org/longitude']['@value']
-        #         '''
-        #
-        #         # tgn_place = geo_code + '-place.jsonld'
-        #         # place = requests.get(tgn_prefix + tgn_place)
-        #         # if place.status_code == 200:
-        #         #    place_json = json.loads(place.text)
-        #         #    lat = place_json['http://www.w3.org/2003/01/geo/wgs84_pos#lat']['@value']
-        #         #    long = place_json['http://www.w3.org/2003/01/geo/wgs84_pos#long']['@value']
-        #         #    sourceResource['spatial'].append({ "lat": lat,
-        #         #                                       "long": long,
-        #         #                                       "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License." })
-        #
+        # sourceResource.language  # TODO - what happens with a multi-language item?
+        key_map = {'code': 'iso_639_3', 'text': 'name'}
+        if record.metadata.language:
+            sourceResource['language'] = [{key_map[lang.type]: lang.text for lang in record.metadata.language}]
+
+        # sourceResource.place : sourceResource['spatial']
+        geo_code_list = record.metadata.geographic_code
+        if geo_code_list is not None:
+            sourceResource['spatial'] = []
+            for geo_code in geo_code_list:
+                sourceResource['spatial'].append(geo_code)  # test
+            #     code, lat, long, label = assets.tgn_cache(geo_code)  # TODO - re-enable
+            #     sourceResource['spatial'].append({"lat": lat,
+            #                                       "long": long,
+            #                                       "name": label,
+            #                                       "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."})
+
         # sourceResource.publisher
         if record.metadata.publisher:
             sourceResource['publisher'] = record.metadata.publisher
