@@ -18,6 +18,8 @@ nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'repox': '{http://repox.ist.utl.pt}',
                       'oai_qdc': '{http://worldcat.org/xmlschemas/qdc-1.0/}'}
 
+dc = nameSpace_default['dc']
+dcterms = nameSpace_default['dcterms']
 IANA_type_list = []
 
 IANA_XML = requests.get('http://www.iana.org/assignments/media-types/media-types.xml')
@@ -84,54 +86,53 @@ class OAI_QDC:
 
 def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        records = OAI_QDC(data_in)
+        records = OAIReader(data_in)
         docs = []
-        for record in records.record_list:
+        for record in records:
 
             if 'deleted' in record.attrib.keys():
                 if record.attrib['deleted'] == 'true':
                     pass
 
             else:
-                oai_id = record.attrib['id']
+                oai_id = record.oai_urn
 
                 sourceResource = {}
 
                 # sourceResource.alternative
-                alt_title = OAI_QDC.simple_lookup(record, './/{0}alternative'.format(nameSpace_default['dcterms']))
-                if alt_title is not None:
+                alt_title = record.metadata.get_element(
+                    './/{0}alternative'.format(dcterms))
+                if alt_title:
                     sourceResource['alternative'] = alt_title
 
                 # sourceResource.collection
 
                 # sourceResource.contributor
-                if OAI_QDC.simple_lookup(record, './/{0}contributor'.format(nameSpace_default['dc'])) is not None:
-                    sourceResource['contributor'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}contributor'.format(nameSpace_default['dc'])):
-                        for name in element:
-                            if len(name) > 0:
-                                sourceResource['contributor'].append({"name": name.strip(" ") })
+                if record.metadata.get_element('.//{0}contributor'.format(dc)):
+                    sourceResource['contributor'] = record.metadata.get_element(
+                        './/{0}contributor'.format(dc), delimiter=';')
 
                 # sourceResource.creator
-                if OAI_QDC.simple_lookup(record, './/{0}creator'.format(nameSpace_default['dc'])) is not None:
-                    sourceResource['creator'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}creator'.format(nameSpace_default['dc'])):
-                        for name in element:
-                            if len(name) > 0:
-                                sourceResource['creator'].append({"name": name.strip(" ") })
+                if record.metadata.get_element('.//{0}creator'.format(dc)):
+                    sourceResource['creator'] = record.metadata.get_element(
+                        './/{0}creator'.format(dc), delimiter=';')
 
                 # sourceResource.date
-                date = OAI_QDC.simple_lookup(record, './/{0}created'.format(nameSpace_default['dcterms']))
+                date = record.metadata.get_element('.//{0}created'.format(dcterms))
                 if date is not None:
-                    sourceResource['date'] = { "begin": date[0], "end": date[0] }
+                    sourceResource['date'] = {"begin": date[0], "end": date[0]}
 
                 # sourceResource.description
                 description = []
-                if OAI_QDC.simple_lookup(record, './/{0}description'.format(nameSpace_default['dc'])) is not None:
-                    for item in OAI_QDC.simple_lookup(record, './/{0}description'.format(nameSpace_default['dc'])):
+                if record.metadata.get_element(
+                        './/{0}description'.format(dc)) is not None:
+                    for item in record.metadata.get_element(
+                            './/{0}description'.format(dc)):
                         description.append(item)
-                if OAI_QDC.simple_lookup(record, './/{0}abstract'.format(nameSpace_default['dcterms'])) is not None:
-                    for item in OAI_QDC.simple_lookup(record, './/{0}abstract'.format(nameSpace_default['dcterms'])):
+                if record.metadata.get_element(
+                        './/{0}abstract'.format(dcterms)) is not None:
+                    for item in record.metadata.get_element(
+                            './/{0}abstract'.format(dcterms)):
                         description.append(item)
                 if len(description) > 1:
                     sourceResource['description'] = []
@@ -141,54 +142,48 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                     sourceResource['description'] = description[0]
 
                 # sourceResource.extent
-                if OAI_QDC.simple_lookup(record, './/{0}extent'.format(nameSpace_default['dcterms'])) is not None:
-                    sourceResource['extent'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}extent'.format(nameSpace_default['dcterms'])):
-                        for term in element:
-                            if len(term) > 0:
-                                sourceResource['extent'].append(term.strip(' '))
+                if record.metadata.get_element('.//{0}extent'.format(dcterms)):
+                    sourceResource['extent'] = record.metadata.get_element(
+                        './/{0}extent'.format(dcterms), delimiter=';')
 
                 # sourceResource.format
 
                 # sourceResource.genre
-                if OAI_QDC.simple_lookup(record, './/{0}format'.format(nameSpace_default['dc'])) is not None:
+                if record.metadata.get_element('.//{0}format'.format(dc)):
                     sourceResource['genre'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}format'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            if term.lower() in IANA_type_list:
-                                file_format = term.lower()
-                                pass
-                            elif len(term) > 0:
-                                sourceResource['genre'].append(term.strip(' '))
+                    for element in record.metadata.get_element('.//{0}format'.format(dc),
+                                                               delimiter=';'):
+                        if element.lower() in IANA_type_list:
+                            file_format = element.lower()
+                            pass
+                        elif len(element) > 0:
+                            sourceResource['genre'].append(element.strip(' '))
                     if len(sourceResource['genre']) == 0:
                         del sourceResource['genre']
 
                 # sourceResource.identifier
-                local_id = OAI_QDC.simple_lookup(record, './/{0}identifier'.format(nameSpace_default['dc']))
-                if local_id is not None:
-                    sourceResource['identifier'] = local_id[0]
+                local_id = record.metadata.get_element('.//{0}identifier'.format(dc))
+                if local_id:
+                    sourceResource['identifier'] = local_id
 
                 # sourceResource.language
-                if OAI_QDC.simple_lookup(record, './/{0}language'.format(nameSpace_default['dc'])) is not None:
+                if record.metadata.get_element('.//{0}language'.format(dc)):
                     sourceResource['language'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}language'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            if len(term) > 3:
-                                sourceResource['language'] = {"name": term }
-                            else:
-                                sourceResource['language'] = { "iso_639_3": term }
+                    for element in record.metadata.get_element(
+                            './/{0}language'.format(dc), delimiter=';'):
+                        if len(element) > 3:
+                            sourceResource['language'] = {"name": element}
+                        else:
+                            sourceResource['language'] = {"iso_639_3": element}
 
                 # sourceResource.place : sourceResource['spatial']
-                if OAI_QDC.simple_lookup(record, './/{0}spatial'.format(nameSpace_default['dcterms'])) is not None:
-                    sourceResource['spatial'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}spatial'.format(nameSpace_default['dcterms'])):
-                        for term in element:
-                            if len(term) > 0:
-                                sourceResource['spatial'].append(term.strip(' '))
+                if record.metadata.get_element('.//{0}spatial'.format(dcterms)):
+                    sourceResource['spatial'] = record.metadata.get_element(
+                        './/{0}spatial'.format(dcterms), delimiter=';')
 
                 # sourceResource.publisher
-                publisher = OAI_QDC.simple_lookup(record, './/{0}publisher'.format(nameSpace_default['dc']))
-                if publisher is not None:
+                publisher = record.metadata.get_element('.//{0}publisher'.format(dc))
+                if publisher:
                     sourceResource['publisher'] = publisher
 
                 # sourceResource.relation
@@ -199,44 +194,41 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
                 # sourceResource.rights
                 rightsURI = re.compile('http://rightsstatements')
-                if OAI_QDC.simple_lookup(record, './/{0}rights'.format(nameSpace_default['dc'])) is not None:
-                    if len(record.findall('.//{0}rights'.format(nameSpace_default['dc']))) > 1:
-                        for rights_statement in OAI_QDC.simple_lookup(record, './/{0}rights'.format(nameSpace_default['dc'])):
+                if record.metadata.get_element('.//{0}rights'.format(dc)):
+                    if len(record.metadata.findall('.//{0}rights'.format(dc))) > 1:
+                        for rights_statement in record.metadata.get_element(
+                                './/{0}rights'.format(dc)):
                             URI = rightsURI.search(rights_statement)
                             if URI:
                                 URI_match = URI.string.split(" ")[-1]
                             else:
                                 rights_text = rights_statement
-                        sourceResource['rights'] = { "@id": URI_match, "text": rights_text }
+                        sourceResource['rights'] = {"@id": URI_match, "text": rights_text}
                     else:
-                        sourceResource['rights'] = OAI_QDC.simple_lookup(record, './/{0}rights'.format(nameSpace_default['dc']))
-                else:
+                        sourceResource['rights'] = record.metadata.get_element(
+                            './/{0}rights'.format(dc))
+
+                else:  # TODO re-enable logging
                     logging.warning('No sourceResource.rights - {0}'.format(oai_id))
                     continue
-                    
+
                 # sourceResource.subject
-                if OAI_QDC.simple_lookup(record, './/{0}subject'.format(nameSpace_default['dc'])) is not None:
-                    sourceResource['subject'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}subject'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            if len(term) > 0:
-                                sourceResource['subject'].append({"name": term.strip(" ") })
+                if record.metadata.get_element('.//{0}subject'.format(dc)):
+                    sourceResource['subject'] = record.metadata.get_element(
+                        './/{0}subject'.format(dc), delimiter=';')
 
                 # sourceResource.title
-                title = OAI_QDC.simple_lookup(record, './/{0}title'.format(nameSpace_default['dc']))
+                title = record.metadata.get_element('.//{0}title'.format(dc))
                 if title is not None:
                     sourceResource['title'] = title
-                else:
+                else:  # TODO re-enable logging
                     logging.warning('No sourceResource.title - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.type
-                if OAI_QDC.simple_lookup(record, './/{0}type'.format(nameSpace_default['dc'])) is not None:
-                    sourceResource['type'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}type'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            if len(term) > 0:
-                                sourceResource['type'].append(term.strip(" "))
+                if record.metadata.get_element('.//{0}type'.format(dc)):
+                    sourceResource['type'] = record.metadata.get_element(
+                        './/{0}type'.format(dc), delimiter=';')
 
                 # webResource.fileFormat
 
@@ -267,16 +259,16 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        records = OAI_QDC(data_in)
+        records = OAIReader(data_in)
         docs = []
-        for record in records.record_list:
+        for record in records:
 
             if 'deleted' in record.attrib.keys():
                 if record.attrib['deleted'] == 'true':
                     pass
 
             else:
-                oai_id = record.attrib['id']
+                oai_id = record.oai_urn
 
                 sourceResource = {}
 
@@ -285,59 +277,52 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 # sourceResource.collection
 
                 # sourceResource.contributor
-                if OAI_QDC.simple_lookup(record, './/{0}contributor'.format(nameSpace_default['dc'])) is not None:
-                    sourceResource['contributor'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}contributor'.format(nameSpace_default['dc'])):
-                        for name in element:
-                            if len(name) > 0:
-                                sourceResource['contributor'].append({"name": name.strip(" ") })
-
+                if record.metadata.get_element('.//{0}contributor'.format(dc)):
+                    sourceResource['contributor'] = record.metadata.get_element('.//{0}contributor'.format(dc), delimiter=';')
 
                 # sourceResource.creator
-                if OAI_QDC.simple_lookup(record, './/{0}creator'.format(nameSpace_default['dc'])) is not None:
+                if record.metadata.get_element('.//{0}creator'.format(dc)):
                     sourceResource['creator'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}creator'.format(nameSpace_default['dc'])):
-                        for name in element:
-                            # need to test for ( Contributor ) and ( contributor )
-                            if len(name) > 0 and "ontributor )" not in name:
-                                sourceResource['creator'].append({"name": name.strip(" ") })
-                            elif "ontributor )" in name:
-                                if 'contributor' not in sourceResource.keys():
-                                    sourceResource['contributor'] = []
-                                    sourceResource['contributor'].append({"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
-                                else:
-                                    sourceResource['contributor'].append(
-                                        {"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
+                    for name in record.metadata.get_element('.//{0}creator'.format(dc), delimiter=';'):
+                        # need to test for ( Contributor ) and ( contributor )
+                        if (len(name) > 0) and ("ontributor )" not in name):
+                            sourceResource['creator'].append({"name": name.strip(" ") })
+                        elif "ontributor )" in name:
+                            if 'contributor' not in sourceResource.keys():
+                                sourceResource['contributor'] = []
+                                sourceResource['contributor'].append({"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
+                            else:
+                                sourceResource['contributor'].append(
+                                    {"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")})
 
                 # sourceResource.date
-                date = OAI_QDC.simple_lookup(record, './/{0}date'.format(nameSpace_default['dc']))
-                if date is not None:
+                date = record.metadata.get_element('.//{0}date'.format(dc))
+                if date:
                     sourceResource['date'] = { "begin": date[0], "end": date[0] }
 
                 # sourceResource.description
-                description = []
-                if OAI_QDC.simple_lookup(record, './/{0}description'.format(nameSpace_default['dc'])) is not None:
-                    for item in OAI_QDC.simple_lookup(record, './/{0}description'.format(nameSpace_default['dc'])):
-                        description.append(item)
-                if len(description) > 1:
-                    sourceResource['description'] = []
-                    for item in description:
-                        sourceResource['description'].append(item)
-                elif len(description) == 1:
-                    sourceResource['description'] = description[0]
+                if record.metadata.get_element('.//{0}description'.format(dc)):
+                    sourceResource['description'] = record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')
+                #     for item in record.metadata.get_element('.//{0}description'.format(dc)):
+                #         description.append(item)
+                # if len(description) > 1:
+                #     sourceResource['description'] = []
+                #     for item in description:
+                #         sourceResource['description'].append(item)
+                # elif len(description) == 1:
+                #     sourceResource['description'] = description[0]
 
                 # sourceResource.extent
 
                 # sourceResource.format
-                dpla_format = OAI_QDC.simple_lookup(record, './/{0}format'.format(nameSpace_default['dc']))
-                if dpla_format is not None:
-                    sourceResource['format'] = dpla_format
+                if record.metadata.get_element('.//{0}format'.format(dc)):
+                    sourceResource['format'] = record.metadata.get_element('.//{0}format'.format(dc))
 
                 # sourceResource.genre
 
                 # sourceResource.identifier
                 dPantherPURL = re.compile('dpService/dpPurlService/purl')
-                identifier = OAI_QDC.simple_lookup(record, './/{0}identifier'.format(nameSpace_default['dc']))
+                identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
                 if identifier is not None and len(identifier) > 1:
                     sourceResource['identifier'] = []
                     for ID in identifier:
@@ -354,24 +339,22 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                     sourceResource['identifier'] = identifier
 
                 # sourceResource.language
-                if OAI_QDC.simple_lookup(record, './/{0}language'.format(nameSpace_default['dc'])) is not None:
+                if record.metadata.get_element('.//{0}language'.format(dc)):
                     sourceResource['language'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}language'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            if len(term) > 3:
-                                sourceResource['language'] = {"name": term }
-                            else:
-                                sourceResource['language'] = { "iso_639_3": term }
+                    for element in record.metadata.get_element(
+                            './/{0}language'.format(dc), delimiter=';'):
+                        if len(element) > 3:
+                            sourceResource['language'] = {"name": element}
+                        else:
+                            sourceResource['language'] = {"iso_639_3": element}
 
                 # sourceResource.place : sourceResource['spatial']
-                place = OAI_QDC.simple_lookup(record, './/{0}coverage'.format(nameSpace_default['dc']))
-                if place is not None:
-                    sourceResource['spatial'] = place
+                if record.metadata.get_element('.//{0}coverage'.format(dc)):
+                    sourceResource['spatial'] = record.metadata.get_element('.//{0}coverage'.format(dc))
 
                 # sourceResource.publisher
-                publisher = OAI_QDC.simple_lookup(record, './/{0}publisher'.format(nameSpace_default['dc']))
-                if publisher is not None:
-                    sourceResource['publisher'] = publisher
+                if record.metadata.get_element('.//{0}publisher'.format(dc)):
+                    sourceResource['publisher'] = record.metadata.get_element('.//{0}publisher'.format(dc))
 
                 # sourceResource.relation
 
@@ -380,37 +363,36 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 # sourceResource.replaces
 
                 # sourceResource.rights
-                rights = OAI_QDC.simple_lookup(record, './/{0}rights'.format(nameSpace_default['dc']))
-                if rights is not None:
+                rights = record.metadata.get_element('.//{0}rights'.format(dc))
+                if rights:
                     sourceResource['rights'] = rights
                 else:
                     logging.warning('No sourceResource.rights - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.subject
-                if OAI_QDC.simple_lookup(record, './/{0}subject'.format(nameSpace_default['dc'])) is not None:
+                if record.metadata.get_element('.//{0}subject'.format(dc)):
                     sourceResource['subject'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}subject'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            term = re.sub("\( lcsh \)$", '', term)
-                            if len(term) > 0:
-                                sourceResource['subject'].append({"name": term.strip(" ") })
+                    for term in record.metadata.get_element('.//{0}subject'.format(dc), delimiter=';'):
+                        term = re.sub("\( lcsh \)$", '', term)
+                        if len(term) > 0:
+                            sourceResource['subject'].append({"name": term.strip(" ") })
 
                 # sourceResource.title
-                title = OAI_QDC.simple_lookup(record, './/{0}title'.format(nameSpace_default['dc']))
-                if title is not None:
+                title = record.metadata.get_element('.//{0}title'.format(dc))
+                if title:
                     sourceResource['title'] = title
                 else:
                     logging.warning('No sourceResource.rights - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.type
-                if OAI_QDC.simple_lookup(record, './/{0}type'.format(nameSpace_default['dc'])) is not None:
-                    sourceResource['type'] = []
-                    for element in OAI_QDC.split_lookup(record, './/{0}type'.format(nameSpace_default['dc'])):
-                        for term in element:
-                            if len(term) > 0:
-                                sourceResource['type'].append(term.strip(" "))
+                if record.metadata.get_element('.//{0}type'.format(dc)):
+                    sourceResource['type'] = record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')
+                    # for element in OAI_QDC.split_lookup(record, './/{0}type'.format(dc)):
+                    #     for term in element:
+                    #         if len(term) > 0:
+                    #             sourceResource['type'].append(term.strip(" "))
 
                 # webResource.fileFormat
 
@@ -511,7 +493,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # sourceResource.genre
             if record.metadata.genre:
                 sourceResource['genre'] = [{'name': genre.text,
-                                            '@id': genre.valueURI}
+                                            '@id': genre.uri}
                                            for genre in record.metadata.genre]
 
             # sourceResource.identifier
@@ -521,7 +503,9 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # sourceResource.language  # TODO - what happens with a multi-language item?
             key_map = {'code': 'iso_639_3', 'text': 'name'}
             if record.metadata.language:
-                sourceResource['language'] = [{key_map[lang.type]: lang.text for lang in record.metadata.language}]
+                sourceResource['language'] = [{"name": lang.text,
+                                               "iso_639_3": lang.code}
+                                               for lang in record.metadata.language]
 
             # sourceResource.place : sourceResource['spatial']
             geo_code_list = record.metadata.geographic_code

@@ -3,7 +3,7 @@
 #
 # CONFIG_DICT is the list of expected repox exports and requisite mappings
 #   Keys are shortened forms of repox export directories.
-#       They will be expanded by runFlaLD using glob.glob(key*), so full names aren't required.
+#       They will be expanded by citrus-run using glob.glob(key*), so full names aren't required.
 #       They should be relatively descriptive to avoid collision with other sets.
 #   Values are tuples storing various run settings.
 #       position 1: metadata prefix--Currently only 'dc', 'qdc', and 'mods' are supported.
@@ -12,7 +12,8 @@
 #       position 4: aggregation.intermediateProvider
 """
 
-CONFIG_DICT = { 'umiami': ('qdc', {'name':'cdm', 'prefix': 'http://merrick.library.miami.edu'},
+CONFIG_DICT = {
+                'umiami': ('qdc', {'name':'cdm', 'prefix': 'http://merrick.library.miami.edu'},
                            'University of Miami-TEMP', None),
                 'fiu': ('dc', {'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                         'Florida International University-TEMP', 'University of Miami-TEMP'),

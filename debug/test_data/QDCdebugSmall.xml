@@ -6,6 +6,7 @@
         <dc:title>Vincent Gilpin letter to Patty Munroe, September 3, 1933</dc:title>
         <dc:creator>Gilpin, Vincent</dc:creator>
         <dcterms:abstract>Test 000</dcterms:abstract>
+        <dcterms:alternative>covfefe</dcterms:alternative>
         <dc:subject>Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters</dc:subject>
         <dcterms:created>1933-09-03</dcterms:created>
         <dcterms:temporal>1930-1939</dcterms:temporal>
@@ -46,10 +47,11 @@
         <dc:subject>Letters</dc:subject>
         <dcterms:created>1912-01-16</dcterms:created>
         <dcterms:temporal>1910-1919</dcterms:temporal>
-        <dcterms:spatial>Coconut Grove (Miami, Fla.)</dcterms:spatial>
+        <dcterms:spatial>Coconut Grove (Miami, Fla.); Canterbury</dcterms:spatial>
+        <dcterms:spatial>Outside</dcterms:spatial>
         <dcterms:extent>2 letters</dcterms:extent>
         <dc:language>eng</dc:language>
-        <dc:contributor>Primus</dc:contributor>
+        <dc:contributor>Primus; Jurassic 5</dc:contributor>
         <dcterms:isPartOf>University of Miami. Library. Special Collections</dcterms:isPartOf>
         <dcterms:isPartOf>Alan Crockwell Collection</dcterms:isPartOf>
         <dcterms:isPartOf>ASM0447</dcterms:isPartOf>
@@ -58,6 +60,7 @@
         <dc:rights>In Copyright http://rightsstatements.org/vocab/InC/1.0/</dc:rights>
         <dc:type>Rebel Alliance Victory Plans</dc:type>
         <dc:format>image/tiff</dc:format>
+        <dc:format>Photographs</dc:format>
         <dc:identifier>http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/39</dc:identifier>
       </oai_qdc:qualifieddc>
     </repox:metadata>
