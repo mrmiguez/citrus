@@ -414,6 +414,8 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # sourceResource.creator
             if record.metadata.get_creators:
                 sourceResource['creator'] = [{"@id": name.uri, "name": name.text}
+                                             if name.uri else
+                                             {"name": name.text}
                                              for name in record.metadata.get_creators]
 
             # sourceResource.date
@@ -445,6 +447,8 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             if record.metadata.genre:
                 sourceResource['genre'] = [{'name': genre.text,
                                             '@id': genre.uri}
+                                           if genre.uri else
+                                           {'name': genre.text}
                                            for genre in record.metadata.genre]
 
             # sourceResource.identifier
@@ -458,10 +462,9 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                for lang in record.metadata.language]
 
             # sourceResource.place : sourceResource['spatial']
-            geo_code_list = record.metadata.geographic_code
-            if geo_code_list is not None:
+            if record.metadata.geographic_code:
                 sourceResource['spatial'] = []
-                for geo_code in geo_code_list:
+                for geo_code in record.metadata.geographic_code:
                     code, lat, long, label = assets.tgn_cache(geo_code)
                     sourceResource['spatial'].append({"lat": lat,
                                                       "long": long,
@@ -481,6 +484,8 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # sourceResource.rights
             if record.metadata.rights:
                 sourceResource['rights'] = [{"@id": rights.uri, "text": rights.text}
+                                            if rights.uri else
+                                            {"text": rights.text}
                                             for rights in record.metadata.rights]
             else:
                 logging.warning('No sourceResource.rights - {0}'.format(record.oai_urn))
@@ -530,7 +535,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                          "sourceResource": sourceResource,
                          "aggregatedCHO": "#sourceResource",
                          "dataProvider": data_provider,
-                         "isShownAt": record.metadata.purl,
+                         "isShownAt": record.metadata.purl[0],
                          "preview": preview,
                          "provider": PROVIDER})
         return docs
