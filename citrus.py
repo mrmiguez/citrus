@@ -28,62 +28,6 @@ for type in IANA_parsed.find_all('file'):
     IANA_type_list.append(type.text)
 
 
-class OAI_QDC:
-
-    def __init__(self, input_file=None):
-        """
-        General constructor class.
-        :param input_file: file or directory of files to be accessed.
-        """
-        if input_file is not None:
-            self.input_file = input_file
-            self.tree = etree.parse(self.input_file)
-            self.root = self.tree.getroot()
-
-        record_list = []
-
-        if self.root.nsmap is not None:
-            self.nsmap = self.root.nsmap
-
-        if 'oai_dc' in self.nsmap:
-            for oai_record in self.root.iterfind('.//{0}record'.format(nameSpace_default['oai_dc'])):
-                record_list.append(oai_record)
-            self.nsroot = 'oai_dc'
-            self.set_spec = self.root.find('.//{0}setSpec'.format(nameSpace_default['oai_dc'])).text
-            oai_id = self.root.find('.//{0}header/{0}identifier'.format(nameSpace_default['oai_dc'])).text
-            oai_urn = ""
-            for part in oai_id.split(':')[:-1]:
-                oai_urn = oai_urn + ':' + part
-            self.oai_urn = oai_urn.strip(':')
-
-        elif 'repox' in self.nsmap:
-            for oai_record in self.root.iterfind('.//{0}record'.format(nameSpace_default['repox'])):
-                record_list.append(oai_record)
-            self.nsroot = 'repox'
-            self.set_spec = self.root.attrib['set']
-            oai_id = self.root.find('./{0}record'.format(nameSpace_default['repox'])).attrib['id']
-            oai_urn = ""
-            for part in oai_id.split(':')[:-1]:
-                oai_urn = oai_urn + ':' + part
-            self.oai_urn = oai_urn.strip(':')
-
-        self.record_list = record_list
-
-    def simple_lookup(record, elem):
-        if record.find('{0}'.format(elem)) is not None:
-            results = []
-            for item in record.findall('{0}'.format(elem)):
-                results.append(item.text)
-            return results
-
-    def split_lookup(record, elem, delimiter=';'):
-        if record.find('{0}'.format(elem)) is not None:
-            results = []
-            for item in record.findall('{0}'.format(elem)):
-                results.append(item.text.split(delimiter))
-            return results
-
-
 def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
         records = OAIReader(data_in)
@@ -109,13 +53,15 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
                 # sourceResource.contributor
                 if record.metadata.get_element('.//{0}contributor'.format(dc)):
-                    sourceResource['contributor'] = record.metadata.get_element(
-                        './/{0}contributor'.format(dc), delimiter=';')
+                    sourceResource['contributor'] = [{"name": name}
+                                                     for name in record.metadata.get_element(
+                                                        './/{0}contributor'.format(dc), delimiter=';')]
 
                 # sourceResource.creator
                 if record.metadata.get_element('.//{0}creator'.format(dc)):
-                    sourceResource['creator'] = record.metadata.get_element(
-                        './/{0}creator'.format(dc), delimiter=';')
+                    sourceResource['creator'] = [{"name": name}
+                                                     for name in record.metadata.get_element(
+                                                        './/{0}creator'.format(dc), delimiter=';')]
 
                 # sourceResource.date
                 date = record.metadata.get_element('.//{0}created'.format(dcterms))
@@ -208,20 +154,21 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                         sourceResource['rights'] = record.metadata.get_element(
                             './/{0}rights'.format(dc))
 
-                else:  # TODO re-enable logging
+                else:
                     logging.warning('No sourceResource.rights - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.subject
                 if record.metadata.get_element('.//{0}subject'.format(dc)):
-                    sourceResource['subject'] = record.metadata.get_element(
-                        './/{0}subject'.format(dc), delimiter=';')
+                    sourceResource['subject'] = [{"name": name }
+                                                 for name in record.metadata.get_element(
+                                                 './/{0}subject'.format(dc), delimiter=';')]
 
                 # sourceResource.title
                 title = record.metadata.get_element('.//{0}title'.format(dc))
                 if title is not None:
                     sourceResource['title'] = title
-                else:  # TODO re-enable logging
+                else:
                     logging.warning('No sourceResource.title - {0}'.format(oai_id))
                     continue
 
@@ -278,7 +225,9 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
                 # sourceResource.contributor
                 if record.metadata.get_element('.//{0}contributor'.format(dc)):
-                    sourceResource['contributor'] = record.metadata.get_element('.//{0}contributor'.format(dc), delimiter=';')
+                    sourceResource['contributor'] = [{"name": name}
+                                                     for name in record.metadata.get_element(
+                                                        './/{0}contributor'.format(dc), delimiter=';')]
 
                 # sourceResource.creator
                 if record.metadata.get_element('.//{0}creator'.format(dc)):
@@ -454,6 +403,8 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
                 if record.metadata.names:
                     sourceResource['contributor'] = [{"@id": name.uri, "name": name.text}
+                                                     if name.uri else
+                                                     {"name": name.text}
                                                      for name in record.metadata.names
                                                      if name.role != "Creator"]
             except KeyError as err:
@@ -500,8 +451,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             sourceResource['identifier'] = {"@id": record.metadata.purl,
                                             "text": record.metadata.iid}
 
-            # sourceResource.language  # TODO - what happens with a multi-language item?
-            key_map = {'code': 'iso_639_3', 'text': 'name'}
+            # sourceResource.language
             if record.metadata.language:
                 sourceResource['language'] = [{"name": lang.text,
                                                "iso_639_3": lang.code}
@@ -540,8 +490,11 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             try:
 
                 if record.metadata.subjects:
-                    sourceResource['subject'] = [{"@id": subject.uri, "name": subject.text}
-                                                 for subject in record.metadata.subjects]
+                    sourceResource['subject'] = [
+                        {"@id": subject.uri, "name": subject.text}
+                        if subject.uri is not None
+                        else {"name": subject.text}
+                        for subject in record.metadata.subjects]
             except TypeError as err:
                 logging.warning('sourceResource.subject: {0}, {1}\n'.format(err, record.oai_urn))
                 pass

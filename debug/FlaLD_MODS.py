@@ -82,17 +82,18 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
         # sourceResource.genre
         if record.metadata.genre:
             sourceResource['genre'] = [{'name': genre.text,
-                                        '@id': genre.valueURI}
+                                        '@id': genre.uri}
                                        for genre in record.metadata.genre]
 
         # sourceResource.identifier
         sourceResource['identifier'] = {"@id": record.metadata.purl,
                                         "text": record.metadata.iid}
 
-        # sourceResource.language  # TODO - what happens with a multi-language item?
-        key_map = {'code': 'iso_639_3', 'text': 'name'}
+        # sourceResource.language
         if record.metadata.language:
-            sourceResource['language'] = [{key_map[lang.type]: lang.text for lang in record.metadata.language}]
+            sourceResource['language'] = [{"name": lang.text,
+                                           "iso_639_3": lang.code}
+                                          for lang in record.metadata.language]
 
         # sourceResource.place : sourceResource['spatial']
         geo_code_list = record.metadata.geographic_code
@@ -129,6 +130,8 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
 
             if record.metadata.subjects:
                 sourceResource['subject'] = [{"@id": subject.uri, "name": subject.text}
+                                             if subject.uri is not None
+                                             else {"name": subject.text}
                                              for subject in record.metadata.subjects]
         except TypeError as err:
             # logging.warning('sourceResource.subject: {0}, {1}\n'.format(err, record.pid_search()))  # TODO re-enable logging
@@ -164,7 +167,6 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                      "isShownAt": record.metadata.purl,
                      #"preview": preview,
                      "provider": PROVIDER})
-
 
     #write_json_ld(docs)
     print(json.dumps(docs, indent=2))  # test
