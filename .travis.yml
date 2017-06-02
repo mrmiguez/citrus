@@ -10,7 +10,7 @@ python:
   - "3.7-dev" # 3.7 development branch
   - "nightly" # currently points to 3.7-dev
 # command to install dependencies
-install: "pip install pymods requests"
+install: "pip install pymods requests bs4"
 # command to run tests
 script: py.test tests.py
 notifications:
