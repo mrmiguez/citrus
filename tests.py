@@ -304,15 +304,14 @@ class MODSTests(unittest.TestCase):
                 results.append(record['sourceResource']['creator'])
         self.assertTrue(all(x in results for x in expected))
 
-    # def test_mods_SourceResourceContributor(self):
-    #     expected = [[{'name': 'Miguez, Matthew Roland'}],
-    #                 [{'name': 'Houck, Davis W.', '@id': 'http://id.loc.gov/authorities/names/n91016636'}]]
-    #     results = []
-    #     for record in self.mods_json:
-    #         if 'contributor' in record['sourceResource'].keys():
-    #             results.append(record['sourceResource']['contributor'])
-    #     print(results)
-    #     self.assertTrue(all(x in results for x in expected))
+    def test_mods_SourceResourceContributor(self):
+        expected = [[{'name': 'Miguez, Matthew Roland'}],
+                    [{'name': 'Houck, Davis W.', '@id': 'http://id.loc.gov/authorities/names/n91016636'}]]
+        results = []
+        for record in self.mods_json:
+            if 'contributor' in record['sourceResource'].keys():
+                results.append(record['sourceResource']['contributor'])
+        self.assertTrue(all(x in results for x in expected))
 
     def test_mods_SourceResourceDate(self):
         expected = [{'begin': '2013-05-27', 'end': '2013-05-27', 'displayDate': '2013-05-27'},
@@ -348,15 +347,14 @@ class MODSTests(unittest.TestCase):
                 results.append(record['sourceResource']['genre'])
         self.assertTrue(all(x in results for x in expected))
 
-    # def test_mods_SourceResourceIdentifier(self):
-    #     expected = [{'text': 'FSU_MSS_2015-007_S03_SS02_I003', '@id': 'http://purl.flvc.org/fsu/fd/FSU_MSS_2015-007_S03_SS02_I003'},
-    #                 {'text': 'FSDT107201', '@id': 'http://purl.flvc.org/fcla/dt/107201'},
-    #                 {'text': 'FSUspcn329b', '@id': 'http://purl.flvc.org/fsu/fd/FSUspcn329b'}]
-    #     results = []
-    #     for record in self.mods_json:
-    #         results.append(record['sourceResource']['identifier'])
-    #     print(results)
-    #     self.assertTrue(all(x in results for x in expected))
+    def test_mods_SourceResourceIdentifier(self):
+        expected = [{'text': 'FSU_MSS_2015-007_S03_SS02_I003', '@id': 'http://purl.flvc.org/fsu/fd/FSU_MSS_2015-007_S03_SS02_I003'},
+                    {'text': 'FSDT107201', '@id': 'http://purl.flvc.org/fcla/dt/107201'},
+                    {'text': 'FSUspcn329b', '@id': 'http://purl.flvc.org/fsu/fd/FSUspcn329b'}]
+        results = []
+        for record in self.mods_json:
+            results.append(record['sourceResource']['identifier'])
+        self.assertTrue(all(x in results for x in expected))
 
     def test_mods_SourceResourceLanguage(self):
         expected = [[{"name": "English", "iso_639_3": "eng"}]]

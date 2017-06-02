@@ -401,12 +401,11 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # sourceResource.contributor
             try:
 
-                if record.metadata.names:
-                    sourceResource['contributor'] = [{"@id": name.uri, "name": name.text}
-                                                     if name.uri else
-                                                     {"name": name.text}
-                                                     for name in record.metadata.names
-                                                     if name.role != "Creator"]
+                for name in  record.metadata.names:
+                    if name.role.text != 'Creator' or name.role.code != 'cre':
+                        sourceResource['contributor'] = [{"@id": name.uri, "name": name.text}
+                                                         if name.uri else
+                                                         {"name": name.text}]
             except KeyError as err:
                 logging.warning('sourceResource.contributor: {0}, {1}\n'.format(err, record.oai_urn))
                 pass
@@ -452,8 +451,12 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                            for genre in record.metadata.genre]
 
             # sourceResource.identifier
-            sourceResource['identifier'] = {"@id": record.metadata.purl,
-                                            "text": record.metadata.iid}
+            try:
+                sourceResource['identifier'] = {"@id": record.metadata.purl[0],
+                                                "text": record.metadata.iid}
+            except IndexError as err:
+                logging.warning('sourceResource.identifier: {0}, {1}\n'.format(err, record.oai_urn))
+                continue
 
             # sourceResource.language
             if record.metadata.language:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <repox:exportedRecords xmlns:repox="http://repox.ist.utl.pt" set="fsu_digital_library" batchsize="-1" total="1000">
-  <repox:record id="oai:lib.fsu.edu.fsu_digital_library:oai:fsu.digital.flvc.org:fsu_252111" timestamp="2017-03-21">
+<!-- <repox:record id="oai:lib.fsu.edu.fsu_digital_library:oai:fsu.digital.flvc.org:fsu_252111" timestamp="2017-03-21">
     <repox:metadata>
       <mods xmlns="http://www.loc.gov/mods/v3">
         <titleInfo>
@@ -8,7 +8,7 @@
         </titleInfo>
       </mods>
     </repox:metadata>
-  </repox:record>
+  </repox:record> -->
   <repox:record id="oai:lib.fsu.edu.fsu_digital_library:oai:fsu.digital.flvc.org:fsu_24694" timestamp="2017-03-21">
     <repox:metadata>
       <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns="http://www.loc.gov/mods/v3" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:flvc="info:flvc/manifest/v1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
@@ -80,8 +80,8 @@
           </role>
         </name>
         <name>
-            <namePart type='given'>Matthew Roland</namePart>
             <namePart type='family'>Miguez</namePart>
+            <namePart type='given'>Matthew Roland</namePart>
         </name>
         <typeOfResource>moving image</typeOfResource>
         <originInfo>

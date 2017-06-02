@@ -1,4 +1,4 @@
-# citrus
+# citrus [![Build Status](https://travis-ci.org/mrmiguez/citrus.svg?branch=master)](https://travis-ci.org/mrmiguez/citrus)
 **Collective Information Transformation and Reconciliation Utility Service**
 
 citrus is a python utility for transforming the output of OAI-PMH aggregators into DPLA's MAPv4 JSON-LD. 
