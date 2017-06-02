@@ -353,7 +353,11 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 # aggregation.isShownAt
 
                 # aggregation.preview
-                preview = assets.thumbnail_service(PURL_match, tn)
+                try:
+                    preview = assets.thumbnail_service(PURL_match, tn)
+                except UnboundLocalError as err:
+                    logging.warning('aggregation.preview: {0} - {1}\n'.format(err, oai_id))
+                    continue
 
                 # aggregation.provider
 
