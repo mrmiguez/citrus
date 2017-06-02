@@ -9,7 +9,9 @@ The current implementation supports the metadata standards:
 
 ## Requires
 
-[pymods](https://github.com/mrmiguez/pymods) v2.0.5 or greater
+* [pymods](https://github.com/mrmiguez/pymods) v2.0.5 or greater
+* [requests](http://docs.python-requests.org)
+* [beautifulsoup4](https://www.crummy.com/software/BeautifulSoup/)
 
 ## Configuring
 

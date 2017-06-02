@@ -1,9 +1,11 @@
 import json
 import sqlite3
 import requests
+from os.path import abspath, dirname, join
 
+tgn_path = abspath(dirname(__file__))
 tgn_prefix = 'http://vocab.getty.edu/tgn/'
-tgn_db_conn = sqlite3.connect('assets/tgn_db.db')
+tgn_db_conn = sqlite3.connect(join(tgn_path, 'tgn_db.db'))
 tgn_cursor = tgn_db_conn.cursor()
 
 

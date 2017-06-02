@@ -1,13 +1,13 @@
 import re
 import logging
 import requests
-from lxml import etree
-from bs4 import BeautifulSoup
 from pymods import OAIReader
+from bs4 import BeautifulSoup
 
 # custom functions and variables
 import assets
 from citrus_config import PROVIDER
+
 
 nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
