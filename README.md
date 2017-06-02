@@ -9,7 +9,7 @@ The current implementation supports the metadata standards:
 
 ## Requires
 
-[pymods](https://github.com/mrmiguez/pymods) v2.0.3 or greater
+[pymods](https://github.com/mrmiguez/pymods) v2.0.5 or greater
 
 ## Configuring
 
