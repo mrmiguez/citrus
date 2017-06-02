@@ -48,10 +48,10 @@ def write_json_ld(docs):
 # main loop
 for key in CONFIG_DICT.keys():
     metadata, thumbnail, data_provider, intermediate_provider = CONFIG_DICT[key]
-    file = glob.glob(REPOX_EXPORT_DIR + '/{0}*/{0}*.xml'.format(key))[0]
-    if metadata == 'qdc':
-        write_json_ld(FlaLD_QDC(abspath(file), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
-    elif metadata == 'mods':
-        write_json_ld(FlaLD_MODS(abspath(file), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
-    elif metadata == 'dc':
-        write_json_ld(FlaLD_DC(abspath(file), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+    for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/{0}*.xml'.format(key)):
+        if metadata == 'qdc':
+            write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+        elif metadata == 'mods':
+            write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+        elif metadata == 'dc':
+            write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
