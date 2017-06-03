@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import assets
 from citrus_config import PROVIDER
 
+VERBOSE = True  # TODO code this in config
 
 nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
@@ -40,7 +41,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
             else:
                 oai_id = record.oai_urn
-
+                print(oai_id)
                 sourceResource = {}
 
                 # sourceResource.alternative
@@ -216,7 +217,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
             else:
                 oai_id = record.oai_urn
-
+                print(oai_id)
                 sourceResource = {}
 
                 # sourceResource.alternative
@@ -381,7 +382,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
         records = OAIReader(data_in)
         docs = []
         for record in records:
-
+            print(record.oai_urn)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -463,21 +464,29 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                 continue
 
             # sourceResource.language
-            if record.metadata.language:
-                sourceResource['language'] = [{"name": lang.text,
-                                               "iso_639_3": lang.code}
-                                               for lang in record.metadata.language]
+            try:
+                if record.metadata.language:
+                    sourceResource['language'] = [{"name": lang.text,
+                                                   "iso_639_3": lang.code}
+                                                   for lang in record.metadata.language]
+            except AttributeError as err:
+                logging.warning('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
+                pass
 
             # sourceResource.place : sourceResource['spatial']
-            if record.metadata.geographic_code:
-                sourceResource['spatial'] = []
-                for geo_code in record.metadata.geographic_code:
-                    code, lat, long, label = assets.tgn_cache(geo_code)
-                    sourceResource['spatial'].append({"lat": lat,
-                                                      "long": long,
-                                                      "name": label,
-                                                      "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."})
-
+            try:
+                if record.metadata.geographic_code and len(record.metadata.geographic_code) > 0:
+                    sourceResource['spatial'] = []
+                    for geo_code in record.metadata.geographic_code:
+                        code, lat, long, label = assets.tgn_cache(geo_code)
+                        sourceResource['spatial'].append({"lat": lat,
+                                                          "long": long,
+                                                          "name": label,
+                                                          "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."})
+            except TypeError as err:
+                logging.warning('sourceResource.spatial: {0}, {1}\n'.format(err, record.oai_urn))
+                continue
+            
             # sourceResource.publisher
             if record.metadata.publisher:
                 sourceResource['publisher'] = record.metadata.publisher
@@ -508,6 +517,9 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                         else {"name": subject.text}
                         for subject in record.metadata.subjects]
             except TypeError as err:
+                logging.warning('sourceResource.subject: {0}, {1}\n'.format(err, record.oai_urn))
+                pass
+            except IndexError as err:
                 logging.warning('sourceResource.subject: {0}, {1}\n'.format(err, record.oai_urn))
                 pass
 
