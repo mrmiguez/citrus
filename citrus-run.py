@@ -12,7 +12,7 @@ from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR, OUTPUT_DIR, PRETTY_PRIN
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC
 
 # init logger
-logging.basicConfig(filename='error{0}.log'.format(datetime.date.today()), filemode='w', level=logging.DEBUG)
+logging.basicConfig(filename='error{0}.log'.format(datetime.date.today()), filemode='w', level=logging.WARNING)
 
 # get output or current dir and clean if needed
 if len(OUTPUT_DIR) > 0:
