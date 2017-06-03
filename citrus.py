@@ -43,6 +43,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                 oai_id = record.oai_urn
                 if VERBOSE:
                     print(oai_id)
+                logging.debug(oai_id)
                 sourceResource = {}
 
                 # sourceResource.alternative
@@ -218,8 +219,10 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
             else:
                 oai_id = record.oai_urn
+                
                 if VERBOSE:
                     print(oai_id)
+                logging.debug(oai_id)
                 sourceResource = {}
 
                 # sourceResource.alternative
@@ -386,6 +389,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
         for record in records:
             if VERBOSE:
                 print(record.oai_urn)
+            logging.debug(record.oai_urn)
             sourceResource = {}
 
             # sourceResource.alternative

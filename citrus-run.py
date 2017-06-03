@@ -49,6 +49,7 @@ def write_json_ld(docs):
 for key in CONFIG_DICT.keys():
     metadata, thumbnail, data_provider, intermediate_provider = CONFIG_DICT[key]
     for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/{0}*.xml'.format(key)):
+        logging.info(abspath(xml))
         if metadata == 'qdc':
             write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'mods':
