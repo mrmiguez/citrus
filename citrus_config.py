@@ -18,7 +18,8 @@ CONFIG_DICT = {
                 'fiu': ('dc', {'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                         'Florida International University-TEMP', 'University of Miami-TEMP'),
                 'fsu': ('mods', {'name': 'islandora', 'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
-                        'Florida State University Libraries', None) }
+                        'Florida State University Libraries', None)
+              }
 
 REPOX_EXPORT_DIR = '/repox/export'
 # REPOX_EXPORT_DIR = 'name_tests' # local test
@@ -26,7 +27,9 @@ REPOX_EXPORT_DIR = '/repox/export'
 OUTPUT_DIR = '/home/mrmiguez/FlaLD_JSON'
 # OUTPUT_DIR = '' # local test
 
-PRETTY_PRINT = True
+PRETTY_PRINT = False
 
 PROVIDER = {'name': 'Florida State University Libraries',
             '@id': 'UNDETERMINED'}
+
+VERBOSE = True
