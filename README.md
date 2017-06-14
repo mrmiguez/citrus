@@ -7,6 +7,8 @@ The current implementation supports the metadata standards:
 * Qualified Dublin Core (dcterms)
 * MODS
 
+The [wiki](https://github.com/mrmiguez/citrus/wiki) details the specifics of the transformation methods.
+
 ## Requires
 
 * [pymods](https://github.com/mrmiguez/pymods) v2.0.5 or greater
