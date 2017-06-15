@@ -17,7 +17,7 @@ The [wiki](https://github.com/mrmiguez/citrus/wiki) details the specifics of the
 
 ## Configuring
 
-Configuring various options is done in the file `citrus_config.py`. _More details soon._
+Configuring various options is done in the file `citrus_config.py`. More details are available in the [wiki](https://github.com/mrmiguez/citrus/wiki)
 
 The transformation scenarios are defined in the FlaLD_MODS, FlaLD_DC, and FlaLD_QDC functions in `citrus.py`. 
 
