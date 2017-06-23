@@ -13,6 +13,7 @@
         <dc:subject>Alligators--Florida--Everglades.</dc:subject>
         <dc:publisher>Miami, Florida: J.N. Chamberlain</dc:publisher>
         <dc:publisher>Miami, Florida: J.N. Chamberlain</dc:publisher>
+        <dc:coverage>Moon</dc:coverage>
         <dc:rights>Rights 4A</dc:rights>
         <dc:identifier>http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001</dc:identifier>
       </oai_dc:dc>
@@ -48,6 +49,8 @@
         <dc:language>English</dc:language>
         <dc:creator>Alexander Hamilton</dc:creator>
         <dc:contributor>Thee Oh Sees</dc:contributor>
+        <dc:coverage>Mars</dc:coverage>
+        <dc:coverage>n-dimensional space</dc:coverage>
         <dc:subject>Tropical forests</dc:subject>
         <dc:subject>Everglades (Fla.)</dc:subject>
         <dc:publisher>Unidentified</dc:publisher>

@@ -90,6 +90,15 @@ class DCTests(unittest.TestCase):
             results.append(record['sourceResource']['subject'])
         self.assertTrue(all(x in results for x in expected))
 
+    def test_dc_SourceResourceSpatial(self):
+        expected = [[{'name': 'Moon'}],
+                    [{'name': 'Homestead (Fla.)'}],
+                    [{'name': 'Mars'}, {'name': 'n-dimensional space'}]]
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['spatial'])
+        self.assertTrue(all(x in results for x in expected))
+
     def test_dc_SourceResourceTitle(self):
         expected = ['Alligator Joe watching the young alligators hatch',
                     'View from highway, Royal Palm State Park, Homestead, Florida',
@@ -221,9 +230,10 @@ class QDCTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_qdc_SourceResourceSpatial(self):
-        expected = [['Coconut Grove (Miami, Fla.)', 'Canterbury', 'Outside'],
-                    ['Death Star'],
-                    ['Excelsior (Minn.)']]
+        expected = [[{'name': 'Coconut Grove (Miami, Fla.)'},
+                     {'name': 'Canterbury'}, {'name': 'Outside'}],
+                    [{'name': 'Death Star'}],
+                    [{'name': 'Excelsior (Minn.)'}]]
         results = []
         for record in self.qdc_json:
             results.append(record['sourceResource']['spatial'])
@@ -375,7 +385,7 @@ class MODSTests(unittest.TestCase):
     def test_mods_SourceResourceRights(self):
         expected = [[{"text": 'Rights 4A'}],
                     [{"text": 'Rights AB'},
-                    {"text": 'Rights AC'}], # these two actually shouldn't appear... check after pymods==1.0.0 switch
+                    {"text": 'Rights AC'}],  # these two actually shouldn't appear... check after pymods==1.0.0 switch
                     [{"text": 'WHAT A BUG!'}]]  # TODO investigate comment above
         results = []
         for record in self.mods_json:

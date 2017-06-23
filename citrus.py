@@ -83,12 +83,8 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                     for item in record.metadata.get_element(
                             './/{0}abstract'.format(dcterms)):
                         description.append(item)
-                if len(description) > 1:
-                    sourceResource['description'] = []
-                    for item in description:
-                        sourceResource['description'].append(item)
-                elif len(description) == 1:
-                    sourceResource['description'] = description[0]
+                if description:
+                    sourceResource['description'] = description
 
                 # sourceResource.extent
                 if record.metadata.get_element('.//{0}extent'.format(dcterms)):
@@ -127,8 +123,9 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
                 # sourceResource.place : sourceResource['spatial']
                 if record.metadata.get_element('.//{0}spatial'.format(dcterms)):
-                    sourceResource['spatial'] = record.metadata.get_element(
-                        './/{0}spatial'.format(dcterms), delimiter=';')
+                    sourceResource['spatial'] = [{'name': place}
+                                                 for place in record.metadata.get_element(
+                        './/{0}spatial'.format(dcterms), delimiter=';')]
 
                 # sourceResource.publisher
                 publisher = record.metadata.get_element('.//{0}publisher'.format(dc))
@@ -305,7 +302,9 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
                 # sourceResource.place : sourceResource['spatial']
                 if record.metadata.get_element('.//{0}coverage'.format(dc)):
-                    sourceResource['spatial'] = record.metadata.get_element('.//{0}coverage'.format(dc))
+                    sourceResource['spatial'] = [{'name': place}
+                                                 for place in
+                                                 record.metadata.get_element('.//{0}coverage'.format(dc))]
 
                 # sourceResource.publisher
                 if record.metadata.get_element('.//{0}publisher'.format(dc)):
