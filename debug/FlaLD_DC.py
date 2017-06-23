@@ -8,6 +8,11 @@ from lxml import etree
 from pymods import OAIReader
 from bs4 import BeautifulSoup
 
+sys.path.append('../assets')
+import assets
+
+tn = {'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'}
+
 nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
                       'dc': '{http://purl.org/dc/elements/1.1/}',
@@ -184,7 +189,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             # aggregation.isShownAt
 
             # aggregation.preview
-            # preview = assets.thumbnail_service(PURL_match, tn)
+            preview = assets.thumbnail_service(PURL_match, tn)
 
             # aggregation.provider
 
@@ -194,7 +199,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                              "aggregatedCHO": "#sourceResource",
                              "dataProvider": data_provider,
                              "isShownAt": PURL_match,
-                             # "preview": preview,
+                             "preview": preview,
                              "provider": PROVIDER})
             except NameError as err:
                 # logging.warning('aggregation.preview: {0} - {1}\n'.format(err, oai_id))

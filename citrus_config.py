@@ -21,11 +21,11 @@ CONFIG_DICT = {
                         'Florida State University Libraries', None)
               }
 
-REPOX_EXPORT_DIR = '/repox/export'
-# REPOX_EXPORT_DIR = 'name_tests' # local test
+# REPOX_EXPORT_DIR = '/repox/export'
+REPOX_EXPORT_DIR = 'name_tests' # local test
 
-OUTPUT_DIR = '/home/mrmiguez/FlaLD_JSON'
-# OUTPUT_DIR = '' # local test
+# OUTPUT_DIR = '~/FlaLD_JSON'
+OUTPUT_DIR = '' # local test
 
 PRETTY_PRINT = False
 
