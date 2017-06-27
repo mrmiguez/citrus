@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup
 import assets
 from citrus_config import PROVIDER, VERBOSE
 
-# VERBOSE = True  # TODO code this in config
 
 nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
@@ -87,14 +86,6 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 if record.metadata.get_element('.//{0}description'.format(dc)):
                     sourceResource['description'] = record.metadata.get_element(
                         './/{0}description'.format(dc), delimiter=';')
-                # for item in record.metadata.get_element('.//{0}description'.format(dc)):
-                #         description.append(item)
-                # if len(description) > 1:
-                #     sourceResource['description'] = []
-                #     for item in description:
-                #         sourceResource['description'].append(item)
-                # elif len(description) == 1:
-                #     sourceResource['description'] = description[0]
 
                 # sourceResource.extent
 
@@ -182,10 +173,6 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 if record.metadata.get_element('.//{0}type'.format(dc)):
                     sourceResource['type'] = record.metadata.get_element(
                         './/{0}type'.format(dc), delimiter=';')
-                    # for element in OAI_QDC.split_lookup(record, './/{0}type'.format(dc)):
-                    #     for term in element:
-                    #         if len(term) > 0:
-                    #             sourceResource['type'].append(term.strip(" "))
 
                 # webResource.fileFormat
 
