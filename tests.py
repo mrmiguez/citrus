@@ -65,7 +65,7 @@ class DCTests(unittest.TestCase):
                     {"name": "English"}]
         results = []
         for record in self.dc_json:
-            results.append(record['sourceResource']['language'])
+            results.append(record['sourceResource']['language'][0])
         self.assertTrue(all(x in results for x in expected))
 
 #    def test_dc_SourceResourcePublisher(self):
@@ -73,9 +73,9 @@ class DCTests(unittest.TestCase):
 #        pass
 
     def test_dc_SourceResourceRights(self):
-        expected = [['Rights 4A'],
-                    ['Rights E3'],
-                    ['Rights 1C']]
+        expected = [[{'text': 'Rights 4A'}],
+                    [{'text': 'Rights E3'}],
+                    [{'text': 'Rights 1C'}]]
         results = []
         for record in self.dc_json:
             results.append(record['sourceResource']['rights'])
@@ -184,6 +184,15 @@ class QDCTests(unittest.TestCase):
             results.append(record['sourceResource']['extent'])
         self.assertTrue(all(x in results for x in expected))
 
+    def test_qdc_SourceResourceGenre(self):
+        expected = [[{'name': 'Photographs'}]]
+        results = []
+        for record in self.qdc_json:
+            if 'genre' in record['sourceResource'].keys():
+                results.append(record['sourceResource']['genre'])
+        self.assertTrue(all(x in results for x in expected))
+
+
     def test_qdc_SourceResourceIdentifier(self):
         expected = [['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/31'],
                     ['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/39'],
@@ -199,7 +208,7 @@ class QDCTests(unittest.TestCase):
                     {"iso_639_3": "eng"}]
         results = []
         for record in self.qdc_json:
-            results.append(record['sourceResource']['language'])
+            results.append(record['sourceResource']['language'][0])
         self.assertTrue(all(x in results for x in expected))
 
     def test_qdc_SourceResourcePublisher(self):
@@ -212,9 +221,9 @@ class QDCTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_qdc_SourceResourceRights(self):
-        expected = [{'text': 'Rights 4A', '@id': 'http://rightsstatements.org/page/UND/1.0/'},
-                    {'text': 'Rights E3', '@id': 'http://rightsstatements.org/vocab/InC/1.0/'},
-                    {'text': 'Rights 1C', '@id': 'http://rightsstatements.org/vocab/InC/1.0/'}]
+        expected = [[{'text': 'Rights 4A', '@id': 'http://rightsstatements.org/page/UND/1.0/'}],
+                    [{'text': 'Rights E3', '@id': 'http://rightsstatements.org/vocab/InC/1.0/'}],
+                    [{'text': 'Rights 1C', '@id': 'http://rightsstatements.org/vocab/InC/1.0/'}]]
         results = []
         for record in self.qdc_json:
             results.append(record['sourceResource']['rights'])
@@ -358,9 +367,9 @@ class MODSTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_mods_SourceResourceIdentifier(self):
-        expected = [{'text': 'FSU_MSS_2015-007_S03_SS02_I003', '@id': 'http://purl.flvc.org/fsu/fd/FSU_MSS_2015-007_S03_SS02_I003'},
-                    {'text': 'FSDT107201', '@id': 'http://purl.flvc.org/fcla/dt/107201'},
-                    {'text': 'FSUspcn329b', '@id': 'http://purl.flvc.org/fsu/fd/FSUspcn329b'}]
+        expected = [['FSU_MSS_2015-007_S03_SS02_I003', 'http://purl.flvc.org/fsu/fd/FSU_MSS_2015-007_S03_SS02_I003'],
+                    ['FSDT107201', 'http://purl.flvc.org/fcla/dt/107201'],
+                    ['FSUspcn329b', 'http://purl.flvc.org/fsu/fd/FSUspcn329b']]
         results = []
         for record in self.mods_json:
             results.append(record['sourceResource']['identifier'])
@@ -434,7 +443,7 @@ class MODSTests(unittest.TestCase):
                     'Drew Shed: A Shed Alone']
         results = []
         for record in self.mods_json:
-            results.append(record['sourceResource']['title'])
+            results.append(record['sourceResource']['title'][0])
         self.assertTrue(all(x in results for x in expected))
 
     def test_mods_SourceResourceType(self):
