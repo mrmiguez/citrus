@@ -221,9 +221,9 @@ class QDCTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_qdc_SourceResourceRights(self):
-        expected = [[{'text': 'Rights 4A', '@id': 'http://rightsstatements.org/page/UND/1.0/'}],
-                    [{'text': 'Rights E3', '@id': 'http://rightsstatements.org/vocab/InC/1.0/'}],
-                    [{'text': 'Rights 1C', '@id': 'http://rightsstatements.org/vocab/InC/1.0/'}]]
+        expected = [[{'@id': 'http://rightsstatements.org/page/UND/1.0/'}],
+                    [{'text': 'Rights E3'}],
+                    [{'@id': 'http://rightsstatements.org/vocab/InC/1.0/'}]]
         results = []
         for record in self.qdc_json:
             results.append(record['sourceResource']['rights'])
@@ -392,7 +392,7 @@ class MODSTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_mods_SourceResourceRights(self):
-        expected = [[{"text": 'Rights 4A'}],
+        expected = [[{"@id": 'http://rightsstatements.org/vocab/NoC-US/1.0/'}],
                     [{"text": 'Rights AB'},
                     {"text": 'Rights AC'}],  # these two actually shouldn't appear... check after pymods==1.0.0 switch
                     [{"text": 'WHAT A BUG!'}]]  # TODO investigate comment above

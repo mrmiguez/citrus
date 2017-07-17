@@ -319,18 +319,14 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                 # sourceResource.rights
                 rightsURI = re.compile('http://rightsstatements')
                 if record.metadata.get_element('.//{0}rights'.format(dc)):
-                    if len(record.metadata.findall('.//{0}rights'.format(dc))) > 1:
-                        for rights_statement in record.metadata.get_element(
-                                './/{0}rights'.format(dc)):
-                            URI = rightsURI.search(rights_statement)
-                            if URI:
-                                URI_match = URI.string.split(" ")[-1]
-                            else:
-                                rights_text = rights_statement
-                        sourceResource['rights'] = [{"@id": URI_match, "text": rights_text}]
-                    else:
-                        sourceResource['rights'] = record.metadata.get_element(
-                            './/{0}rights'.format(dc))
+                    for rights_statement in record.metadata.get_element(
+                            './/{0}rights'.format(dc)):
+                        URI = rightsURI.search(rights_statement)
+                        if URI:
+                            URI_match = URI.string.split(" ")[-1]
+                            sourceResource['rights'] = [{"@id": URI_match}]
+                        else:
+                            sourceResource['rights'] = [{"text": rights_statement}]
 
                 else:
                     logging.warning('No sourceResource.rights - {0}'.format(oai_id))
@@ -507,7 +503,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.rights
             if record.metadata.rights:
-                sourceResource['rights'] = [{"@id": rights.uri, "text": rights.text}
+                sourceResource['rights'] = [{"@id": rights.uri}
                                             if rights.uri else
                                             {"text": rights.text}
                                             for rights in record.metadata.rights]

@@ -52,7 +52,7 @@
         <subject>
           <topic>Fraternities and Sororities</topic>
         </subject>
-        <accessCondition type="useAndReproduction">Rights 4A</accessCondition>
+        <accessCondition type="useAndReproduction" xlink:href="http://rightsstatements.org/vocab/NoC-US/1.0/">Rights 4A</accessCondition>
         <recordInfo>
           <recordChangeDate>2015-10-26</recordChangeDate>
         </recordInfo>
