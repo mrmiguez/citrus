@@ -51,9 +51,9 @@ class DCTests(unittest.TestCase):
         self.assertEqual(sorted(expected), sorted(results))
 
     def test_dc_SourceResourceIdentifier(self):
-        expected = [['FI07050832'],
-                    ['FI07050842'],
-                    ['FI07040407']]
+        expected = ['http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001',
+                    'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050842/00001',
+                    'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07040407/00001']
         results = []
         for record in self.dc_json:
             results.append(record['sourceResource']['identifier'])
@@ -367,9 +367,9 @@ class MODSTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_mods_SourceResourceIdentifier(self):
-        expected = [['FSU_MSS_2015-007_S03_SS02_I003', 'http://purl.flvc.org/fsu/fd/FSU_MSS_2015-007_S03_SS02_I003'],
-                    ['FSDT107201', 'http://purl.flvc.org/fcla/dt/107201'],
-                    ['FSUspcn329b', 'http://purl.flvc.org/fsu/fd/FSUspcn329b']]
+        expected = ['http://purl.flvc.org/fsu/fd/FSU_MSS_2015-007_S03_SS02_I003',
+                    'http://purl.flvc.org/fcla/dt/107201',
+                    'http://purl.flvc.org/fsu/fd/FSUspcn329b']
         results = []
         for record in self.mods_json:
             results.append(record['sourceResource']['identifier'])

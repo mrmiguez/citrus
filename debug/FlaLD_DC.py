@@ -25,6 +25,7 @@ nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
 PROVIDER = 'FSU'
 dprovide = 'FSU'
 dc = nameSpace_default['dc']
+VERBOSE = True
 
 
 def write_json_ld(docs):
@@ -32,7 +33,7 @@ def write_json_ld(docs):
         json.dump(docs, jsonOutput, indent=2)
 
 
-with open(sys.argv[1], encoding='utf-8') as data_in:
+with open('test_data/fiu_bzs-1.xml', encoding='utf-8') as data_in:
     records = OAIReader(data_in)
     docs = []
     for record in records:
@@ -44,6 +45,9 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
         else:
             oai_id = record.oai_urn
 
+            if VERBOSE:
+                print(oai_id)
+            # logging.debug(oai_id)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -52,8 +56,11 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
 
             # sourceResource.contributor
             if record.metadata.get_element('.//{0}contributor'.format(dc)):
-                sourceResource['contributor'] = [{"name": name} for name in record.metadata.get_element(
-                    './/{0}contributor'.format(dc), delimiter=';')]
+                sourceResource['contributor'] = [{"name": name}
+                                                 for name in
+                                                 record.metadata.get_element(
+                                                     './/{0}contributor'.format(dc),
+                                                     delimiter=';')]
 
             # sourceResource.creator
             if record.metadata.get_element('.//{0}creator'.format(dc)):
@@ -67,11 +74,12 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                         if 'contributor' not in sourceResource.keys():
                             sourceResource['contributor'] = []
                             sourceResource['contributor'].append({"name": name.strip(
-                                " ").rstrip("( Contributor )").rstrip("( contributor )")})
+                                " ").rstrip("( Contributor )").rstrip(
+                                "( contributor )")})
                         else:
                             sourceResource['contributor'].append(
-                                {"name": name.strip(" ").rstrip("( Contributor )").rstrip(
-                                    "( contributor )")})
+                                {"name": name.strip(" ").rstrip(
+                                    "( Contributor )").rstrip("( contributor )")})
 
             # sourceResource.date
             date = record.metadata.get_element('.//{0}date'.format(dc))
@@ -82,14 +90,6 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             if record.metadata.get_element('.//{0}description'.format(dc)):
                 sourceResource['description'] = record.metadata.get_element(
                     './/{0}description'.format(dc), delimiter=';')
-            # for item in record.metadata.get_element('.//{0}description'.format(dc)):
-            #         description.append(item)
-            # if len(description) > 1:
-            #     sourceResource['description'] = []
-            #     for item in description:
-            #         sourceResource['description'].append(item)
-            # elif len(description) == 1:
-            #     sourceResource['description'] = description[0]
 
             # sourceResource.extent
 
@@ -103,21 +103,43 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             # sourceResource.identifier
             dPantherPURL = re.compile('dpService/dpPurlService/purl')
             identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
-            if identifier is not None and len(identifier) > 1:
-                sourceResource['identifier'] = []
+            try:
                 for ID in identifier:
+                    PURL = dPantherPURL.search(ID)
                     try:
-                        PURL = dPantherPURL.search(ID)
-                        if PURL:
-                            PURL_match = PURL.string
-                        else:
-                            sourceResource['identifier'].append(ID)
-                    except TypeError as err:
+                        PURL_match = PURL.string
+                    except AttributeError as err:
                         # logging.warning(
-                        #     'sourceResource.identifier: {0} - {1}\n'.format(err, oai_id))
+                        #     'sourceResource.identifier: {0} - {1}'.format(err,
+                        #                                                   oai_id))
+                        print(err, oai_id)
                         pass
-            else:
-                sourceResource['identifier'] = identifier
+                sourceResource['identifier'] = PURL_match
+            except TypeError as err:
+                # logging.warning(
+                #     'sourceResource.identifier: {0} - {1}'.format(err,
+                #                                                   oai_id))
+                print(err, oai_id)
+                pass
+
+
+            # if identifier is not None and len(identifier) > 1:
+            #     sourceResource['identifier'] = []
+            #     for ID in identifier:
+            #         try:
+            #             PURL = dPantherPURL.search(ID)
+            #             if PURL:
+            #                 PURL_match = PURL.string
+            #             else:
+            #                 sourceResource['identifier'].append(ID)
+            #         except TypeError as err:
+            #             # logging.warning(
+            #             #     'sourceResource.identifier: {0} - {1}'.format(err,
+            #             #                                                   oai_id))
+            #             print(err, oai_id)
+            #             pass
+            # else:
+            #     sourceResource['identifier'] = identifier
 
             # sourceResource.language
             if record.metadata.get_element('.//{0}language'.format(dc)):
@@ -125,14 +147,16 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                 for element in record.metadata.get_element(
                         './/{0}language'.format(dc), delimiter=';'):
                     if len(element) > 3:
-                        sourceResource['language'] = {"name": element}
+                        sourceResource['language'].append({"name": element})
                     else:
-                        sourceResource['language'] = {"iso_639_3": element}
+                        sourceResource['language'].append({"iso_639_3": element})
 
             # sourceResource.place : sourceResource['spatial']
             if record.metadata.get_element('.//{0}coverage'.format(dc)):
-                sourceResource['spatial'] = record.metadata.get_element(
-                    './/{0}coverage'.format(dc))
+                sourceResource['spatial'] = [{'name': place}
+                                             for place in
+                                             record.metadata.get_element(
+                                                 './/{0}coverage'.format(dc))]
 
             # sourceResource.publisher
             if record.metadata.get_element('.//{0}publisher'.format(dc)):
@@ -148,7 +172,7 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             # sourceResource.rights
             rights = record.metadata.get_element('.//{0}rights'.format(dc))
             if rights:
-                sourceResource['rights'] = rights
+                sourceResource['rights'] = [{'text': rights[0]}]
             else:
                 # logging.warning('No sourceResource.rights - {0}'.format(oai_id))
                 continue
@@ -168,16 +192,13 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                 sourceResource['title'] = title
             else:
                 # logging.warning('No sourceResource.rights - {0}'.format(oai_id))
+                print('Rights', oai_id)
                 continue
 
             # sourceResource.type
             if record.metadata.get_element('.//{0}type'.format(dc)):
                 sourceResource['type'] = record.metadata.get_element(
                     './/{0}type'.format(dc), delimiter=';')
-                # for element in OAI_QDC.split_lookup(record, './/{0}type'.format(dc)):
-                #     for term in element:
-                #         if len(term) > 0:
-                #             sourceResource['type'].append(term.strip(" "))
 
             # webResource.fileFormat
 
@@ -189,7 +210,12 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
             # aggregation.isShownAt
 
             # aggregation.preview
-            preview = assets.thumbnail_service(PURL_match, tn)
+            try:
+                preview = assets.thumbnail_service(PURL_match, tn)
+            except UnboundLocalError as err:
+                # logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                print(err, oai_id)
+                continue
 
             # aggregation.provider
 
@@ -202,7 +228,8 @@ with open(sys.argv[1], encoding='utf-8') as data_in:
                              "preview": preview,
                              "provider": PROVIDER})
             except NameError as err:
-                # logging.warning('aggregation.preview: {0} - {1}\n'.format(err, oai_id))
+                # logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                print(err, oai_id)
                 pass
 
 #write_json_ld(docs) # write test

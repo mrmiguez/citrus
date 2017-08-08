@@ -99,22 +99,23 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 # sourceResource.identifier
                 dPantherPURL = re.compile('dpService/dpPurlService/purl')
                 identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
-                if identifier is not None and len(identifier) > 1:
-                    sourceResource['identifier'] = []
+                try:
                     for ID in identifier:
+                        PURL = dPantherPURL.search(ID)
+
                         try:
-                            PURL = dPantherPURL.search(ID)
-                            if PURL:
-                                PURL_match = PURL.string
-                            else:
-                                sourceResource['identifier'].append(ID)
-                        except TypeError as err:
+                            PURL_match = PURL.string
+
+                        except AttributeError as err:
                             logging.warning(
                                 'sourceResource.identifier: {0} - {1}'.format(err,
                                                                               oai_id))
-                            pass
-                else:
-                    sourceResource['identifier'] = identifier
+                    sourceResource['identifier'] = PURL_match
+
+                except TypeError as err:
+                    logging.error(
+                        'sourceResource.identifier: {0} - {1}'.format(err,
+                                                                      oai_id))
 
                 # sourceResource.language
                 if record.metadata.get_element('.//{0}language'.format(dc)):
@@ -149,7 +150,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 if rights:
                     sourceResource['rights'] = [{'text': rights[0]}]
                 else:
-                    logging.warning('No sourceResource.rights - {0}'.format(oai_id))
+                    logging.error('No sourceResource.rights - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.subject
@@ -166,7 +167,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 if title:
                     sourceResource['title'] = title
                 else:
-                    logging.warning('No sourceResource.rights - {0}'.format(oai_id))
+                    logging.error('No sourceResource.rights - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.type
@@ -187,7 +188,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 try:
                     preview = assets.thumbnail_service(PURL_match, tn)
                 except UnboundLocalError as err:
-                    logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                    logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                     continue
 
                 # aggregation.provider
@@ -201,7 +202,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                                  "preview": preview,
                                  "provider": PROVIDER})
                 except NameError as err:
-                    logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                    logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                     pass
 
     return docs
@@ -329,7 +330,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                             sourceResource['rights'] = [{"text": rights_statement}]
 
                 else:
-                    logging.warning('No sourceResource.rights - {0}'.format(oai_id))
+                    logging.error('No sourceResource.rights - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.subject
@@ -343,7 +344,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                 if title is not None:
                     sourceResource['title'] = title
                 else:
-                    logging.warning('No sourceResource.title - {0}'.format(oai_id))
+                    logging.error('No sourceResource.title - {0}'.format(oai_id))
                     continue
 
                 # sourceResource.type
@@ -416,7 +417,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                          if name.uri else
                                                          {"name": name.text}]
             except KeyError as err:
-                logging.warning('sourceResource.contributor: {0}, {1}'.format(err, record.oai_urn))
+                logging.error('sourceResource.contributor: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
             # sourceResource.creator
@@ -461,10 +462,9 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.identifier
             try:
-                sourceResource['identifier'] = [record.metadata.iid,
-                                                record.metadata.purl[0]]
+                sourceResource['identifier'] = record.metadata.purl[0]
             except IndexError as err:
-                logging.warning('sourceResource.identifier: {0}, {1}'.format(err, record.oai_urn))
+                logging.error('sourceResource.identifier: {0}, {1}'.format(err, record.oai_urn))
                 continue
 
             # sourceResource.language
@@ -474,7 +474,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                    "iso_639_3": lang.code}
                                                    for lang in record.metadata.language]
             except AttributeError as err:
-                logging.warning('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
+                logging.error('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
             # sourceResource.place : sourceResource['spatial']
@@ -488,7 +488,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                           "name": label,
                                                           "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."})
             except TypeError as err:
-                logging.warning('sourceResource.spatial: {0}, {1}'.format(err, record.oai_urn))
+                logging.error('sourceResource.spatial: {0}, {1}'.format(err, record.oai_urn))
                 continue
             
             # sourceResource.publisher
@@ -508,7 +508,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                             {"text": rights.text}
                                             for rights in record.metadata.rights]
             else:
-                logging.warning('No sourceResource.rights - {0}'.format(record.oai_urn))
+                logging.error('No sourceResource.rights - {0}'.format(record.oai_urn))
                 continue
 
             # sourceResource.subject
@@ -521,17 +521,17 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                         else {"name": subject.text}
                         for subject in record.metadata.subjects]
             except TypeError as err:
-                logging.warning('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
+                logging.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
                 pass
             except IndexError as err:
-                logging.warning('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
+                logging.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
             # sourceResource.title
             if record.metadata.titles:
                 sourceResource['title'] = ['{}'.format(record.metadata.titles[0])]
             else:
-                logging.warning('No sourceResource.title: {0}'.format(record.oai_urn))
+                logging.error('No sourceResource.title: {0}'.format(record.oai_urn))
                 continue
 
             # sourceResource.type
