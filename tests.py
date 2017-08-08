@@ -194,9 +194,9 @@ class QDCTests(unittest.TestCase):
 
 
     def test_qdc_SourceResourceIdentifier(self):
-        expected = [['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/31'],
-                    ['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/39'],
-                    ['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/25']]
+        expected = ['oai:lib.fsu.edu.umiami:oai:uofm.library.umiami:oai:merrick.library.miami.edu:asm0447/31',
+                    'oai:lib.fsu.edu.umiami:oai:uofm.library.umiami:oai:merrick.library.miami.edu:asm0447/39',
+                    'oai:lib.fsu.edu.umiami:oai:uofm.library.umiami:oai:merrick.library.miami.edu:asm0447/25']
         results = []
         for record in self.qdc_json:
             results.append(record['sourceResource']['identifier'])

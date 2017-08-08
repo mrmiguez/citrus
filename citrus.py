@@ -110,12 +110,14 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                             logging.warning(
                                 'sourceResource.identifier: {0} - {1}'.format(err,
                                                                               oai_id))
+                            pass
                     sourceResource['identifier'] = PURL_match
 
                 except TypeError as err:
                     logging.error(
                         'sourceResource.identifier: {0} - {1}'.format(err,
                                                                       oai_id))
+                    continue
 
                 # sourceResource.language
                 if record.metadata.get_element('.//{0}language'.format(dc)):
@@ -286,9 +288,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                         del sourceResource['genre']
 
                 # sourceResource.identifier
-                local_id = record.metadata.get_element('.//{0}identifier'.format(dc))
-                if local_id:
-                    sourceResource['identifier'] = local_id
+                sourceResource['identifier'] = oai_id
 
                 # sourceResource.language
                 if record.metadata.get_element('.//{0}language'.format(dc)):
@@ -363,7 +363,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                 # aggregation.isShownAt
 
                 # aggregation.preview
-                for identifier in local_id:
+                for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
                     if 'http' in identifier:
                         is_shown_at = identifier
                         preview = assets.thumbnail_service(identifier, tn)
