@@ -551,7 +551,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # aggregation.preview
             pid = record.metadata.pid
             if pid is None:
-                pid = record.oai_urn.split(':')[-1]
+                pid = record.oai_urn.split(':')[-1].replace('_',':')
             preview = assets.thumbnail_service(pid, tn)
 
             # aggregation.provider
