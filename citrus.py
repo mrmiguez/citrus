@@ -228,10 +228,13 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                 sourceResource = {}
 
                 # sourceResource.alternative
-                alt_title = record.metadata.get_element(
-                    './/{0}alternative'.format(dcterms))
-                if alt_title:
-                    sourceResource['alternative'] = alt_title
+                try:
+                    alt_title = record.metadata.get_element(
+                        './/{0}alternative'.format(dcterms))
+                    if alt_title:
+                        sourceResource['alternative'] = alt_title
+                except AttributeError:
+                    pass
 
                 # sourceResource.collection
 
