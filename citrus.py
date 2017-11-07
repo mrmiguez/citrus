@@ -34,8 +34,14 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
         docs = []
         for record in records:
 
+            # deleted record handling for repox
             if 'deleted' in record.attrib.keys():
                 if record.attrib['deleted'] == 'true':
+                    pass
+
+            # deleted record handling for OAI-PMH
+            if 'status' in record.find('./{*}header').attrib.keys():
+                if record.find('./{*}header').attrib['status'] == 'deleted':
                     pass
 
             else:
@@ -216,25 +222,29 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
         docs = []
         for record in records:
 
+            # deleted record handling for repox
             if 'deleted' in record.attrib.keys():
                 if record.attrib['deleted'] == 'true':
                     pass
 
+            # deleted record handling for OAI-PMH
+            if 'status' in record.find('./{*}header').attrib.keys():
+                if record.find('./{*}header').attrib['status'] == 'deleted':
+                    pass
+
             else:
                 oai_id = record.oai_urn
+
                 if VERBOSE:
                     print(oai_id)
                 logging.debug(oai_id)
                 sourceResource = {}
 
                 # sourceResource.alternative
-                try:
-                    alt_title = record.metadata.get_element(
-                        './/{0}alternative'.format(dcterms))
-                    if alt_title:
-                        sourceResource['alternative'] = alt_title
-                except AttributeError:
-                    pass
+                alt_title = record.metadata.get_element(
+                    './/{0}alternative'.format(dcterms))
+                if alt_title:
+                    sourceResource['alternative'] = alt_title
 
                 # sourceResource.collection
 
@@ -388,6 +398,17 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
         records = OAIReader(data_in)
         docs = []
         for record in records:
+
+            # deleted record handling for repox
+            if 'deleted' in record.attrib.keys():
+                if record.attrib['deleted'] == 'true':
+                    pass
+
+            # deleted record handling for OAI-PMH
+            if 'status' in record.find('./{*}header').attrib.keys():
+                if record.find('./{*}header').attrib['status'] == 'deleted':
+                    pass
+
             if VERBOSE:
                 print(record.oai_urn)
             logging.debug(record.oai_urn)
