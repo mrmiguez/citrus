@@ -430,6 +430,9 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             logging.debug(record.oai_urn)
             sourceResource = {}
 
+            if record.metadata is None:
+                continue
+
             # sourceResource.alternative
             if len(record.metadata.titles) > 1:
                 sourceResource['alternative'] = []
