@@ -11,7 +11,7 @@ The [wiki](https://github.com/mrmiguez/citrus/wiki) details the specifics of the
 
 ## Requires
 
-* [pymods](https://github.com/mrmiguez/pymods) v2.0.5 or greater
+* [pymods](https://github.com/mrmiguez/pymods) v2.0.6 or greater
 * [requests](http://docs.python-requests.org)
 * [beautifulsoup4](https://www.crummy.com/software/BeautifulSoup/)
 
