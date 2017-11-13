@@ -91,7 +91,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.date
             date = record.metadata.get_element('.//{0}date'.format(dc))
             if date:
-                sourceResource['date'] = {"begin": date[0], "end": date[0]}
+                sourceResource['date'] = {"begin": date[0], "end": date[0], "displayDate": date[0]}
 
             # sourceResource.description
             if record.metadata.get_element('.//{0}description'.format(dc)):
@@ -272,8 +272,23 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.date
             date = record.metadata.get_element('.//{0}created'.format(dcterms))
+            if date is None:  # TODO: there has to be a better way to do this
+                date = record.metadata.get_element('.//{0}issued'.format(dcterms))
+            if date is None:
+                date = record.metadata.get_element('.//{0}date'.format(dcterms))
+            if date is None:
+                date = record.metadata.get_element('.//{0}date'.format(dc))
+            if date is None:
+                date = record.metadata.get_element('.//{0}available'.format(dcterms))
+            if date is None:
+                date = record.metadata.get_element('.//{0}dateAccepted'.format(dcterms))
+            if date is None:
+                date = record.metadata.get_element('.//{0}dateCopyrighted'.format(dcterms))
+            if date is None:
+                date = record.metadata.get_element('.//{0}dateSubmitted'.format(dcterms))
+
             if date is not None:
-                sourceResource['date'] = {"begin": date[0], "end": date[0]}
+                sourceResource['date'] = {"begin": date[0], "end": date[0], "displayDate": date[0]}
 
             # sourceResource.description
             description = []

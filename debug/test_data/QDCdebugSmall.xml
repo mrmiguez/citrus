@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<repox:exportedRecords xmlns:repox="http://repox.ist.utl.pt" set="umiami" batchsize="-1" total="1000">
-  <repox:record id="oai:lib.fsu.edu.umiami:oai:uofm.library.umiami:oai:merrick.library.miami.edu:asm0447/31" timestamp="2017-03-21">
+<repox:exportedRecords xmlns:repox="http://repox.ist.utl.pt"
+                       set="umiami"
+                       batchsize="-1"
+                       total="1000">
+  <repox:record id="oai:lib.fsu.edu.umiami:oai:uofm.library.umiami:oai:merrick.library.miami.edu:asm0447/31"
+                timestamp="2017-03-21">
     <repox:metadata>
-      <oai_qdc:qualifieddc xmlns:oai_qdc="http://worldcat.org/xmlschemas/qdc-1.0/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://worldcat.org/xmlschemas/qdc-1.0/ http://worldcat.org/xmlschemas/qdc/1.0/qdc-1.0.xsd http://purl.org/net/oclcterms http://worldcat.org/xmlschemas/oclcterms/1.4/oclcterms-1.4.xsd">
+      <oai_qdc:qualifieddc xmlns:oai_qdc="http://worldcat.org/xmlschemas/qdc-1.0/"
+                           xmlns:oai="http://www.openarchives.org/OAI/2.0/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xsi:schemaLocation="http://worldcat.org/xmlschemas/qdc-1.0/ http://worldcat.org/xmlschemas/qdc/1.0/qdc-1.0.xsd http://purl.org/net/oclcterms http://worldcat.org/xmlschemas/oclcterms/1.4/oclcterms-1.4.xsd">
         <dc:title>Vincent Gilpin letter to Patty Munroe, September 3, 1933</dc:title>
         <dc:creator>Gilpin, Vincent</dc:creator>
         <dcterms:abstract>Test 000</dcterms:abstract>
         <dcterms:alternative>covfefe</dcterms:alternative>
         <dc:subject>Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters</dc:subject>
-        <dcterms:created>1933-09-03</dcterms:created>
+        <dcterms:issued>1933-09-03</dcterms:issued>
         <dcterms:temporal>1930-1939</dcterms:temporal>
         <dcterms:spatial>Excelsior (Minn.)</dcterms:spatial>
         <dcterms:extent>1 letter</dcterms:extent>

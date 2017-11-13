@@ -32,8 +32,8 @@ class DCTests(unittest.TestCase):
                                       for record in self.dc_json]))
 
     def test_dc_SourceResourceDate(self):
-        expected = [{'begin': '1974', 'end': '1974'},
-                    {'begin': '1972', 'end': '1972'}]
+        expected = [{'begin': '1974', 'end': '1974', 'displayDate': '1974'},
+                    {'begin': '1972', 'end': '1972', 'displayDate': '1972'}]
         results = []
         for record in self.dc_json:
             if 'date' in record['sourceResource'].keys():
@@ -157,9 +157,9 @@ class QDCTests(unittest.TestCase):
                                       for record in self.qdc_json]))
 
     def test_qdc_SourceResourceDate(self):
-        expected = [{'begin': '1933-09-03', 'end': '1933-09-03'},
-                    {'begin': '1915-04-26', 'end': '1915-04-26'},
-                    {'begin': '1912-01-16', 'end': '1912-01-16'}]
+        expected = [{'begin': '1933-09-03', 'end': '1933-09-03', 'displayDate': '1933-09-03'},
+                    {'begin': '1915-04-26', 'end': '1915-04-26', 'displayDate': '1915-04-26'},
+                    {'begin': '1912-01-16', 'end': '1912-01-16', 'displayDate': '1912-01-16'}]
         results = []
         for record in self.qdc_json:
             if 'date' in record['sourceResource'].keys():
