@@ -9,17 +9,20 @@
         <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
           <dc:title>Petition to the will of Zephaniah Kingsley</dc:title>
           <dc:creator>McNeill, Martha</dc:creator>
+          <dc:contributor>Buckethead</dc:contributor>
           <dc:subject>Interracial marriage--Law and legislation--United States--History--19th century.</dc:subject>
           <dc:description>The petition to the will made by Martha McNeill and others to Judge Farquhar Bethune, filed November 30, 1844.</dc:description>
           <dc:date>1844-10-28</dc:date>
           <dc:type>Kingsley Paper</dc:type>
           <dc:type>text</dc:type>
+          <dc:publisher>IDW</dc:publisher>
           <dc:format>petitions</dc:format>
           <dc:identifier>m87-20_petition</dc:identifier>
           <dc:identifier>http://192.168.63.159/items/show/177999</dc:identifier>
           <dc:source>State Archives of Florida, M87-20</dc:source>
           <dc:language>en-US</dc:language>
           <dc:coverage>Florida Territorial Period (1822-1845).</dc:coverage>
+          <dc:rights>temp</dc:rights>
         </oai_dc:dc>
       </metadata>
     </record><record>
@@ -34,6 +37,7 @@
           <dc:creator>Putnam, Benjamin A.</dc:creator>
           <dc:creator>Gibbs, Kingsley B.</dc:creator>
           <dc:creator>Kingsley, George</dc:creator>
+          <dc:contributor>Primus</dc:contributor>
           <dc:subject>Interracial marriage--Law and legislation--United States--History--19th century.</dc:subject>
           <dc:description>The executor's response (Benjamin A. Putnam and Kingsley B. Gibbs) to the petition of Anna M. J. Kingsley, widow of Zephaniah Kingsley. September 5, 1846.</dc:description>
           <dc:date>1846-09-05</dc:date>
@@ -45,6 +49,7 @@
           <dc:source>State Archives of Florida, M87-20</dc:source>
           <dc:language>en-US</dc:language>
           <dc:coverage>Florida Territorial Period (1822-1845).</dc:coverage>
+          <dc:rights>temp</dc:rights>
         </oai_dc:dc>
       </metadata>
     </record><record>
@@ -57,6 +62,7 @@
         <oai_dc:dc xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
           <dc:title>Will of Zephaniah Kingsley</dc:title>
           <dc:creator>Kingsley, Zephaniah (1765-1843)</dc:creator>
+          <dc:contributor>Thee Oh Sees</dc:contributor>
           <dc:subject>Interracial marriage--Law and legislation--United States--History--19th century.
 </dc:subject>
           <dc:subject>Slaveholders--Florida--History.</dc:subject>
@@ -71,6 +77,7 @@
           <dc:source>State Archives of Florida, S49</dc:source>
           <dc:language>en-US</dc:language>
           <dc:coverage>Florida Territorial Period (1822-1845).</dc:coverage>
+          <dc:rights>temp</dc:rights>
         </oai_dc:dc>
       </metadata>
     </record>

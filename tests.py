@@ -1,14 +1,146 @@
 import unittest
+import json  # test
 
 from os.path import abspath, dirname, join
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC
+from custom_mods import FlMem
 
 PATH = abspath(dirname(__file__))
 
 
+class FlMemTests(unittest.TestCase):
+
+    def setUp(self):
+        self.dc_json = FlMem(join(PATH, 'debug/test_data/FlMemSmall.xml'),
+                           tn={'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},  # TODO
+                           dprovide='University of Miami-TEMP')  # TODO
+
+    def test_dc_SourceResourceCreator(self):
+        expected = [[{'name': 'McNeill, Martha'}],
+                    [{'name': 'Putnam, Benjamin A.'},
+                     {'name': 'Gibbs, Kingsley B.'},
+                     {'name': 'Kingsley, George'}],
+                    [{'name': 'Kingsley, Zephaniah (1765-1843)'}]]
+        self.assertTrue(all(x in expected
+                            for x in [record['sourceResource']['creator']
+                                      for record in self.dc_json]))
+
+    def test_dc_SourceResourceContributor(self):
+        expected = [[{'name': 'Buckethead'}],
+                    [{'name': 'Primus'}],
+                    [{'name': 'Thee Oh Sees'}]]
+        self.assertTrue(all(x in expected
+                            for x in [record['sourceResource']['contributor']
+                                      for record in self.dc_json]))
+
+    def test_dc_SourceResourceDate(self):
+        expected = [{'begin': '1844-10-28', 'end': '1844-10-28', 'displayDate': '1844-10-28'},
+                    {'begin': '1846-09-05', 'end': '1846-09-05', 'displayDate': '1846-09-05'},
+                    {'begin': '1843-07-20', 'end': '1843-07-20', 'displayDate': '1843-07-20'}]
+        results = []
+        for record in self.dc_json:
+            if 'date' in record['sourceResource'].keys():
+                results.append(record['sourceResource']['date'])
+        self.assertTrue(all(x in results for x in expected))
+
+    def test_dc_SourceResourceDescription(self):
+        expected = [['The petition to the will made by Martha McNeill and others to Judge Farquhar Bethune, filed November 30, 1844.'],
+                    ['The executor\'s response (Benjamin A. Putnam and Kingsley B. Gibbs) to the petition of Anna M. J. Kingsley, widow of Zephaniah Kingsley. September 5, 1846.'],
+                    ['A handwritten copy of the will of Zephaniah Kingsley from the 1886 Supreme Court case files.']]
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['description'])
+        self.assertEqual(sorted(expected), sorted(results))
+
+    # def test_dc_SourceResourceIdentifier(self):
+    #     expected = ['http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001',
+    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050842/00001',
+    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07040407/00001']
+    #     results = []
+    #     for record in self.dc_json:
+    #         results.append(record['sourceResource']['identifier'])
+    #     self.assertTrue(all(x in results for x in expected))
+
+    def test_dc_SourceResourceLanguage(self):
+        expected = [{"name": "en-US"},
+                    {"name": "en-US"},
+                    {"name": "en-US"}]
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['language'][0])
+        self.assertTrue(all(x in results for x in expected))
+
+    def test_dc_SourceResourcePublisher(self):
+        # TODO
+        pass
+
+    # def test_dc_SourceResourceRights(self):
+    #     expected = [[{'text': 'Rights 4A'}],
+    #                 [{'text': 'Rights E3'}],
+    #                 [{'text': 'Rights 1C'}]]
+    #     results = []
+    #     for record in self.dc_json:
+    #         results.append(record['sourceResource']['rights'])
+    #     self.assertTrue(all(x in results for x in expected))
+
+    def test_dc_SourceResourceSubject(self):
+        expected = [[{"name": "Interracial marriage--Law and legislation--United States--History--19th century."}],
+                    [{"name": "Interracial marriage--Law and legislation--United States--History--19th century."}],
+                    [{"name": "Interracial marriage--Law and legislation--United States--History--19th century."},
+                     {"name": "Slaveholders--Florida--History."}, {"name": "Slaves -- United States -- Social conditions."}]]
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['subject'])
+        self.assertTrue(all(x in results for x in expected))
+
+    # def test_dc_SourceResourceSpatial(self):
+    #     expected = [[{'name': 'Moon'}],
+    #                 [{'name': 'Homestead (Fla.)'}],
+    #                 [{'name': 'Mars'}, {'name': 'n-dimensional space'}]]
+    #     results = []
+    #     for record in self.dc_json:
+    #         results.append(record['sourceResource']['spatial'])
+    #     self.assertTrue(all(x in results for x in expected))
+
+    def test_dc_SourceResourceTitle(self):
+        expected = ['Will of Zephaniah Kingsley',
+                    'Executors\' response to the petition of Anna M. J. Kingsley',
+                    'Petition to the will of Zephaniah Kingsley']
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['title'][0])
+        self.assertTrue(all(x in results for x in expected))
+
+    def test_dc_SourceResourceType(self):
+        # TODO
+        return True
+
+    #   def test_dc_AggregationDataProvider(self):
+
+    # def test_dc_AggregationIsShownAt(self):
+    #     expected = ['http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001',
+    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050842/00001',
+    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07040407/00001']
+    #     results = []
+    #     for record in self.dc_json:
+    #         results.append(record['isShownAt'])
+    #     self.assertTrue(all(x in results for x in expected))
+    #
+    # def test_dc_AggregationPreview(self):
+    #     expected = ['http://dpanther.fiu.edu/sobek/content/FI/07/05/08/32/00001/FI07050832_001_thm.jpg',
+    #                 'http://dpanther.fiu.edu/sobek/content/FI/07/05/08/42/00001/FI07050842_001_thm.jpg',
+    #                 'http://dpanther.fiu.edu/sobek/content/FI/07/04/04/07/00001/FI07040407_001_thm.jpg']
+    #     results = []
+    #     for record in self.dc_json:
+    #         results.append(record['preview'])
+    #     self.assertTrue(all(x in results for x in expected))
+    #
+    # #   def test_dc_AggregationProvider(self):
+
+
 class DCTests(unittest.TestCase):
     """
-    
+
     """
     def setUp(self):
         self.dc_json = FlaLD_DC(join(PATH, 'debug/test_data/DCdebugSmall.xml'),

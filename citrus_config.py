@@ -33,4 +33,4 @@ PRETTY_PRINT = True
 PROVIDER = {'name': 'Sunshine State Digital Network',
             '@id': 'UNDETERMINED'}
 
-VERBOSE = True
+VERBOSE = False

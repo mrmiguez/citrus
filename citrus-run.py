@@ -10,6 +10,7 @@ from os.path import abspath, dirname, join, exists
 # pull in config & custom transformation methods
 from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR, OUTPUT_DIR, PRETTY_PRINT
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC
+from custom_mods import FlMem
 
 # init logger
 logging.basicConfig(filename='error{0}.log'.format(datetime.date.today()), filemode='w', level=logging.ERROR)
