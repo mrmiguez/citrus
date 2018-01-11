@@ -37,6 +37,6 @@ ehthumbs.db
 Thumbs.db
 
 .idea/*
-__pycache__/
+*__pycache__*
 *.pyc
 .cache/*
