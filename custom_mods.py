@@ -44,6 +44,8 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             # sourceResource.alternative
 
             # sourceResource.collection
+            if record.metadata.get_element('.//{0}source'.format(dc)):
+                sourceResource['collection'] = {'name': record.metadata.get_element('.//{0}source'.format(dc))[0]}
 
             # sourceResource.contributor
             if record.metadata.get_element('.//{0}contributor'.format(dc)):
@@ -167,10 +169,27 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                 logging.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
+            # sourceResource.temporal
+            temporal = record.metadata.get_element('.//{0}coverage'.format(dc))
+            if temporal:
+                sourceResource['temporal'] = temporal
+
             # sourceResource.type
             if record.metadata.get_element('.//{0}type'.format(dc)):
-                sourceResource['type'] = record.metadata.get_element(
-                    './/{0}type'.format(dc), delimiter=';')
+                if 'type' in sourceResource.keys():
+                    sourceResource['type'] = sourceResource['type'] + record.metadata.get_element(
+                        './/{0}type'.format(dc))
+                else:
+                    sourceResource['type'] = record.metadata.get_element(
+                        './/{0}type'.format(dc), delimiter=';')
+            if record.metadata.get_element('.//{0}format'.format(dc)):
+                if 'type' in sourceResource.keys():
+                    sourceResource['type'] = sourceResource['type'] + record.metadata.get_element(
+                        './/{0}format'.format(dc))
+                else:
+                    sourceResource['type'] = record.metadata.get_element(
+                        './/{0}format'.format(dc), delimiter=';')
+
 
             # webResource.fileFormat
 

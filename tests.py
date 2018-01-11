@@ -15,6 +15,14 @@ class FlMemTests(unittest.TestCase):
                            tn={'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},  # TODO
                            dprovide='University of Miami-TEMP')  # TODO
 
+    def test_dc_SourceResourceCollection(self):
+        expected = [{'name': 'State Archives of Florida, M87-20'},
+                    {'name': 'State Archives of Florida, M87-20'},
+                    {'name': 'State Archives of Florida, S49'}]
+        self.assertTrue(all(x in expected
+                            for x in [record['sourceResource']['collection']
+                                      for record in self.dc_json]))
+
     def test_dc_SourceResourceCreator(self):
         expected = [[{'name': 'McNeill, Martha'}],
                     [{'name': 'Putnam, Benjamin A.'},
@@ -71,8 +79,12 @@ class FlMemTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourcePublisher(self):
-        # TODO
-        pass
+        expected = ['IDW']
+        results = []
+        for record in self.dc_json:
+            if 'publisher' in record['sourceResource'].keys():
+                results.append(record['sourceResource']['publisher'][0])
+        self.assertTrue(all(x in results for x in expected))
 
     # def test_dc_SourceResourceRights(self):
     #     expected = [[{'text': 'Rights 4A'}],
@@ -111,9 +123,23 @@ class FlMemTests(unittest.TestCase):
             results.append(record['sourceResource']['title'][0])
         self.assertTrue(all(x in results for x in expected))
 
+    def test_dc_SourceResourceTemporal(self):
+        expected = ['Florida Territorial Period (1822-1845).',
+                    'Florida Territorial Period (1822-1845).',
+                    'Florida Territorial Period (1822-1845).']
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['temporal'][0])
+        self.assertTrue(all(x in results for x in expected))
+
     def test_dc_SourceResourceType(self):
-        # TODO
-        return True
+        expected = [['Kingsley Paper', 'text', 'petitions'],
+                    ['Kingsley Paper', 'text', 'decisions '],
+                    ['Kingsley Paper', 'text', 'wills']]
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['type'])
+        self.assertTrue(all(x in results for x in expected))
 
     #   def test_dc_AggregationDataProvider(self):
 
