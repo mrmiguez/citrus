@@ -70,12 +70,13 @@ class FlMemTests(unittest.TestCase):
     #     self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourceLanguage(self):
-        expected = [{"name": "en-US"},
-                    {"name": "en-US"},
-                    {"name": "en-US"}]
+        expected = [[{"name": "English", "iso_639_3": "eng"}],
+                    [{"name": "Spanish", "iso_639_3": "spa"}],
+                    [{"name": "German", "iso_639_3": "ger"}]]
         results = []
         for record in self.dc_json:
-            results.append(record['sourceResource']['language'][0])
+            results.append(record['sourceResource']['language'])
+        print(results)
         self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourcePublisher(self):

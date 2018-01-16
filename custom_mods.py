@@ -1,6 +1,7 @@
 import re
 import logging
 import requests
+import subprocess
 from pymods import OAIReader
 from bs4 import BeautifulSoup
 
@@ -119,12 +120,10 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             # sourceResource.language
             if record.metadata.get_element('.//{0}language'.format(dc)):
                 sourceResource['language'] = []
-                for element in record.metadata.get_element(
-                        './/{0}language'.format(dc), delimiter=';'):
-                    if len(element) > 3:
-                        sourceResource['language'].append({"name": element})
-                    else:
-                        sourceResource['language'].append({"iso_639_3": element})
+                for lang in record.metadata.get_element('.//{0}language'.format(dc), delimiter=';'):
+                    results = assets.iso639(lang.split('-')[0])
+                    sourceResource['language'].append(results)
+
 
             # sourceResource.place : sourceResource['spatial']
             if record.metadata.get_element('.//{0}coverage'.format(dc)):
