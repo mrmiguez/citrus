@@ -94,34 +94,17 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.genre
 
-            # # sourceResource.identifier  # TODO: commented temp for testing
-            # dPantherPURL = re.compile('dpService/dpPurlService/purl')
-            # identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
-            # try:
-            #     for ID in identifier:
-            #         PURL = dPantherPURL.search(ID)
-            #
-            #         try:
-            #             PURL_match = PURL.string
-            #
-            #         except AttributeError as err:
-            #             logging.warning(
-            #                 'sourceResource.identifier: {0} - {1}'.format(err,
-            #                                                               oai_id))
-            #             pass
-            #     sourceResource['identifier'] = PURL_match
-            #
-            # except TypeError as err:
-            #     logging.error(
-            #         'sourceResource.identifier: {0} - {1}'.format(err,
-            #                                                       oai_id))
-            #     continue
+            # sourceResource.identifier
+            for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
+                if 'http' in identifier:
+                    is_shown_at = identifier.replace(identifier.split('/')[2], 'www.floridamemory.com')
+            sourceResource['identifier'] = oai_id.replace(oai_id.split(':')[1], 'www.floridamemory.com')
 
             # sourceResource.language
             if record.metadata.get_element('.//{0}language'.format(dc)):
                 sourceResource['language'] = []
                 for lang in record.metadata.get_element('.//{0}language'.format(dc), delimiter=';'):
-                    results = assets.iso639(lang.split('-')[0])
+                    results = assets.iso639_2code(lang.split('-')[0])
                     sourceResource['language'].append(results)
 
 
@@ -213,7 +196,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                              "sourceResource": sourceResource,
                              "aggregatedCHO": "#sourceResource",
                              "dataProvider": data_provider,
-                             # "isShownAt": PURL_match,  #TODO temp
+                             "isShownAt": is_shown_at,
                              # "preview": preview,  # TODO temp
                              "provider": PROVIDER})
             except NameError as err:

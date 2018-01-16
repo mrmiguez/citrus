@@ -60,14 +60,15 @@ class FlMemTests(unittest.TestCase):
             results.append(record['sourceResource']['description'])
         self.assertEqual(sorted(expected), sorted(results))
 
-    # def test_dc_SourceResourceIdentifier(self):
-    #     expected = ['http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001',
-    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050842/00001',
-    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07040407/00001']
-    #     results = []
-    #     for record in self.dc_json:
-    #         results.append(record['sourceResource']['identifier'])
-    #     self.assertTrue(all(x in results for x in expected))
+    def test_dc_SourceResourceIdentifier(self):
+        expected = ['oai:www.floridamemory.com:177999',
+                    'oai:www.floridamemory.com:178002',
+                    'oai:www.floridamemory.com:178006']
+        results = []
+        for record in self.dc_json:
+            results.append(record['sourceResource']['identifier'])
+        print(results)
+        self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourceLanguage(self):
         expected = [[{"name": "English", "iso_639_3": "eng"}],
@@ -76,7 +77,6 @@ class FlMemTests(unittest.TestCase):
         results = []
         for record in self.dc_json:
             results.append(record['sourceResource']['language'])
-        print(results)
         self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourcePublisher(self):
@@ -144,15 +144,15 @@ class FlMemTests(unittest.TestCase):
 
     #   def test_dc_AggregationDataProvider(self):
 
-    # def test_dc_AggregationIsShownAt(self):
-    #     expected = ['http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001',
-    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050842/00001',
-    #                 'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07040407/00001']
-    #     results = []
-    #     for record in self.dc_json:
-    #         results.append(record['isShownAt'])
-    #     self.assertTrue(all(x in results for x in expected))
-    #
+    def test_dc_AggregationIsShownAt(self):
+        expected = ['http://www.floridamemory.com/items/show/177999',
+                    'http://www.floridamemory.com/items/show/178002',
+                    'http://www.floridamemory.com/items/show/178006']
+        results = []
+        for record in self.dc_json:
+            results.append(record['isShownAt'])
+        self.assertTrue(all(x in results for x in expected))
+
     # def test_dc_AggregationPreview(self):
     #     expected = ['http://dpanther.fiu.edu/sobek/content/FI/07/05/08/32/00001/FI07050832_001_thm.jpg',
     #                 'http://dpanther.fiu.edu/sobek/content/FI/07/05/08/42/00001/FI07050842_001_thm.jpg',

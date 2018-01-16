@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def iso639_gen():  # TODO test for existing CSV
+def iso639_gen():
     try:
         os.remove('assets/iso639.csv')
     except FileNotFoundError:
@@ -24,12 +24,23 @@ def iso639_gen():  # TODO test for existing CSV
         writer.writerows(rows)
 
 
-def iso639(l):
+def iso639_2code(l):
     if os.path.isfile('assets/iso639.csv') is False:
         iso639_gen()
     with open('assets/iso639.csv', encoding='utf-8', newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if l == row['ISO 639-1 Code']:
+                return {"name": row['English name of Language'].split(';')[0],
+                        "iso_639_3": row['ISO 639-2 Code'].split(' ')[0]}
+
+
+def iso639_3code(l):
+    if os.path.isfile('assets/iso639.csv') is False:
+        iso639_gen()
+    with open('assets/iso639.csv', encoding='utf-8', newline='') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if l == row['ISO 639-2 Code']:
                 return {"name": row['English name of Language'].split(';')[0],
                         "iso_639_3": row['ISO 639-2 Code'].split(' ')[0]}
