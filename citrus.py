@@ -243,6 +243,15 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
             except AttributeError:
                 pass
 
+            # skip record handling
+            try:
+                if 'noharvest' in record.metadata.get_element('.//{0}requires'.format(dcterms)):
+                    continue
+                    # if 'noharvest' in requires:
+                    #     continue
+            except TypeError:
+                pass
+
             oai_id = record.oai_urn
 
             if VERBOSE:
