@@ -20,31 +20,33 @@ if len(OUTPUT_DIR) > 0:
     PATH = OUTPUT_DIR
 else:
     PATH = abspath(dirname(__file__))
-if exists(PATH + '/FlaLD{0}.json'.format(datetime.date.today())) is True:
-    remove(PATH + '/FlaLD{0}.json'.format(datetime.date.today()))
+for key in CONFIG_DICT.keys():
+    if exists(PATH + '/{0}-{0}.json'.format(key, datetime.date.today())) is True:
+        remove(PATH + '/{0}-{1}.json'.format(key, datetime.date.today()))
 
 
-def write_json_ld(docs):
+def write_json_ld(docs, prefix):
     '''
     Simple writing function.
     Will either create and write to file or append.
     '''
-    if exists(PATH + '/FlaLD{0}.json'.format(datetime.date.today())) is True:
-        with open(PATH + '/FlaLD{0}.json'.format(datetime.date.today()), 'r') as jsonInput:
+    if exists(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today())) is True:
+        with open(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today()), 'r') as jsonInput:
             data_in = json.load(jsonInput)
             for record in docs:
                 data_in.append(record)
-        with open(PATH + '/FlaLD{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
+        with open(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today()), 'w') as jsonOutput:
             if PRETTY_PRINT is True:
                 json.dump(data_in, jsonOutput, indent=2)
             else:
                 json.dump(data_in, jsonOutput)
     else:
-        with open(PATH + '/FlaLD{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
+        with open(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today()), 'w') as jsonOutput:
             if PRETTY_PRINT is True:
                 json.dump(docs, jsonOutput, indent=2)
             else:
                 json.dump(docs, jsonOutput)
+
 
 # main loop
 for key in CONFIG_DICT.keys():
@@ -52,11 +54,15 @@ for key in CONFIG_DICT.keys():
     for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/{0}*.xml'.format(key)):
         logging.info(abspath(xml))
         if metadata == 'qdc':
-            write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+            write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
+                          key)
         elif metadata == 'mods':
-            write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+            write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
+                          key)
         elif metadata == 'dc':
-            write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+            write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
+                          key)
         elif metadata == 'custom':
             if key == 'flmem':
-                write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+                write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
+                              key)
