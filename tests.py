@@ -12,7 +12,7 @@ class FlMemTests(unittest.TestCase):
 
     def setUp(self):
         self.dc_json = FlMem(join(PATH, 'debug/test_data/FlMemSmall.xml'),
-                           tn={'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},  # TODO
+                           tn={'name': 'web-scrape', 'prefix': 'https://www.floridamemory.com'},
                            dprovide='University of Miami-TEMP')  # TODO
 
     def test_dc_SourceResourceCollection(self):
@@ -67,7 +67,6 @@ class FlMemTests(unittest.TestCase):
         results = []
         for record in self.dc_json:
             results.append(record['sourceResource']['identifier'])
-        print(results)
         self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourceLanguage(self):
@@ -97,10 +96,10 @@ class FlMemTests(unittest.TestCase):
     #     self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourceSubject(self):
-        expected = [[{"name": "Interracial marriage--Law and legislation--United States--History--19th century."}],
-                    [{"name": "Interracial marriage--Law and legislation--United States--History--19th century."}],
-                    [{"name": "Interracial marriage--Law and legislation--United States--History--19th century."},
-                     {"name": "Slaveholders--Florida--History."}, {"name": "Slaves -- United States -- Social conditions."}]]
+        expected = [[{"name": "Interracial marriage--Law and legislation--United States--History--19th century"}],
+                    [{"name": "Interracial marriage--Law and legislation--United States--History--19th century"}],
+                    [{"name": "Interracial marriage--Law and legislation--United States--History--19th century"},
+                     {"name": "Slaveholders--Florida--History"}, {"name": "Slaves -- United States -- Social conditions"}]]
         results = []
         for record in self.dc_json:
             results.append(record['sourceResource']['subject'])
@@ -153,15 +152,15 @@ class FlMemTests(unittest.TestCase):
             results.append(record['isShownAt'])
         self.assertTrue(all(x in results for x in expected))
 
-    # def test_dc_AggregationPreview(self):
-    #     expected = ['http://dpanther.fiu.edu/sobek/content/FI/07/05/08/32/00001/FI07050832_001_thm.jpg',
-    #                 'http://dpanther.fiu.edu/sobek/content/FI/07/05/08/42/00001/FI07050842_001_thm.jpg',
-    #                 'http://dpanther.fiu.edu/sobek/content/FI/07/04/04/07/00001/FI07040407_001_thm.jpg']
-    #     results = []
-    #     for record in self.dc_json:
-    #         results.append(record['preview'])
-    #     self.assertTrue(all(x in results for x in expected))
-    #
+    def test_dc_AggregationPreview(self):
+        expected = ['https://www.floridamemory.com/fpc/memory/Collections/kingsley/images/petition/1_.jpg',
+                    'https://www.floridamemory.com/fpc/memory/Collections/kingsley/images/response/1_.jpg',
+                    'https://www.floridamemory.com/fpc/memory/Collections/kingsley/images/will/1_.jpg']
+        results = []
+        for record in self.dc_json:
+            results.append(record['preview'])
+        self.assertTrue(all(x in results for x in expected))
+
     # #   def test_dc_AggregationProvider(self):
 
 

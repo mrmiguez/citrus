@@ -1,3 +1,7 @@
+import bs4
+import requests
+
+
 def thumbnail_service(identifier, tn):
     prefix = tn['prefix']
 
@@ -23,3 +27,11 @@ def thumbnail_service(identifier, tn):
         collection_list = identifier.split('/')[-4:]
         cdm_tn_path = '/utils/getthumbnail/collection/{0}/id/{1}'.format(collection_list[1], collection_list[3])
         return prefix + cdm_tn_path
+
+    # Web-scraping thumbnail service
+    elif tn['name'] == 'web-scrape':
+        r = requests.get(identifier)
+        soup = bs4.BeautifulSoup(r.text, 'lxml')
+        img_div = soup.find('div', "item-image")
+        img_tn_path = img_div.find('img')['src']
+        return prefix + img_tn_path

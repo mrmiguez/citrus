@@ -57,3 +57,6 @@ for key in CONFIG_DICT.keys():
             write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'dc':
             write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+        elif metadata == 'custom':
+            if key == 'flmem':
+                write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))

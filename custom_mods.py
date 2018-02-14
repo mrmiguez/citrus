@@ -107,7 +107,6 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                     results = assets.iso639_2code(lang.split('-')[0])
                     sourceResource['language'].append(results)
 
-
             # sourceResource.place : sourceResource['spatial']
             if record.metadata.get_element('.//{0}coverage'.format(dc)):
                 sourceResource['spatial'] = [{'name': place}
@@ -126,13 +125,16 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.replaces
 
-            # sourceResource.rights
-            rights = record.metadata.get_element('.//{0}rights'.format(dc))
-            if rights:
-                sourceResource['rights'] = [{'text': rights[0]}]
-            else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
-                continue
+            # sourceResource.rights  # TODO: hard-coding is only temporary
+            sourceResource['rights'] = {'@id': 'http://rightsstatements.org/vocab/NoC-US/1.0/'}
+
+            # rights = record.metadata.get_element('.//{0}rights'.format(dc))
+            # if rights:
+            #     sourceResource['rights'] = [{'text': rights[0]}]
+            # else:
+            #     logging.error('No sourceResource.rights - {0}'.format(oai_id))
+            #     # continue  # TODO renable for prod
+            #     pass  # local test
 
             # sourceResource.subject
             if record.metadata.get_element('.//{0}subject'.format(dc)):
@@ -141,7 +143,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                                                         delimiter=';'):
                     term = re.sub("\( lcsh \)$", '', term)
                     if len(term) > 0:
-                        sourceResource['subject'].append({"name": term.strip(" ")})
+                        sourceResource['subject'].append({"name": term.strip(". ")})
 
             # sourceResource.title
             title = record.metadata.get_element('.//{0}title'.format(dc))
@@ -182,12 +184,12 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.isShownAt
 
-            # # aggregation.preview  # TODO: commented temp for testing
-            # try:
-            #     preview = assets.thumbnail_service(PURL_match, tn)
-            # except UnboundLocalError as err:
-            #     logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-            #     continue
+            # aggregation.preview
+            try:
+                preview = assets.thumbnail_service(is_shown_at, tn)
+            except UnboundLocalError as err:
+                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                continue
 
             # aggregation.provider
 
@@ -197,7 +199,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                              "aggregatedCHO": "#sourceResource",
                              "dataProvider": data_provider,
                              "isShownAt": is_shown_at,
-                             # "preview": preview,  # TODO temp
+                             "preview": preview,
                              "provider": PROVIDER})
             except NameError as err:
                 logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))

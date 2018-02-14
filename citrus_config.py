@@ -14,23 +14,25 @@
 
 CONFIG_DICT = {
                 'um': ('qdc', {'name':'cdm', 'prefix': 'http://merrick.library.miami.edu'},
-                           'University of Miami Libraries', None),
+                       'University of Miami Libraries', None),
                 'fiu': ('dc', {'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                         'Florida International University Libraries', None),
                 'fsu': ('mods', {'name': 'islandora', 'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
-                        'Florida State University Libraries', None)
+                        'Florida State University Libraries', None),
+                'flmem': ('custom', {'name': 'web-scrape', 'prefix': 'https://www.floridamemory.com'},
+                          'Florida Memory', None)
               }
 
-REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'  # citrus_harvest dir
+# REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'  # citrus_harvest dir
 # REPOX_EXPORT_DIR = '/repox/export'  # repox dir
-# REPOX_EXPORT_DIR = 'name_tests'  # local test
+REPOX_EXPORT_DIR = 'c:\\Users\\Matthew Miguez\\citrus_test'  # local test
 
 # OUTPUT_DIR = '~/FlaLD_JSON'
-OUTPUT_DIR = '/home/mrmiguez/bin'  # local test
+OUTPUT_DIR = 'c:\\Users\\Matthew Miguez\\citrus_out'  # local test
 
 PRETTY_PRINT = True
 
 PROVIDER = {'name': 'Sunshine State Digital Network',
             '@id': 'UNDETERMINED'}
 
-VERBOSE = False
+VERBOSE = True
