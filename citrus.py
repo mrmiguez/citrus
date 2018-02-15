@@ -130,6 +130,12 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                                                                   oai_id))
                 continue
 
+            except UnboundLocalError as err:
+                logging.error(
+                    'sourceResource.identifier: {0} - {1}'.format(err,
+                                                                  oai_id))
+                continue
+
             # sourceResource.language
             if record.metadata.get_element('.//{0}language'.format(dc)):
                 sourceResource['language'] = []
