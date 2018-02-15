@@ -39,5 +39,8 @@ def db_write(geo_code):
             tgn_db_conn.commit()
         except KeyError:
             pass
+        except json.JSONDecodeError:
+            print(geo_code)
+            pass
 # in code.jsonld:
 #   label = place_json[0]["http://www.w3.org/2004/02/skos/core#prefLabel"][0]['@value']
