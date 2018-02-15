@@ -2,11 +2,14 @@ import os
 import csv
 import requests
 from bs4 import BeautifulSoup
+from os.path import abspath, dirname, join
+
+iso_path = abspath(dirname(__file__))
 
 
 def iso639_gen():
     try:
-        os.remove('assets/iso639.csv')
+        os.remove(join(iso_path, 'iso639.csv'))
     except FileNotFoundError:
         pass
 
@@ -18,16 +21,16 @@ def iso639_gen():
     for row in table.find_all('tr'):
         rows.append([val.text for val in row.find_all('td')])
 
-    with open('assets/iso639.csv', 'w', encoding='utf-8', newline='') as f:
+    with open(join(iso_path, 'iso639.csv'), 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(headers)
         writer.writerows(rows)
 
 
 def iso639_2code(l):
-    if os.path.isfile('assets/iso639.csv') is False:
+    if os.path.isfile(join(iso_path, 'iso639.csv')) is False:
         iso639_gen()
-    with open('assets/iso639.csv', encoding='utf-8', newline='') as f:
+    with open(join(iso_path, 'iso639.csv'), encoding='utf-8', newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if l == row['ISO 639-1 Code']:
@@ -36,9 +39,9 @@ def iso639_2code(l):
 
 
 def iso639_3code(l):
-    if os.path.isfile('assets/iso639.csv') is False:
+    if os.path.isfile(join(iso_path, 'iso639.csv')) is False:
         iso639_gen()
-    with open('assets/iso639.csv', encoding='utf-8', newline='') as f:
+    with open(join(iso_path, 'iso639.csv'), encoding='utf-8', newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if l == row['ISO 639-2 Code']:
