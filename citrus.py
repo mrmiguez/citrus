@@ -124,13 +124,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                         pass
                 sourceResource['identifier'] = PURL_match
 
-            except TypeError as err:
-                logging.error(
-                    'sourceResource.identifier: {0} - {1}'.format(err,
-                                                                  oai_id))
-                continue
-
-            except UnboundLocalError as err:
+            except (TypeError, UnboundLocalError) as err:
                 logging.error(
                     'sourceResource.identifier: {0} - {1}'.format(err,
                                                                   oai_id))
@@ -591,10 +585,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                         if subject.uri is not None
                         else {"name": subject.text}
                         for subject in record.metadata.subjects]
-            except TypeError as err:
-                logging.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
-                pass
-            except IndexError as err:
+            except (TypeError, IndexError) as err:
                 logging.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
