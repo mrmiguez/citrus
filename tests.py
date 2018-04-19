@@ -170,7 +170,7 @@ class DCTests(unittest.TestCase):
     """
     def setUp(self):
         self.dc_json = FlaLD_DC(join(PATH, 'debug/test_data/DCdebugSmall.xml'),
-                           tn={'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+                           tn={'name': 'custom_field', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                            dprovide='University of Miami-TEMP')
 
     def test_dc_SourceResourceCreator(self):
@@ -278,9 +278,9 @@ class DCTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     def test_dc_AggregationPreview(self):
-        expected = ['http://dpanther.fiu.edu/sobek/content/FI/07/05/08/32/00001/FI07050832_001_thm.jpg',
-                    'http://dpanther.fiu.edu/sobek/content/FI/07/05/08/42/00001/FI07050842_001_thm.jpg',
-                    'http://dpanther.fiu.edu/sobek/content/FI/07/04/04/07/00001/FI07040407_001_thm.jpg']
+        expected = ['http://dpanther.fiu.edu/sobek/content/FI/07/05/08/32/00001/FI07050832_001thm.jpg',
+                    'http://dpanther.fiu.edu/sobek/content/FI/07/05/08/42/00001/FI07050842_001thm.jpg',
+                    'http://dpanther.fiu.edu/sobek/content/FI/07/04/04/07/00001/FI07040407_001thm.jpg']
         results = []
         for record in self.dc_json:
             results.append(record['preview'])

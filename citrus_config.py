@@ -15,7 +15,7 @@
 CONFIG_DICT = {
                 'um': ('qdc', {'name':'cdm', 'prefix': 'http://merrick.library.miami.edu'},
                        'University of Miami Libraries', None),
-                'fiu': ('dc', {'name': 'sobek', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+                'fiu': ('dc', {'name': 'custom_field', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                         'Florida International University Libraries', None),
                 'fsu': ('mods', {'name': 'islandora', 'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
                         'Florida State University Libraries', None),

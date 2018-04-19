@@ -13,7 +13,7 @@ def thumbnail_service(identifier, tn):
     # Sobek thumbnail service
     elif tn['name'] == 'sobek':
         collection_list = identifier.split('/')[-2:]
-        sobek_tn_path = "/{0}/{1}/{2}/{3}/{4}/{5}/{6}_001_thm.jpg".format(collection_list[0][0:2],
+        sobek_tn_path = "/{0}/{1}/{2}/{3}/{4}/{5}/{6}_001_thm.jpg".format(collection_list[0][0:2],  # this might need to change to XXXthm.jpg
                                                                            collection_list[0][2:4],
                                                                            collection_list[0][4:6],
                                                                            collection_list[0][6:8],
@@ -35,3 +35,8 @@ def thumbnail_service(identifier, tn):
         img_div = soup.find('div', "item-image")
         img_tn_path = img_div.find('img')['src']
         return prefix + img_tn_path
+
+    # Custom OAI-PMH field
+    elif tn['name'] == 'custom_field':
+        return identifier.metadata.get_element('{*}identifier.thumbnail')[0]
+
