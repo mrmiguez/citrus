@@ -27,18 +27,18 @@ def write_json_ld(docs, prefix):
     Simple writing function.
     Will either create and write to file or append.
     '''
-    if exists(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today())) is True:
-        with open(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today()), 'r') as jsonInput:
+    if exists(PATH + '/FlaLD-{0}.json'.format(datetime.date.today())) is True:
+        with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'r') as jsonInput:
             data_in = json.load(jsonInput)
             for record in docs:
                 data_in.append(record)
-        with open(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today()), 'w') as jsonOutput:
+        with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
             if PRETTY_PRINT is True:
                 json.dump(data_in, jsonOutput, indent=2)
             else:
                 json.dump(data_in, jsonOutput)
     else:
-        with open(PATH + '/{0}-{1}.json'.format(prefix, datetime.date.today()), 'w') as jsonOutput:
+        with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
             if PRETTY_PRINT is True:
                 json.dump(docs, jsonOutput, indent=2)
             else:
@@ -50,7 +50,7 @@ for key in CONFIG_DICT.keys():
     metadata, thumbnail, data_provider, intermediate_provider = CONFIG_DICT[key]
 
     # init logger
-    logging.basicConfig(filename='{0}-errors{1}.log'.format(key, datetime.date.today()), filemode='w', level=logging.ERROR)
+    logging.basicConfig(filename='{0}-errors-{1}.log'.format(key, datetime.date.today()), filemode='w', level=logging.ERROR)
 
     for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/*.xml'.format(key)):
         logging.info(abspath(xml))
