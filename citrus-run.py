@@ -12,9 +12,6 @@ from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR, OUTPUT_DIR, PRETTY_PRIN
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC
 from custom_mods import FlMem
 
-# init logger
-logging.basicConfig(filename='error{0}.log'.format(datetime.date.today()), filemode='w', level=logging.ERROR)
-
 # get output or current dir and clean if needed
 if len(OUTPUT_DIR) > 0:
     PATH = OUTPUT_DIR
@@ -51,7 +48,11 @@ def write_json_ld(docs, prefix):
 # main loop
 for key in CONFIG_DICT.keys():
     metadata, thumbnail, data_provider, intermediate_provider = CONFIG_DICT[key]
-    for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/{0}*.xml'.format(key)):
+
+    # init logger
+    logging.basicConfig(filename='{0}-errors{1}.log'.format(key, datetime.date.today()), filemode='w', level=logging.ERROR)
+
+    for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/*.xml'.format(key)):
         logging.info(abspath(xml))
         if metadata == 'qdc':
             write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),

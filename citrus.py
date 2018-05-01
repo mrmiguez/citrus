@@ -200,7 +200,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             # aggregation.preview
             try:
                 preview = assets.thumbnail_service(record, tn)
-            except UnboundLocalError as err:
+            except (TypeError, UnboundLocalError) as err:
                 logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 continue
 
