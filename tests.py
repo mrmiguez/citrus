@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*
+
 import unittest
 import json  # test
 
@@ -144,9 +146,9 @@ class FlMemTests(unittest.TestCase):
     #   def test_dc_AggregationDataProvider(self):
 
     def test_dc_AggregationIsShownAt(self):
-        expected = ['http://www.floridamemory.com/items/show/177999',
-                    'http://www.floridamemory.com/items/show/178002',
-                    'http://www.floridamemory.com/items/show/178006']
+        expected = ['https://www.floridamemory.com/items/show/177999',
+                    'https://www.floridamemory.com/items/show/178002',
+                    'https://www.floridamemory.com/items/show/178006']
         results = []
         for record in self.dc_json:
             results.append(record['isShownAt'])

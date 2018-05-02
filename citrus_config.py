@@ -14,18 +14,18 @@
 
 CONFIG_DICT = {
                 'um': ('qdc', {'name':'cdm', 'prefix': 'http://merrick.library.miami.edu'},
-                       'University of Miami Libraries', None),
+                           'University of Miami Libraries', None),
                 'fiu': ('dc', {'name': 'custom_field', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                         'Florida International University Libraries', None),
                 'coral_gables': ('dc', {'name': 'custom_field', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-                        '','Florida International University Libraries'),
-                '': ('dc', {'name': 'custom_field', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-                        'Florida International University Libraries', None),
+                        'City of Coral Gables','Florida International University Libraries'),
+                'vhlf': ('dc', {'name': 'custom_field', 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+                        'Vaclav Havel Library Foundation', 'Florida International University Libraries'),
                 'fsu': ('mods', {'name': 'islandora', 'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
                         'Florida State University Libraries', None),
                 'flmem': ('custom', {'name': 'web-scrape', 'prefix': 'https://www.floridamemory.com'},
                           'Florida Memory', None)
-              }
+}
 
 # REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'  # citrus_harvest dir
 # REPOX_EXPORT_DIR = '/repox/export'  # repox dir

@@ -98,6 +98,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
                 if 'http' in identifier:
                     is_shown_at = identifier.replace(identifier.split('/')[2], 'www.floridamemory.com')
+                    is_shown_at = is_shown_at.replace('http:', 'https:')
             sourceResource['identifier'] = oai_id.replace(oai_id.split(':')[1], 'www.floridamemory.com')
 
             # sourceResource.language
