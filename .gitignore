@@ -25,7 +25,7 @@
 *.log
 *.sql
 *.sqlite
-*.csv
+#*.csv
 
 # OS generated files #
 ######################
@@ -41,3 +41,4 @@ Thumbs.db
 *__pycache__*
 *.pyc
 .cache/*
+.pytest_cache/
