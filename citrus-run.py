@@ -9,7 +9,7 @@ from os.path import abspath, dirname, join, exists
 
 # pull in config & custom transformation methods
 from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR, OUTPUT_DIR, PRETTY_PRINT
-from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC
+from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC, FlaLD_BepressDC
 from custom_mods import FlMem
 
 # get output or current dir and clean if needed
@@ -63,6 +63,9 @@ for key in CONFIG_DICT.keys():
         elif metadata == 'dc':
             write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
                           key)
+        elif metadata == 'dcq':
+            write_json_ld(FlaLD_BepressDC(abspath(xml), tn=thumbnail, dprovide=data_provider,
+                          iprovide=intermediate_provider), key)
         elif metadata == 'custom':
             if key == 'flmem':
                 write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),

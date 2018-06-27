@@ -24,7 +24,8 @@ CONFIG_DICT = {
                 'fsu': ('mods', {'name': 'islandora', 'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
                         'Florida State University Libraries', None),
                 'flmem': ('custom', {'name': 'web-scrape', 'prefix': 'https://www.floridamemory.com'},
-                          'Florida Memory', None)
+                          'Florida Memory', None),
+                'ir_fiu': ('dcq', {'name': None, 'prefix': None}, 'Florida International University Libraries', None)
 }
 
 # REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'  # citrus_harvest dir
