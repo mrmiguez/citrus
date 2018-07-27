@@ -164,9 +164,11 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.place : sourceResource['spatial']
             if record.metadata.get_element('.//{0}spatial'.format(dcterms)):
-                sourceResource['spatial'] = [place
-                                             for place in record.metadata.get_element(
-                        './/{0}spatial'.format(dcterms), delimiter=';')]
+                for place in record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';'):
+                    try:
+                        float(place)
+                    except ValueError:
+                        sourceResource['spatial'] = [place]
 
             # sourceResource.publisher
             publisher = record.metadata.get_element('.//{0}publisher'.format(dc))
