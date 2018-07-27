@@ -46,12 +46,12 @@ def write_json_ld(docs, prefix):
                 json.dump(docs, jsonOutput)
 
 
+# init logger
+logging.basicConfig(filename='citrus-errors-{0}.log'.format(datetime.date.today()), filemode='w', level=logging.ERROR)
+
 # main loop
 for key in CONFIG_DICT.keys():
     metadata, thumbnail, data_provider, intermediate_provider = CONFIG_DICT[key]
-
-    # init logger
-    logging.basicConfig(filename='{0}-errors-{1}.log'.format(key, datetime.date.today()), filemode='w', level=logging.ERROR)
 
     for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/*.xml'.format(key)):
         logging.info(abspath(xml))

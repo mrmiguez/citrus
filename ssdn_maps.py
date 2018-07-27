@@ -162,11 +162,11 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
                     else:
                         sourceResource['language'].append({"iso_639_3": element})
 
-            # # sourceResource.place : sourceResource['spatial']  # TODO
-            # if record.metadata.get_element('.//{0}spatial'.format(dcterms)):
-            #     sourceResource['spatial'] = [{'name': place}
-            #                                  for place in record.metadata.get_element(
-            #             './/{0}spatial'.format(dcterms), delimiter=';')]
+            # sourceResource.place : sourceResource['spatial']
+            if record.metadata.get_element('.//{0}spatial'.format(dcterms)):
+                sourceResource['spatial'] = [place
+                                             for place in record.metadata.get_element(
+                        './/{0}spatial'.format(dcterms), delimiter=';')]
 
             # sourceResource.publisher
             publisher = record.metadata.get_element('.//{0}publisher'.format(dc))
