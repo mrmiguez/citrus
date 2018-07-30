@@ -405,6 +405,9 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             if iprovide:
                 doc.update(intermediatePriver=iprovide)
 
-            docs.append(doc)
+            try:
+                docs.append(doc)
+            except UnboundLocalError:
+                continue
 
     return docs

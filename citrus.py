@@ -221,7 +221,10 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             if iprovide:
                 doc.update(intermediatePriver=iprovide)
 
-            docs.append(doc)
+            try:
+                docs.append(doc)
+            except UnboundLocalError:
+                continue
 
     return docs
 
@@ -435,7 +438,11 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
             if iprovide:
                 doc.update(intermediatePriver=iprovide)
 
-            docs.append(doc)
+            try:
+                docs.append(doc)
+            except UnboundLocalError:
+                continue
+
     return docs
 
 
@@ -652,9 +659,12 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             if iprovide:
                 doc.update(intermediatePriver=iprovide)
 
-            docs.append(doc)
+            try:
+                docs.append(doc)
+            except UnboundLocalError:
+                continue
 
-        return docs
+    return docs
 
 
 def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
@@ -854,6 +864,9 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
             if iprovide:
                 doc.update(intermediatePriver=iprovide)
 
-            docs.append(doc)
+            try:
+                docs.append(doc)
+            except UnboundLocalError:
+                continue
 
     return docs
