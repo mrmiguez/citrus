@@ -108,7 +108,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.genre
 
             # sourceResource.identifier
-            dPantherPURL = re.compile('dpService/dpPurlService/purl')
+            dPantherPURL = re.compile('http://dpanther')
             identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
             try:
                 for ID in identifier:
@@ -207,16 +207,21 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             # aggregation.provider
 
             try:
-                docs.append({"@context": "http://api.dp.la/items/context",
-                             "sourceResource": sourceResource,
-                             "aggregatedCHO": "#sourceResource",
-                             "dataProvider": data_provider,
-                             "isShownAt": PURL_match,
-                             "preview": preview,
-                             "provider": PROVIDER})
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": PURL_match,
+                       "preview": preview,
+                       "provider": PROVIDER}
             except NameError as err:
                 logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 pass
+
+            if iprovide:
+                doc.update(intermediatePriver=iprovide)
+
+            docs.append(doc)
 
     return docs
 
@@ -415,13 +420,22 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.provider
 
-            docs.append({"@context": "http://api.dp.la/items/context",
-                         "sourceResource": sourceResource,
-                         "aggregatedCHO": "#sourceResource",
-                         "dataProvider": data_provider,
-                         "isShownAt": is_shown_at,
-                         "preview": preview,
-                         "provider": PROVIDER})
+            try:
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": is_shown_at,
+                       "preview": preview,
+                       "provider": PROVIDER}
+            except NameError as err:
+                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                pass
+
+            if iprovide:
+                doc.update(intermediatePriver=iprovide)
+
+            docs.append(doc)
     return docs
 
 
@@ -623,13 +637,23 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.provider
 
-            docs.append({"@context": "http://api.dp.la/items/context",
-                         "sourceResource": sourceResource,
-                         "aggregatedCHO": "#sourceResource",
-                         "dataProvider": data_provider,
-                         "isShownAt": record.metadata.purl[0],
-                         "preview": preview,
-                         "provider": PROVIDER})
+            try:
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": record.metadata.purl[0],
+                       "preview": preview,
+                       "provider": PROVIDER}
+            except NameError as err:
+                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                pass
+
+            if iprovide:
+                doc.update(intermediatePriver=iprovide)
+
+            docs.append(doc)
+
         return docs
 
 
@@ -810,18 +834,26 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            if record.metadata.get_element('.//{0}description'.format(dc)):
+                preview = record.metadata.get_element('.//{0}description.abstract'.format(dc))[0]
 
             # aggregation.provider
 
             try:
-                docs.append({"@context": "http://api.dp.la/items/context",
-                             "sourceResource": sourceResource,
-                             "aggregatedCHO": "#sourceResource",
-                             "dataProvider": data_provider,
-                             "isShownAt": is_shown_at,
-                             "provider": PROVIDER})
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": is_shown_at,
+                       "preview": preview,
+                       "provider": PROVIDER}
             except NameError as err:
                 logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 pass
+
+            if iprovide:
+                doc.update(intermediatePriver=iprovide)
+
+            docs.append(doc)
 
     return docs

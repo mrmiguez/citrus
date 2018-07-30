@@ -391,15 +391,20 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             # aggregation.provider
 
             try:
-                docs.append({"@context": "http://api.dp.la/items/context",
-                             "sourceResource": sourceResource,
-                             "aggregatedCHO": "#sourceResource",
-                             "dataProvider": data_provider,
-                             "isShownAt": is_shown_at,
-                             "preview": preview,
-                             "provider": PROVIDER})
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": is_shown_at,
+                       "preview": preview,
+                       "provider": PROVIDER}
             except NameError as err:
                 logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 pass
+
+            if iprovide:
+                doc.update(intermediatePriver=iprovide)
+
+            docs.append(doc)
 
     return docs
