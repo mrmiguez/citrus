@@ -845,7 +845,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.preview
             if record.metadata.get_element('.//{0}description'.format(dc)):
-                preview = record.metadata.get_element('.//{0}description.abstract'.format(dc))[0]
+                preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
 
             # aggregation.provider
 
