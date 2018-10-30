@@ -624,7 +624,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             first_baptist = re.compile('^FSU_FBCTLH')
             fist_baptist_iid = first_baptist.search(record.metadata.iid)
             if fist_baptist_iid:
-                data_provider = 'First Baptist Church of Tallahasse'
+                data_provider = 'First Baptist Church of Tallahassee'
             else:
                 data_provider = dprovide
 
@@ -858,8 +858,13 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
                        "preview": preview,
                        "provider": PROVIDER}
             except NameError as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                pass
+                logging.warn('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": is_shown_at,
+                       "provider": PROVIDER}
 
             if iprovide:
                 doc.update(intermediatePriver=iprovide)

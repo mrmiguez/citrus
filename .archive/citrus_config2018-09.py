@@ -43,11 +43,7 @@ CONFIG_DICT = {
     'vhlf': ('dc', {'name': 'custom_field',
                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
              'Vaclav Havel Library Foundation',
-             'Florida International University Libraries'),
-    'gnmhs': ('dc', {'name': 'custom_field',
-                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-             'Greater North Miami Historical Society',
-             'Florida International University Libraries')             
+             'Florida International University Libraries')
 
 }
 

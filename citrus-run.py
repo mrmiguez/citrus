@@ -47,7 +47,7 @@ def write_json_ld(docs, prefix):
 
 
 # init logger
-logging.basicConfig(filename='citrus-errors-{0}.log'.format(datetime.date.today()), filemode='w', level=logging.ERROR)
+logging.basicConfig(filename='citrus-errors-{0}.log'.format(datetime.date.today()), filemode='w', level=logging.WARN)
 
 # main loop
 for key in CONFIG_DICT.keys():
