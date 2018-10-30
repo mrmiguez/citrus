@@ -42,3 +42,4 @@ Thumbs.db
 *.pyc
 .cache/*
 .pytest_cache/
+.archive/*
