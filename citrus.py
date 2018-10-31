@@ -215,11 +215,16 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                        "preview": preview,
                        "provider": PROVIDER}
             except NameError as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                pass
+                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": PURL_match,
+                       "provider": PROVIDER}
 
             if iprovide:
-                doc.update(intermediatePriver=iprovide)
+                doc.update(intermediateProvider=iprovide)
 
             try:
                 docs.append(doc)
@@ -432,11 +437,16 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                        "preview": preview,
                        "provider": PROVIDER}
             except NameError as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                pass
+                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": is_shown_at,
+                       "provider": PROVIDER}
 
             if iprovide:
-                doc.update(intermediatePriver=iprovide)
+                doc.update(intermediateProvider=iprovide)
 
             try:
                 docs.append(doc)
@@ -653,11 +663,16 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                        "preview": preview,
                        "provider": PROVIDER}
             except NameError as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                pass
+                logging.warning('aggregation.preview: {0} - {1}'.format(err, record.oai_urn))
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": record.metadata.purl[0],
+                       "provider": PROVIDER}
 
             if iprovide:
-                doc.update(intermediatePriver=iprovide)
+                doc.update(intermediateProvider=iprovide)
 
             try:
                 docs.append(doc)
@@ -858,7 +873,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
                        "preview": preview,
                        "provider": PROVIDER}
             except NameError as err:
-                logging.warn('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 doc = {"@context": "http://api.dp.la/items/context",
                        "sourceResource": sourceResource,
                        "aggregatedCHO": "#sourceResource",
@@ -867,7 +882,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
                        "provider": PROVIDER}
 
             if iprovide:
-                doc.update(intermediatePriver=iprovide)
+                doc.update(intermediateProvider=iprovide)
 
             try:
                 docs.append(doc)

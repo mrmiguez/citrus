@@ -248,11 +248,16 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
                        "preview": preview,
                        "provider": PROVIDER}
             except NameError as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                pass
+                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                doc = {"@context": "http://api.dp.la/items/context",
+                       "sourceResource": sourceResource,
+                       "aggregatedCHO": "#sourceResource",
+                       "dataProvider": data_provider,
+                       "isShownAt": is_shown_at,
+                       "provider": PROVIDER}
 
             if iprovide:
-                doc.update(intermediatePriver=iprovide)
+                doc.update(intermediateProvider=iprovide)
 
             try:
                 docs.append(doc)
