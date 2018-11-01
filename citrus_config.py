@@ -51,11 +51,13 @@ CONFIG_DICT = {
 
 }
 
-REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'
+#REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'
+REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
 
-OUTPUT_DIR = '/home/mrmiguez/FlaLD_JSON'
+#OUTPUT_DIR = '/home/mrmiguez/FlaLD_JSON'
+OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
 
-PRETTY_PRINT = False
+PRETTY_PRINT = True
 
 PROVIDER = {'name': 'Sunshine State Digital Network',
             '@id': 'UNDETERMINED'}

@@ -199,6 +199,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = None
             try:
                 preview = assets.thumbnail_service(record, tn)
             except (TypeError, UnboundLocalError) as err:
@@ -404,6 +405,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = None
             for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
                 if 'http' in identifier:
                     is_shown_at = identifier
@@ -608,6 +610,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = None
             pid = record.metadata.pid
             if pid is None:
                 pid = record.oai_urn.split(':')[-1].replace('_',':')
@@ -803,6 +806,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = None
             if record.metadata.get_element('.//{0}description'.format(dc)):
                 preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
 

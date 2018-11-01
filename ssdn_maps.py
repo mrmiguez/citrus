@@ -234,6 +234,7 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = None
             for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
                 if 'http' in identifier:
                     is_shown_at = identifier

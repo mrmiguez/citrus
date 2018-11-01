@@ -78,7 +78,6 @@ class FlMemTests(unittest.TestCase):
         results = []
         for record in self.dc_json:
             results.append(record['sourceResource']['language'])
-        print(results)
         self.assertTrue(all(x in results for x in expected))
 
     def test_dc_SourceResourcePublisher(self):

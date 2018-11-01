@@ -186,6 +186,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             # aggregation.isShownAt
 
             # aggregation.preview
+            preview = None
             try:
                 preview = assets.thumbnail_service(is_shown_at, tn)
             except UnboundLocalError as err:
