@@ -1,16 +1,16 @@
-import re
 import logging
-import requests
-import subprocess
+import re
+
 from pymods import OAIReader
-from bs4 import BeautifulSoup
 
 # custom functions and variables
 import assets
 from citrus import nameSpace_default
-from citrus_config import PROVIDER, VERBOSE
+from citrus_config import VERBOSE
 
 dc = nameSpace_default['dc']
+
+logger = logging.getLogger(__name__)
 
 
 def FlMem(file_in, tn, dprovide, iprovide=None):
@@ -39,7 +39,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
 
             if VERBOSE:
                 print(oai_id)
-            logging.debug(oai_id)
+            logger.debug(oai_id)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -133,7 +133,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             # if rights:
             #     sourceResource['rights'] = [{'text': rights[0]}]
             # else:
-            #     logging.error('No sourceResource.rights - {0}'.format(oai_id))
+            #     logger.error('No sourceResource.rights - {0}'.format(oai_id))
             #     # continue  # TODO renable for prod
             #     pass  # local test
 
@@ -151,7 +151,7 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             if title:
                 sourceResource['title'] = title
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.temporal
@@ -189,30 +189,12 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
             try:
                 preview = assets.thumbnail_service(is_shown_at, tn)
             except UnboundLocalError as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                logger.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 continue
 
             # aggregation.provider
 
-            try:
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "preview": preview,
-                       "provider": PROVIDER}
-            except NameError as err:
-                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "provider": PROVIDER}
-
-            if iprovide:
-                doc.update(intermediateProvider=iprovide)
+            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
 
             try:
                 docs.append(doc)

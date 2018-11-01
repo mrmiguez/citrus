@@ -1,13 +1,13 @@
-import re
 import logging
+import re
+
 import requests
-from pymods import OAIReader
 from bs4 import BeautifulSoup
+from pymods import OAIReader
 
 # custom functions and variables
 import assets
-from citrus_config import PROVIDER, VERBOSE
-
+from citrus_config import VERBOSE
 
 nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
@@ -27,6 +27,7 @@ IANA_parsed = BeautifulSoup(IANA_XML.text, "lxml")
 for type in IANA_parsed.find_all('file'):
     IANA_type_list.append(type.text)
 
+logger = logging.getLogger(__name__)
 
 def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
@@ -54,7 +55,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
             if VERBOSE:
                 print(oai_id)
-            logging.debug(oai_id)
+            logger.debug(oai_id)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -118,14 +119,14 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                         PURL_match = PURL.string
 
                     except AttributeError as err:
-                        logging.warning(
+                        logger.warning(
                             'sourceResource.identifier: {0} - {1}'.format(err,
                                                                           oai_id))
                         pass
                 sourceResource['identifier'] = PURL_match
 
             except (TypeError, UnboundLocalError) as err:
-                logging.error(
+                logger.error(
                     'sourceResource.identifier: {0} - {1}'.format(err,
                                                                   oai_id))
                 continue
@@ -163,7 +164,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             if rights:
                 sourceResource['rights'] = [{'text': rights[0]}]
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.subject
@@ -180,7 +181,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             if title:
                 sourceResource['title'] = title
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.type
@@ -201,30 +202,12 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             try:
                 preview = assets.thumbnail_service(record, tn)
             except (TypeError, UnboundLocalError) as err:
-                logging.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                logger.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
                 continue
 
             # aggregation.provider
 
-            try:
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": PURL_match,
-                       "preview": preview,
-                       "provider": PROVIDER}
-            except NameError as err:
-                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": PURL_match,
-                       "provider": PROVIDER}
-
-            if iprovide:
-                doc.update(intermediateProvider=iprovide)
+            doc = assets.build(oai_id, sourceResource, data_provider, PURL_match, preview, iprovide)
 
             try:
                 docs.append(doc)
@@ -267,7 +250,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
             if VERBOSE:
                 print(oai_id)
-            logging.debug(oai_id)
+            logger.debug(oai_id)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -388,7 +371,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                         sourceResource['rights'] = [{"text": rights_statement}]
 
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.subject
@@ -402,7 +385,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
             if title is not None:
                 sourceResource['title'] = title
             else:
-                logging.error('No sourceResource.title - {0}'.format(oai_id))
+                logger.error('No sourceResource.title - {0}'.format(oai_id))
                 continue
 
             # sourceResource.type
@@ -428,25 +411,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.provider
 
-            try:
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "preview": preview,
-                       "provider": PROVIDER}
-            except NameError as err:
-                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "provider": PROVIDER}
-
-            if iprovide:
-                doc.update(intermediateProvider=iprovide)
+            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
 
             try:
                 docs.append(doc)
@@ -480,7 +445,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
             if VERBOSE:
                 print(record.oai_urn)
-            logging.debug(record.oai_urn)
+            logger.debug(record.oai_urn)
             sourceResource = {}
 
             if record.metadata is None:
@@ -513,7 +478,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                          if name.uri else
                                                          {"name": name.text}]
             except KeyError as err:
-                logging.error('sourceResource.contributor: {0}, {1}'.format(err, record.oai_urn))
+                logger.error('sourceResource.contributor: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
             # sourceResource.creator
@@ -560,7 +525,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             try:
                 sourceResource['identifier'] = record.metadata.purl[0]
             except IndexError as err:
-                logging.error('sourceResource.identifier: {0}, {1}'.format(err, record.oai_urn))
+                logger.error('sourceResource.identifier: {0}, {1}'.format(err, record.oai_urn))
                 continue
 
             # sourceResource.language
@@ -570,7 +535,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                    "iso_639_3": lang.code}
                                                    for lang in record.metadata.language]
             except AttributeError as err:
-                logging.error('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
+                logger.error('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
             # sourceResource.place : sourceResource['spatial']
@@ -584,7 +549,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                                           "name": label,
                                                           "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."})
             except TypeError as err:
-                logging.error('sourceResource.spatial: {0}, {1}'.format(err, record.oai_urn))
+                logger.error('sourceResource.spatial: {0}, {1}'.format(err, record.oai_urn))
                 continue
             
             # sourceResource.publisher
@@ -604,7 +569,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                                             {"text": rights.text}
                                             for rights in record.metadata.rights]
             else:
-                logging.error('No sourceResource.rights - {0}'.format(record.oai_urn))
+                logger.error('No sourceResource.rights - {0}'.format(record.oai_urn))
                 continue
 
             # sourceResource.subject
@@ -617,14 +582,14 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                         else {"name": subject.text}
                         for subject in record.metadata.subjects]
             except (TypeError, IndexError) as err:
-                logging.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
+                logger.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
                 pass
 
             # sourceResource.title
             if record.metadata.titles:
                 sourceResource['title'] = ['{}'.format(record.metadata.titles[0])]
             else:
-                logging.error('No sourceResource.title: {0}'.format(record.oai_urn))
+                logger.error('No sourceResource.title: {0}'.format(record.oai_urn))
                 continue
 
             # sourceResource.type
@@ -638,11 +603,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             else:
                 data_provider = dprovide
 
-            # aggregation.intermediateProvider  # TODO
-            if iprovide:
-                pass
-            else:
-                pass
+            # aggregation.intermediateProvider
 
             # aggregation.isShownAt
 
@@ -654,25 +615,8 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.provider
 
-            try:
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": record.metadata.purl[0],
-                       "preview": preview,
-                       "provider": PROVIDER}
-            except NameError as err:
-                logging.warning('aggregation.preview: {0} - {1}'.format(err, record.oai_urn))
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": record.metadata.purl[0],
-                       "provider": PROVIDER}
-
-            if iprovide:
-                doc.update(intermediateProvider=iprovide)
+            doc = assets.build(record.oai_urn, sourceResource, data_provider, record.metadata.purl[0],
+                               preview, iprovide)
 
             try:
                 docs.append(doc)
@@ -708,7 +652,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
 
             if VERBOSE:
                 print(oai_id)
-            logging.debug(oai_id)
+            logger.debug(oai_id)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -807,7 +751,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
                         sourceResource['rights'] = [{"text": rights_statement}]
 
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.subject
@@ -824,7 +768,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
             if title:
                 sourceResource['title'] = title
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.temporal
@@ -864,25 +808,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.provider
 
-            try:
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "preview": preview,
-                       "provider": PROVIDER}
-            except NameError as err:
-                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "provider": PROVIDER}
-
-            if iprovide:
-                doc.update(intermediateProvider=iprovide)
+            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
 
             try:
                 docs.append(doc)

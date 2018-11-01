@@ -1,13 +1,13 @@
-import re
 import logging
+import re
+
 import requests
-from pymods import OAIReader
 from bs4 import BeautifulSoup
+from pymods import OAIReader
 
 # custom functions and variables
 import assets
-from citrus_config import PROVIDER, VERBOSE
-
+from citrus_config import VERBOSE
 
 nameSpace_default = { None: '{http://www.loc.gov/mods/v3}',
                       'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
@@ -26,6 +26,8 @@ IANA_XML = requests.get('http://www.iana.org/assignments/media-types/media-types
 IANA_parsed = BeautifulSoup(IANA_XML.text, "lxml")
 for type in IANA_parsed.find_all('file'):
     IANA_type_list.append(type.text)
+
+logger = logging.getLogger(__name__)
 
 
 def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
@@ -54,7 +56,7 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
 
             if VERBOSE:
                 print(oai_id)
-            logging.debug(oai_id)
+            logger.debug(oai_id)
             sourceResource = {}
 
             # sourceResource.alternative
@@ -194,7 +196,7 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
                         sourceResource['rights'] = [{"text": rights_statement.strip()}]
 
             else:
-                logging.error('No sourceResource.rights - {0}'.format(oai_id))
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
                 continue
 
             # sourceResource.subject
@@ -213,7 +215,7 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
             if title is not None:
                 sourceResource['title'] = title
             else:
-                logging.error('No sourceResource.title - {0}'.format(oai_id))
+                logger.error('No sourceResource.title - {0}'.format(oai_id))
                 continue
 
             # sourceResource.type
@@ -239,25 +241,7 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.provider
 
-            try:
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "preview": preview,
-                       "provider": PROVIDER}
-            except NameError as err:
-                logging.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                doc = {"@context": "http://api.dp.la/items/context",
-                       "sourceResource": sourceResource,
-                       "aggregatedCHO": "#sourceResource",
-                       "dataProvider": data_provider,
-                       "isShownAt": is_shown_at,
-                       "provider": PROVIDER}
-
-            if iprovide:
-                doc.update(intermediateProvider=iprovide)
+            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
 
             try:
                 docs.append(doc)
