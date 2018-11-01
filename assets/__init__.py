@@ -24,7 +24,16 @@ for key in CONFIG_DICT.keys():
 
 
 def build(oai_id, sourceResource, data_provider, is_shown_at, preview=None, iprovide=None):
-    """"""
+    """
+    Builds & returns json from transformation scenarios
+    :param oai_id:
+    :param sourceResource:
+    :param data_provider:
+    :param is_shown_at:
+    :param preview:
+    :param iprovide:
+    :return:
+    """
     if preview:
         doc = {"@context": "http://api.dp.la/items/context",
                "sourceResource": sourceResource,
@@ -48,10 +57,10 @@ def build(oai_id, sourceResource, data_provider, is_shown_at, preview=None, ipro
 
 
 def write_json_ld(docs):
-    '''
+    """
     Simple writing function.
     Will either create and write to file or append.
-    '''
+    """
     if exists(PATH + '/FlaLD-{0}.json'.format(datetime.date.today())) is True:
         with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'r') as jsonInput:
             data_in = json.load(jsonInput)
