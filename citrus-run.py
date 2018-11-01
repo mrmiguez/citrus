@@ -20,21 +20,18 @@ for key in CONFIG_DICT.keys():
     for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/*.xml'.format(key)):
         logger.info(abspath(xml))
         if metadata == 'qdc':
-            write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
-                          key)
+            write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'mods':
-            write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
-                          key)
+            write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider,
+                                     iprovide=intermediate_provider))
         elif metadata == 'dc':
-            write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
-                          key)
+            write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'dcq':
             write_json_ld(FlaLD_BepressDC(abspath(xml), tn=thumbnail, dprovide=data_provider,
-                          iprovide=intermediate_provider), key)
+                                          iprovide=intermediate_provider))
         elif metadata == 'ssdn_qdc':
             write_json_ld(SSDN_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider,
-                          iprovide=intermediate_provider), key)
+                                   iprovide=intermediate_provider))
         elif metadata == 'custom':
             if key == 'flmem':
-                write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider),
-                              key)
+                write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
