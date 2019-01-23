@@ -1,3 +1,4 @@
+import re
 import bs4
 import requests
 
@@ -12,15 +13,22 @@ def thumbnail_service(identifier, tn):
 
     # Sobek thumbnail service
     elif tn['name'] == 'sobek':
-        collection_list = identifier.split('/')[-2:]
-        sobek_tn_path = "/{0}/{1}/{2}/{3}/{4}/{5}/{6}_001_thm.jpg".format(collection_list[0][0:2],  # this might need to change to XXXthm.jpg
-                                                                           collection_list[0][2:4],
-                                                                           collection_list[0][4:6],
-                                                                           collection_list[0][6:8],
-                                                                           collection_list[0][8:10],
-                                                                           collection_list[1],
-                                                                           collection_list[0])
-        return prefix + sobek_tn_path
+        doi = re.compile('[a-zA-Z0-9]+-[0-9]+')
+        for a in identifier:
+            if 'http' in a:
+                collection_list = a.split('/')[-2:]
+                sobek_tn_path = "/{0}/{1}/{2}/{3}/{4}/{5}".format(collection_list[0][0:2],
+                                                                  collection_list[0][2:4],
+                                                                  collection_list[0][4:6],
+                                                                  collection_list[0][6:8],
+                                                                  collection_list[0][8:10],
+                                                                  collection_list[1])
+            if doi.search(a):
+                suffix = "/{0}-001thm.jpg".format(a)
+        try:
+            return prefix + sobek_tn_path + suffix
+        except UnboundLocalError:
+            return None
 
     # ContentDM thumbnail service
     elif tn['name'] == 'cdm':

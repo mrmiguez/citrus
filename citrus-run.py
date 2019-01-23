@@ -9,7 +9,7 @@ from assets import write_json_ld
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC, FlaLD_BepressDC
 from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR
 from custom_mods import FlMem
-from ssdn_maps import SSDN_QDC
+from ssdn_maps import SSDN_QDC, SSDN_DC
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +32,9 @@ for key in CONFIG_DICT.keys():
         elif metadata == 'ssdn_qdc':
             write_json_ld(SSDN_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider,
                                    iprovide=intermediate_provider))
+        elif metadata == 'ssdn_dc':
+            write_json_ld(SSDN_DC(abspath(xml), tn=thumbnail, dprovide=data_provider,
+                                  iprovide=intermediate_provider))
         elif metadata == 'custom':
             if key == 'flmem':
                 write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))

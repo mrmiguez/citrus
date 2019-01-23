@@ -45,9 +45,11 @@ CONFIG_DICT = {
              'Vaclav Havel Library Foundation',
              'Florida International University Libraries'),
     'gnmhs': ('dc', {'name': 'custom_field',
-                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-             'Greater North Miami Historical Society',
-             'Florida International University Libraries')             
+                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+              'Greater North Miami Historical Society',
+              'Florida International University Libraries'),
+    'usf': ('ssdn_dc', {'name': 'sobek', 'prefix': 'http://digital.lib.usf.edu/content'},
+            'University of South Florida Libraries', None)
 
 }
 
