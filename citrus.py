@@ -29,6 +29,7 @@ for type in IANA_parsed.find_all('file'):
 
 logger = logging.getLogger(__name__)
 
+
 def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
         records = OAIReader(data_in)
@@ -109,21 +110,19 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.genre
 
             # sourceResource.identifier
-            dPantherPURL = re.compile('http://dpanther')
+            dPantherPURL = re.compile('http://dpanther.fiu.edu/dpService/dpPurlService')
+            dPantherURL = re.compile('http://dpanther')
             identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
             try:
                 for ID in identifier:
-                    PURL = dPantherPURL.search(ID)
-
-                    try:
-                        PURL_match = PURL.string
-
-                    except AttributeError as err:
-                        logger.warning(
-                            'sourceResource.identifier: {0} - {1}'.format(err,
-                                                                          oai_id))
-                        pass
-                sourceResource['identifier'] = PURL_match
+                    if dPantherPURL.search(ID):
+                        PURL_match = ID
+                        sourceResource['identifier'] = ID
+                        break
+                    elif dPantherURL.search(ID):
+                        sourceResource['identifier'] = ID
+                        logger.warning('sourceResource.identifier: {0} - {1}'.format('Not a PURL',
+                                                                                     oai_id))
 
             except (TypeError, UnboundLocalError) as err:
                 logger.error(
