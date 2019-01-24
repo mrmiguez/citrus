@@ -2,6 +2,7 @@ import logging
 import re
 
 import requests
+import dateparser
 from bs4 import BeautifulSoup
 from pymods import OAIReader
 
@@ -285,7 +286,7 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.collection
             if record.metadata.get_element('.//{0}relation'.format(dc)):
-                sourceResource['collection'] = record.metadata.get_element('.//{0}collection'.format(dc))
+                sourceResource['collection'] = record.metadata.get_element('.//{0}relation'.format(dc))
 
             # sourceResource.contributor
             if record.metadata.get_element('.//{0}contributor'.format(dc)):
@@ -317,7 +318,8 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.date
             date = record.metadata.get_element('.//{0}date'.format(dc))
             if date:
-                sourceResource['date'] = {"begin": date[0], "end": date[0], "displayDate": date[0]}
+                d = dateparser.parse(date[0], languages=['en']).date().isoformat()
+                sourceResource['date'] = {"begin": d, "end": d, "displayDate": d}
 
             # sourceResource.description
             if record.metadata.get_element('.//{0}description'.format(dc)):
