@@ -598,9 +598,13 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.dataProvider
             first_baptist = re.compile('^FSU_FBCTLH')
+            leon_high = re.compile('^FSU_LeonHigh')
             fist_baptist_iid = first_baptist.search(record.metadata.iid)
+            leon_high_iid = leon_high.search(record.metadata.iid)
             if fist_baptist_iid:
                 data_provider = 'First Baptist Church of Tallahassee'
+            elif leon_high_iid:
+                data_provider = 'Leon High School, Tallahassee, Florida'
             else:
                 data_provider = dprovide
 
