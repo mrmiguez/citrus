@@ -194,12 +194,13 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                 pass
 
             # aggregation.provider
-            if is_shown_at:
-                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
-            else:
-                continue
-
             try:
+                if is_shown_at:
+                    doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+                else:
+                    logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
+                    continue
+
                 docs.append(doc)
             except UnboundLocalError:
                 continue
