@@ -242,8 +242,10 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
                     preview = assets.thumbnail_service(identifier, tn)
 
             # aggregation.provider
-
-            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            if is_shown_at:
+                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            else:
+                continue
 
             try:
                 docs.append(doc)

@@ -123,6 +123,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                         sourceResource['identifier'] = ID
                         logger.warning('sourceResource.identifier: {0} - {1}'.format('Not a PURL',
                                                                                      oai_id))
+                is_shown_at = sourceResource['identifier']
 
             except (TypeError, UnboundLocalError) as err:
                 logger.error(
@@ -206,10 +207,9 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 pass
 
             # aggregation.provider
-            try:
-                doc = assets.build(oai_id, sourceResource, data_provider, PURL_match, preview, iprovide)
-            except UnboundLocalError as err:
-                logger.error('aggregation.isShownAt: {0} - {1}'.format(err, oai_id))
+            if is_shown_at:
+                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            else:
                 continue
 
             try:
@@ -414,8 +414,10 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                     preview = assets.thumbnail_service(identifier, tn)
 
             # aggregation.provider
-
-            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            if is_shown_at:
+                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            else:
+                continue
 
             try:
                 docs.append(doc)
@@ -623,9 +625,11 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             preview = assets.thumbnail_service(pid, tn)
 
             # aggregation.provider
-
-            doc = assets.build(record.oai_urn, sourceResource, data_provider, record.metadata.purl[0],
-                               preview, iprovide)
+            if record.metadata.purl[0]:
+                doc = assets.build(record.oai_urn, sourceResource, data_provider, record.metadata.purl[0],
+                                   preview, iprovide)
+            else:
+                continue
 
             try:
                 docs.append(doc)
@@ -817,8 +821,10 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
                 preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
 
             # aggregation.provider
-
-            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            if is_shown_at:
+                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            else:
+                continue
 
             try:
                 docs.append(doc)

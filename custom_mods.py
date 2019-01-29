@@ -191,11 +191,13 @@ def FlMem(file_in, tn, dprovide, iprovide=None):
                 preview = assets.thumbnail_service(is_shown_at, tn)
             except UnboundLocalError as err:
                 logger.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                continue
+                pass
 
             # aggregation.provider
-
-            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            if is_shown_at:
+                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            else:
+                continue
 
             try:
                 docs.append(doc)
