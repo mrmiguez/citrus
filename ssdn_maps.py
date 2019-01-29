@@ -422,8 +422,10 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
             # aggregation.provider
 
             # build record
-
-            doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            if is_shown_at:
+                doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+            else:
+                pass
 
             try:
                 docs.append(doc)

@@ -202,12 +202,15 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
             try:
                 preview = assets.thumbnail_service(record, tn)
             except (TypeError, UnboundLocalError) as err:
-                logger.error('aggregation.preview: {0} - {1}'.format(err, oai_id))
-                continue
+                logger.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                pass
 
             # aggregation.provider
-
-            doc = assets.build(oai_id, sourceResource, data_provider, PURL_match, preview, iprovide)
+            try:
+                doc = assets.build(oai_id, sourceResource, data_provider, PURL_match, preview, iprovide)
+            except UnboundLocalError as err:
+                logger.error('aggregation.isShownAt: {0} - {1}'.format(err, oai_id))
+                continue
 
             try:
                 docs.append(doc)
