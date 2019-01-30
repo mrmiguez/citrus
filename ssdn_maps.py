@@ -242,15 +242,15 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
                     preview = assets.thumbnail_service(identifier, tn)
 
             # aggregation.provider
+
+            # build record
             try:
                 if is_shown_at:
                     doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
-                else:
-                    logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
-                    continue
 
                 docs.append(doc)
             except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
                 continue
 
     return docs
@@ -428,12 +428,10 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
             try:
                 if is_shown_at:
                     doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
-                else:
-                    logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
-                    continue
 
                 docs.append(doc)
             except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
                 continue
 
     return docs

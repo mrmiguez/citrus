@@ -24,7 +24,7 @@ def thumbnail_service(identifier, tn):
                                                                   collection_list[0][8:10],
                                                                   collection_list[1])
             if doi.search(a):
-                suffix = "/{0}-001thm.jpg".format(a)
+                suffix = "/{0}thm.jpg".format(a)
         try:
             return prefix + sobek_tn_path + suffix
         except UnboundLocalError:

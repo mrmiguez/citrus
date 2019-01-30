@@ -207,15 +207,15 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
                 pass
 
             # aggregation.provider
+
+            # build record
             try:
                 if is_shown_at:
                     doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
-                else:
-                    logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
-                    continue
 
                 docs.append(doc)
             except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
                 continue
 
     return docs
@@ -415,15 +415,15 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
                     preview = assets.thumbnail_service(identifier, tn)
 
             # aggregation.provider
+
+            # build record
             try:
                 if is_shown_at:
                     doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
-                else:
-                    logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
-                    continue
 
                 docs.append(doc)
             except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
                 continue
 
     return docs
@@ -627,16 +627,16 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             preview = assets.thumbnail_service(pid, tn)
 
             # aggregation.provider
+
+            # build record
             try:
                 if record.metadata.purl[0]:
                     doc = assets.build(record.oai_urn, sourceResource, data_provider, record.metadata.purl[0],
                                        preview, iprovide)
-                else:
-                    logger.error('No aggregation.isShownAt - {0}'.format(record.oai_urn))
-                    continue
 
                 docs.append(doc)
             except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(record.oai_urn))
                 continue
 
     return docs
@@ -824,15 +824,15 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
                 preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
 
             # aggregation.provider
+
+            # build record
             try:
                 if is_shown_at:
                     doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
-                else:
-                    logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
-                    continue
 
                 docs.append(doc)
             except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
                 continue
 
     return docs
