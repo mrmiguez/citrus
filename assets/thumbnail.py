@@ -16,7 +16,7 @@ def thumbnail_service(identifier, tn):
         doi = re.compile('[a-zA-Z0-9]+-[0-9]+')
         for a in identifier:
             if 'http' in a:
-                collection_list = a.split('/')[-2:]
+                collection_list = a.strip('/').split('/')[-2:]
                 sobek_tn_path = "/{0}/{1}/{2}/{3}/{4}/{5}".format(collection_list[0][0:2],
                                                                   collection_list[0][2:4],
                                                                   collection_list[0][4:6],
