@@ -77,3 +77,20 @@ def write_json_ld(docs):
                 json.dump(docs, jsonOutput, indent=2)
             else:
                 json.dump(docs, jsonOutput)
+
+
+def dedupe(f_in):
+    """
+    Deduplicates final json results
+    :param f_in:
+    :return:
+    """
+    seen = []
+    out = []
+    with open(f_in) as f:
+        data = json.load(f)
+        for rec in data:
+            if rec['isShownAt'] not in seen:
+                seen.append(rec['isShownAt'])
+                out.append(rec)
+    write_json_ld(out)

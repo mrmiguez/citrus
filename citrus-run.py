@@ -2,10 +2,12 @@
 
 import logging
 import glob
+import datetime
 from os.path import abspath
 
 # pull in config & custom transformation methods
-from assets import write_json_ld
+from assets import write_json_ld, dedupe, PATH
+
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC, FlaLD_BepressDC
 from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR
 from custom_mods import FlMem
@@ -38,3 +40,5 @@ for key in CONFIG_DICT.keys():
         elif metadata == 'custom':
             if key == 'flmem':
                 write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
+
+dedupe(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()))

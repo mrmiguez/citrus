@@ -367,8 +367,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
             if record.metadata.get_element('.//{0}rights'.format(dc)):
                 for rights_statement in record.metadata.get_element(
                         './/{0}rights'.format(dc)):
-                    URI = rightsURI.search(rights_statement.strip(" "))  # strip is a temporary fix
-                    #URI = rightsURI.search(rights_statement)
+                    URI = rightsURI.search(rights_statement)
                     if URI:
                         URI_match = URI.string.split(" ")[-1]
                         sourceResource['rights'] = [{"@id": URI_match}]
