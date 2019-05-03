@@ -8,10 +8,7 @@ from citrus_config import PROVIDER, OUTPUT_DIR, PRETTY_PRINT, CONFIG_DICT
 from .iso639 import iso639_2code, iso639_3code
 from .tgn_db import tgn_cache
 from .thumbnail import thumbnail_service
-
-# init logger
-logging.basicConfig(filename='citrus-errors-{0}.log'.format(datetime.date.today()),
-                    filemode='w', level=logging.WARN)
+from .log import CSVLogger
 
 # get output or current dir and clean if needed
 if len(OUTPUT_DIR) > 0:

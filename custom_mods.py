@@ -1,4 +1,3 @@
-import logging
 import re
 
 from pymods import OAIReader
@@ -10,11 +9,10 @@ from citrus_config import VERBOSE
 
 dc = nameSpace_default['dc']
 
-logger = logging.getLogger(__name__)
-
 
 def FlMem(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger(__name__, provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:

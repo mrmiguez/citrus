@@ -1,6 +1,4 @@
-import logging
 import re
-
 import requests
 from bs4 import BeautifulSoup
 from pymods import OAIReader
@@ -27,11 +25,10 @@ IANA_parsed = BeautifulSoup(IANA_XML.text, "lxml")
 for type in IANA_parsed.find_all('file'):
     IANA_type_list.append(type.text)
 
-logger = logging.getLogger(__name__)
-
 
 def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger(__name__, provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -223,6 +220,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger(__name__, provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -431,6 +429,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger(__name__, provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -644,6 +643,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger(__name__, provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:

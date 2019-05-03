@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import logging
 import glob
 import datetime
 from os.path import abspath
@@ -13,14 +12,12 @@ from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR
 from custom_mods import FlMem
 from ssdn_maps import SSDN_QDC, SSDN_DC
 
-logger = logging.getLogger(__name__)
 
 # main loop
 for key in CONFIG_DICT.keys():
     metadata, thumbnail, data_provider, intermediate_provider = CONFIG_DICT[key]
 
     for xml in glob.glob(REPOX_EXPORT_DIR + '/{0}*/*.xml'.format(key)):
-        logger.info(abspath(xml))
         if metadata == 'qdc':
             write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'mods':

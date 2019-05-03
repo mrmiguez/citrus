@@ -1,3 +1,5 @@
+import datetime
+
 """
 # FlaLD CONTROL VARIABLES
 #
@@ -65,3 +67,7 @@ PROVIDER = {'name': 'Sunshine State Digital Network',
             '@id': 'UNDETERMINED'}
 
 VERBOSE = True
+
+LOG_LEVEL = "info"
+
+LOG_FILE = "citrus_errors{}.csv".format(datetime.date.today())
