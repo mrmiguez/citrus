@@ -320,8 +320,12 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.date
             date = record.metadata.get_element('.//{0}date'.format(dc))
             if date:
-                d = dateparser.parse(date[0], languages=['en']).date().isoformat()
-                sourceResource['date'] = {"begin": d, "end": d, "displayDate": d}
+                try:
+                    d = dateparser.parse(date[0], languages=['en']).date().isoformat()
+                    sourceResource['date'] = {"begin": d, "end": d, "displayDate": d}
+                except AttributeError as err:
+                    logger.warning('sourceResource.date: {0}, {1}'.format(err, record.oai_urn))
+                    sourceResource['date'] = date[0]
 
             # sourceResource.description
             if record.metadata.get_element('.//{0}description'.format(dc)):
