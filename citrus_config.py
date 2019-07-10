@@ -15,6 +15,10 @@ import datetime
 """
 
 CONFIG_DICT = {
+    'brockway': ('dc', {'name': 'custom_field',
+                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+                 'Miami Shores Village Archives at Brockway Memorial Library',
+                 'Florida International University Libraries'),
     'coral_gables': ('dc', {'name': 'custom_field',
                             'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                      'City of Coral Gables',
@@ -27,7 +31,11 @@ CONFIG_DICT = {
               'Florida Memory', None),
     'fsu': ('mods', {'name': 'islandora',
                      'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
-            'Florida State University Libraries', None),
+            'Florida State University Libraries', None),                     
+    'gnmhs': ('dc', {'name': 'custom_field',
+                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+             'Greater North Miami Historical Society',
+             'Florida International University Libraries'),
     'ir_fiu': ('dcq', {'name': None, 'prefix': None},
                'Florida International University Libraries', None),
     'mbvm': ('dc', {'name': 'custom_field',
@@ -42,23 +50,16 @@ CONFIG_DICT = {
              'Miami-Dade Public Library System', None),
     'um': ('qdc', {'name': 'cdm', 'prefix': 'http://merrick.library.miami.edu'},
            'University of Miami Libraries', None),
+    'usf': ('ssdn_dc', {'name': 'sobek', 'prefix': 'http://digital.lib.usf.edu/content'},
+            'University of South Florida Libraries', None),           
     'vhlf': ('dc', {'name': 'custom_field',
                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
              'Vaclav Havel Library Foundation',
-             'Florida International University Libraries'),
-    'gnmhs': ('dc', {'name': 'custom_field',
-                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-              'Greater North Miami Historical Society',
-              'Florida International University Libraries'),
-    'usf': ('ssdn_dc', {'name': 'sobek', 'prefix': 'http://digital.lib.usf.edu/content'},
-            'University of South Florida Libraries', None)
-
+             'Florida International University Libraries')
 }
 
-#REPOX_EXPORT_DIR = '/home/mrmiguez/OAI_export'
 REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
 
-#OUTPUT_DIR = '/home/mrmiguez/FlaLD_JSON'
 OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
 
 PRETTY_PRINT = True
@@ -68,6 +69,6 @@ PROVIDER = {'name': 'Sunshine State Digital Network',
 
 VERBOSE = True
 
-LOG_LEVEL = "info"
+LOG_LEVEL = 'error'
 
 LOG_FILE = "citrus_errors{}.csv".format(datetime.date.today())

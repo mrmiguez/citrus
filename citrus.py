@@ -609,8 +609,10 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             leon_high_iid = leon_high.search(record.metadata.iid)
             if first_baptist_iid:
                 data_provider = 'First Baptist Church of Tallahassee'
+                iprovide = 'Florida State University Libraries'
             elif leon_high_iid:
                 data_provider = 'Leon High School, Tallahassee, Florida'
+                iprovide = 'Florida State University Libraries'
             else:
                 data_provider = dprovide
 

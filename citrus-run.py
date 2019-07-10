@@ -38,4 +38,4 @@ for key in CONFIG_DICT.keys():
             if key == 'flmem':
                 write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
 
-dedupe(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()))
+#dedupe(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()))
