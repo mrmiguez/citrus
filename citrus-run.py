@@ -25,7 +25,7 @@ for key in CONFIG_DICT.keys():
                                      iprovide=intermediate_provider))
         elif metadata == 'ssdn_mods':
             write_json_ld(SSDN_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider,
-                                     iprovide=intermediate_provider))
+                                    iprovide=intermediate_provider))
         elif metadata == 'dc':
             write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'dcq':
@@ -41,4 +41,4 @@ for key in CONFIG_DICT.keys():
             if key == 'flmem':
                 write_json_ld(FlMem(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
 
-#dedupe(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()))
+dedupe(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()))

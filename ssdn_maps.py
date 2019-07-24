@@ -438,3 +438,201 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
                 continue
 
     return docs
+
+
+def SSDN_MODS(file_in, tn, dprovide, iprovide=None):
+    with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger(__name__, provider=dprovide)
+        records = OAIReader(data_in)
+        docs = []
+        for record in records:
+
+            # deleted record handling for repox
+            try:
+                if 'deleted' in record.attrib.keys():
+                    if record.attrib['deleted'] == 'true':
+                        pass
+            except AttributeError:
+                pass
+
+            # deleted record handling for OAI-PMH
+            try:
+                if 'status' in record.find('./{*}header').attrib.keys():
+                    if record.find('./{*}header').attrib['status'] == 'deleted':
+                        pass
+            except AttributeError:
+                pass
+
+            if VERBOSE:
+                print(record.oai_urn)
+            logger.debug(record.oai_urn)
+            sourceResource = {}
+
+            if record.metadata is None:
+                continue
+
+            # sourceResource.alternative
+            if len(record.metadata.titles) > 1:
+                sourceResource['alternative'] = []
+                if len(record.metadata.titles[1:]) >= 1:
+                    for alternative_title in record.metadata.titles[1:]:
+                        sourceResource['alternative'].append(alternative_title)
+
+            # sourceResource.collection
+
+            # sourceResource.contributor
+            try:
+
+                for name in record.metadata.names:
+                    if name.role.text != 'Creator' and name.role.code != 'cre' and name.role.text is not None and name.role.code is not None:
+                        sourceResource['contributor'] = [{"@id": name.uri, "name": name.text}
+                                                         if name.uri else
+                                                         {"name": name.text}]
+            except KeyError as err:
+                logger.error('sourceResource.contributor: {0}, {1}'.format(err, record.oai_urn))
+                pass
+
+            # sourceResource.creator
+            name_list = []
+            if record.metadata.get_creators:
+                for name in record.metadata.get_creators:
+                    name_list.append(name)
+            if record.metadata.names:
+                for name in record.metadata.names:
+                    if name.role.text is None or name.role.code is None:
+                        name_list.append(name)
+            sourceResource['creator'] = [{"@id": name.uri, "name": name.text}
+                                         if name.uri else
+                                         {"name": name.text}
+                                         for name in name_list]
+
+            # sourceResource.date
+            if record.metadata.dates:
+                date = record.metadata.dates[0].text
+                if ' - ' in date:
+                    sourceResource['date'] = {"displayDate": date,
+                                              "begin": date[0:4],
+                                              "end": date[-4:]}
+                else:
+                    sourceResource['date'] = {"displayDate": date,
+                                              "begin": date,
+                                              "end": date}
+
+            # sourceResource.description
+            if record.metadata.abstract:
+                sourceResource['description'] = [abstract.text
+                                                 for abstract in record.metadata.abstract]
+            try:
+                for toc in record.metadata.iterfind('.//{http://www.loc.gov/mods/v3}tableOfContents'):
+                    sourceResource['description'].append(toc.text)
+            except KeyError:
+                sourceResource['description'] = [toc.text for toc
+                                                 in record.metadata.findall('.//{http://www.loc.gov/mods/v3}tableOfContents')]
+
+            # sourceResource.extent
+            if record.metadata.extent:
+                sourceResource['extent'] = record.metadata.extent
+
+            # sourceResource.format
+            if record.metadata.genre:
+                sourceResource['format'] = [{'name': genre.text,
+                                            '@id': genre.uri}
+                                            if genre.uri else
+                                            {'name': genre.text}
+                                            for genre in record.metadata.genre]
+
+            # sourceResource.identifier
+            try:
+                sourceResource['identifier'] = record.metadata.purl[0]
+            except IndexError as err:
+                logger.error('sourceResource.identifier: {0}, {1}'.format(err, record.oai_urn))
+                continue
+
+            # sourceResource.language
+            try:
+                if record.metadata.language:
+                    sourceResource['language'] = [{"name": lang.text,
+                                                   "iso_639_3": lang.code}
+                                                  for lang in record.metadata.language]
+            except AttributeError as err:
+                logger.error('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
+                pass
+
+            # sourceResource.place : sourceResource['spatial']
+            for subject in record.metadata.subjects:
+                for c in subject.elem.getchildren():
+                    if 'eographic' in c.tag:
+                        sourceResource['spatial'] = {"name": subject.text}
+
+            # sourceResource.publisher
+            if record.metadata.publisher:
+                sourceResource['publisher'] = record.metadata.publisher
+
+            # sourceResource.relation
+
+            # sourceResource.isReplacedBy
+
+            # sourceResource.replaces
+
+            # sourceResource.rights
+            if record.metadata.rights:
+                sourceResource['rights'] = [{"@id": rights.text}
+                                            if "http://rightsstatements.org" in rights.text else
+                                            {"text": rights.text}
+                                            for rights in record.metadata.rights[:2]]
+                                            # slicing isn't ideal here since it depends on element order
+            else:
+                logger.error('No sourceResource.rights - {0}'.format(record.oai_urn))
+                continue
+
+            # sourceResource.subject
+            try:
+
+                if record.metadata.subjects:
+                    sourceResource['subject'] = []
+                    for subject in record.metadata.subjects:
+                        for child in subject.elem:
+                            if 'eographic' not in child.tag:
+                                sourceResource['subject'].append({"name": subject.text})
+            except (TypeError, IndexError) as err:
+                logger.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
+                pass
+
+            # sourceResource.title
+            if record.metadata.titles:
+                sourceResource['title'] = ['{}'.format(record.metadata.titles[0])]
+            else:
+                logger.error('No sourceResource.title: {0}'.format(record.oai_urn))
+                continue
+
+            # sourceResource.type
+            sourceResource['type'] = record.metadata.type_of_resource
+
+            # aggregation.dataProvider
+            data_provider = dprovide
+
+            # aggregation.intermediateProvider
+
+            # aggregation.isShownAt
+
+            # aggregation.preview
+            preview = None
+            pid = record.metadata.pid
+            if pid is None:
+                pid = record.oai_urn.split(':')[-1].replace('_', ':')
+            preview = assets.thumbnail_service(pid, tn)
+
+            # aggregation.provider
+
+            # build record
+            try:
+                if record.metadata.purl[0]:
+                    doc = assets.build(record.oai_urn, sourceResource, data_provider, record.metadata.purl[0],
+                                       preview, iprovide)
+
+                docs.append(doc)
+            except UnboundLocalError:
+                logger.error('No aggregation.isShownAt - {0}'.format(record.oai_urn))
+                continue
+
+    return docs

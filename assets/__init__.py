@@ -90,4 +90,9 @@ def dedupe(f_in):
             if rec['isShownAt'] not in seen:
                 seen.append(rec['isShownAt'])
                 out.append(rec)
-    write_json_ld(out)
+    #write_json_ld(out)
+    with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
+        if PRETTY_PRINT is True:
+            json.dump(out, jsonOutput, indent=2)
+        else:
+            json.dump(out, jsonOutput)
