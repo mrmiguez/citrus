@@ -10,7 +10,7 @@ from assets import write_json_ld, dedupe, PATH
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC, FlaLD_BepressDC
 from citrus_config import CONFIG_DICT, REPOX_EXPORT_DIR
 from custom_mods import FlMem
-from ssdn_maps import SSDN_QDC, SSDN_DC
+from ssdn_maps import SSDN_QDC, SSDN_DC, SSDN_MODS
 
 
 # main loop
@@ -22,6 +22,9 @@ for key in CONFIG_DICT.keys():
             write_json_ld(FlaLD_QDC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
         elif metadata == 'mods':
             write_json_ld(FlaLD_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider,
+                                     iprovide=intermediate_provider))
+        elif metadata == 'ssdn_mods':
+            write_json_ld(SSDN_MODS(abspath(xml), tn=thumbnail, dprovide=data_provider,
                                      iprovide=intermediate_provider))
         elif metadata == 'dc':
             write_json_ld(FlaLD_DC(abspath(xml), tn=thumbnail, dprovide=data_provider, iprovide=intermediate_provider))
