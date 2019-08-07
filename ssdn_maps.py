@@ -30,7 +30,7 @@ for type in IANA_parsed.find_all('file'):
 
 def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('SSDN_QDC', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -256,7 +256,7 @@ def SSDN_QDC(file_in, tn, dprovide, iprovide=None):
 
 def SSDN_DC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('SSDN_DC', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -442,7 +442,7 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
 
 def SSDN_MODS(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('SSDN_MODS', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:

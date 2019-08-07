@@ -84,13 +84,16 @@ def dedupe(f_in):
     """
     seen = []
     out = []
+    logger = log.CSVLogger(__name__)
     with open(f_in) as f:
         data = json.load(f)
         for rec in data:
             if rec['isShownAt'] not in seen:
                 seen.append(rec['isShownAt'])
                 out.append(rec)
-    #write_json_ld(out)
+            else:
+                logger.__setattr__("provider", str(rec['dataProvider']))
+                logger.error('Duplicate record - {}'.format(rec['isShownAt']))
     with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
         if PRETTY_PRINT is True:
             json.dump(out, jsonOutput, indent=2)

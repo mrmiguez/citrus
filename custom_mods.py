@@ -12,7 +12,7 @@ dc = nameSpace_default['dc']
 
 def FlMem(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('FlMem', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:

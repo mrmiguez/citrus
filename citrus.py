@@ -28,7 +28,7 @@ for type in IANA_parsed.find_all('file'):
 
 def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('FlaLD_DC', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -220,7 +220,7 @@ def FlaLD_DC(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('FlaLD_QDC', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -429,7 +429,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('FlaLD_MODS', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:
@@ -645,7 +645,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
 def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
-        logger = assets.CSVLogger(__name__, provider=dprovide)
+        logger = assets.CSVLogger('FlaLD_BepressDC', provider=dprovide)
         records = OAIReader(data_in)
         docs = []
         for record in records:

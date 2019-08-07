@@ -25,7 +25,11 @@ CONFIG_DICT = {
                      'Florida International University Libraries'),
     'fgcu': ('ssdn_mods', {'name': 'islandora',
                            'prefix': 'http://fgcu.digital.flvc.org/islandora/object'},
-             'UNCONFIRMED', None),
+             'Florida Gulf Coast University Library', None),
+    'mbvm': ('dc', {'name': 'custom_field',
+                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+             'Miami Design Preservation League, Closeup Productions',
+             'Florida International University Libraries'),
     'fiu': ('dc', {'name': 'custom_field',
                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
             'Florida International University Libraries', None),
@@ -41,10 +45,6 @@ CONFIG_DICT = {
              'Florida International University Libraries'),
     'ir_fiu': ('dcq', {'name': None, 'prefix': None},
                'Florida International University Libraries', None),
-    'mbvm': ('dc', {'name': 'custom_field',
-                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-             'Miami Design Preservation League, Closeup Productions',
-             'Florida International University Libraries'),
     'mcpl': ('dc', {'name': 'custom_field',
                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
              'Monroe County Public Library',
@@ -61,9 +61,9 @@ CONFIG_DICT = {
              'Florida International University Libraries')
 }
 
-REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
+REPOX_EXPORT_DIR = 'D:\\Users\Roland\citrus_test'
 
-OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
+OUTPUT_DIR = 'D:\\Users\Roland\citrus_out'
 
 PRETTY_PRINT = True
 
@@ -72,6 +72,6 @@ PROVIDER = {'name': 'Sunshine State Digital Network',
 
 VERBOSE = True
 
-LOG_LEVEL = 'error'
+LOG_LEVEL = 'warn'
 
 LOG_FILE = "citrus_errors{}.csv".format(datetime.date.today())
