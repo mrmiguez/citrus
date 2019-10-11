@@ -417,13 +417,17 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
             # aggregation.intermediateProvider
 
             # aggregation.isShownAt
-
-            # aggregation.preview
-            preview = None
             for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
                 if 'http' in identifier:
                     is_shown_at = identifier
-            preview = assets.thumbnail_service(record.metadata.get_element('.//{0}identifier'.format(dc)), tn)
+
+            # aggregation.preview
+            preview = None
+            try:
+                preview = assets.thumbnail_service(record, tn)
+            except (TypeError, UnboundLocalError) as err:
+                logger.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                pass
 
             # aggregation.provider
 
@@ -433,7 +437,7 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
                     doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
 
                 docs.append(doc)
-            except UnboundLocalError:
+            except (NameError, UnboundLocalError):
                 logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
                 continue
 

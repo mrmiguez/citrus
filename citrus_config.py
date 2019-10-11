@@ -53,7 +53,7 @@ CONFIG_DICT = {
              'Miami-Dade Public Library System', None),
     'um': ('qdc', {'name': 'cdm', 'prefix': 'http://merrick.library.miami.edu'},
            'University of Miami Libraries', None),
-    'usf': ('ssdn_dc', {'name': 'sobek', 'prefix': 'http://digital.lib.usf.edu/content'},
+    'usf': ('ssdn_dc', {'name': 'custom_field', 'prefix': 'https://digital.lib.usf.edu/content'},
             'University of South Florida Libraries', None),           
     'vhlf': ('dc', {'name': 'custom_field',
                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
@@ -61,9 +61,9 @@ CONFIG_DICT = {
              'Florida International University Libraries')
 }
 
-REPOX_EXPORT_DIR = 'D:\\Users\Roland\citrus_test'
+REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
 
-OUTPUT_DIR = 'D:\\Users\Roland\citrus_out'
+OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
 
 PRETTY_PRINT = True
 
