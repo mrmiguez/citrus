@@ -605,13 +605,23 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             # aggregation.dataProvider
             first_baptist = re.compile('^FSU_FBCTLH')
             leon_high = re.compile('^FSU_LeonHigh')
+            godby_high = re.compile('^FSU_Godby')
+            havana_hhs = re.compile('^FSU_HHHS')
             first_baptist_iid = first_baptist.search(record.metadata.iid)
             leon_high_iid = leon_high.search(record.metadata.iid)
+            godby_high_iid = godby_high.search(record.metadata.iid)
+            havana_hhs_iid = havana_hhs.search(record.metadata.iid)
             if first_baptist_iid:
                 data_provider = 'First Baptist Church of Tallahassee'
                 iprovide = 'Florida State University Libraries'
             elif leon_high_iid:
                 data_provider = 'Leon High School, Tallahassee, Florida'
+                iprovide = 'Florida State University Libraries'
+            elif godby_high_iid:
+                data_provider = 'Godby High School, Tallahassee, Florida'
+                iprovide = 'Florida State University Libraries'
+            elif havana_hhs_iid:
+                data_provider = 'Havana History & Heritage Society, Havana, Florida'
                 iprovide = 'Florida State University Libraries'
             else:
                 data_provider = dprovide
