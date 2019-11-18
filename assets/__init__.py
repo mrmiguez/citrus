@@ -1,10 +1,11 @@
 import datetime
 import json
 import logging
+import shutil
 from os import remove
 from os.path import abspath, dirname, exists
 
-from citrus_config import PROVIDER, OUTPUT_DIR, PRETTY_PRINT, CONFIG_DICT
+from citrus_config import PROVIDER, OUTPUT_DIR, OUTPUT_FORMAT, PRETTY_PRINT, CONFIG_DICT
 from .iso639 import iso639_2code, iso639_3code
 from .tgn_db import tgn_cache
 from .thumbnail import thumbnail_service
@@ -76,6 +77,18 @@ def write_json_ld(docs):
                 json.dump(docs, jsonOutput)
 
 
+def write_json_lines(docs):
+    with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'a', encoding='utf8', newline='\n') as jsonOutput:
+        for rec in docs:
+            jsonOutput.write(json.dumps(rec) + '\n')
+
+
+def jsonl_dedupe_gen(f_in):
+    with open(f_in) as f:
+        for line in f:
+            yield json.loads(line)
+
+
 def dedupe(f_in):
     """
     Deduplicates final json results
@@ -86,7 +99,10 @@ def dedupe(f_in):
     out = []
     logger = log.CSVLogger(__name__)
     with open(f_in) as f:
-        data = json.load(f)
+        if OUTPUT_FORMAT == 'jsonl':
+            data = jsonl_dedupe_gen(f_in)
+        else:
+            data = json.load(f)
         for rec in data:
             if rec['isShownAt'] not in seen:
                 seen.append(rec['isShownAt'])
@@ -94,8 +110,14 @@ def dedupe(f_in):
             else:
                 logger.__setattr__("provider", str(rec['dataProvider']))
                 logger.error('Duplicate record - {}'.format(rec['isShownAt']))
-    with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
-        if PRETTY_PRINT is True:
-            json.dump(out, jsonOutput, indent=2)
-        else:
-            json.dump(out, jsonOutput)
+    if OUTPUT_FORMAT == 'jsonl':
+        shutil.move(f_in, PATH + '/FlaLD-{0}.json.bak'.format(datetime.date.today()))
+        with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'a', encoding='utf8', newline='\n') as jsonOutput:
+            for rec in out:
+                jsonOutput.write(json.dumps(rec) + '\n')
+    else:
+        with open(PATH + '/FlaLD-{0}.json'.format(datetime.date.today()), 'w') as jsonOutput:
+            if PRETTY_PRINT is True:
+                json.dump(out, jsonOutput, indent=2)
+            else:
+                json.dump(out, jsonOutput)

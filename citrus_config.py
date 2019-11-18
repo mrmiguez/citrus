@@ -16,7 +16,7 @@ import datetime
 
 CONFIG_DICT = {
     'brockway': ('dc', {'name': 'custom_field',
-                    'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+                        'prefix': 'http://dpanther.fiu.edu/sobek/content'},
                  'Miami Shores Village Archives at Brockway Memorial Library',
                  'Florida International University Libraries'),
     'coral_gables': ('dc', {'name': 'custom_field',
@@ -64,6 +64,8 @@ CONFIG_DICT = {
 REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
 
 OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
+
+OUTPUT_FORMAT = ''
 
 PRETTY_PRINT = True
 
