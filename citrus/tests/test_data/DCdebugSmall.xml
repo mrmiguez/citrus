@@ -63,5 +63,12 @@
       </oai_dc:dc>
     </repox:metadata>
   </repox:record>
+  <repox:record id="oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07040407_00001" deleted="true" timestamp="2017-03-21">
+    <repox:metadata>
+      <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:oai="http://www.openarchives.org/OAI/2.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/  http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+        <dc:title>Tropical Scenes, South of Florida, U.S.A.</dc:title>
+      </oai_dc:dc>
+    </repox:metadata>
+  </repox:record>
 </repox:exportedRecords>
 

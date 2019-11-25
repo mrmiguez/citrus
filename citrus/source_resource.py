@@ -1,5 +1,6 @@
 import json
 
+
 class SourceResource(object):
     #__slots__ = ('alternative_title', 'collection', 'contributor', 'creator', 'date', 'description', 'extent',
     #             'format', 'genre', 'identifier', 'language', 'place', 'publisher', 'relation', 'replaced_by',
