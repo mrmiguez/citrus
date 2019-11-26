@@ -37,7 +37,15 @@
         <originInfo>
           <dateIssued encoding="w3cdtf" point="start" qualifier="approximate">1935</dateIssued>
           <dateIssued encoding="w3cdtf" point="end" qualifier="approximate">1969</dateIssued>
+          <publisher>Tay Tay Frankie</publisher>
+          <place>
+            <placeTerm>Syracuse, New York</placeTerm>
+          </place>
         </originInfo>
+        <language>
+          <languageTerm type="text" authority="iso639-2b">English</languageTerm>
+          <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+        </language>
         <physicalDescription>
           <extent>8 x 10 in.</extent>
           <digitalOrigin>reformatted digital</digitalOrigin>
@@ -51,6 +59,12 @@
         </subject>
         <subject>
           <topic>Fraternities and Sororities</topic>
+        </subject>
+        <subject>
+          <geographic>Narnia</geographic>
+        </subject>
+        <subject>
+          <geographicCode>7013938</geographicCode>
         </subject>
         <accessCondition type="useAndReproduction" xlink:href="http://rightsstatements.org/vocab/NoC-US/1.0/">Rights 4A</accessCondition>
         <recordInfo>

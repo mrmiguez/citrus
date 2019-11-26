@@ -180,24 +180,20 @@ class DC_Record(CitrusRecord):
         '''
 
     def subject(self, record):
-        '''
-        if record.metadata.get_element('.//{0}subject'.format(dc)):
-            sourceResource['subject'] = []
-            for term in record.metadata.get_element('.//{0}subject'.format(dc),
-                                                    delimiter=';'):
-                term = re.sub("\( lcsh \)$", '', term)
-                if len(term) > 0:
-                    sourceResource['subject'].append({"name": term.strip(" ")})
-        '''
+        pass
+        # '''
+        # if record.metadata.get_element('.//{0}subject'.format(dc)):
+        #     sourceResource['subject'] = []
+        #     for term in record.metadata.get_element('.//{0}subject'.format(dc),
+        #                                             delimiter=';'):
+        #         term = re.sub("\( lcsh \)$", '', term)
+        #         if len(term) > 0:
+        #             sourceResource['subject'].append({"name": term.strip(" ")})
+        # '''
 
     @property
     def title(self):
         return self.record.metadata.get_element('.//{0}title'.format(dc))
-        '''
-        else:
-            logger.error('No sourceResource.rights - {0}'.format(oai_id))
-            continue
-        '''
 
     @property
     def type(self):
@@ -214,14 +210,13 @@ class QDC_Record(DC_Record):
     def __init__(self, record):
         DC_Record.__init__(self, record)
 
-    # def abstract(self, record):
-    #
+    @property
+    def abstract(self):
+        return self.record.metadata.get_element('.//{0}abstract'.format(dcterms))
 
     @property
     def alternative(self):
-        alt_title = self.record.metadata.get_element('.//{0}alternative'.format(dcterms))
-        if alt_title:
-            return alt_title
+        return self.record.metadata.get_element('.//{0}alternative'.format(dcterms))
 
     # sourceResource.collection
 
@@ -267,14 +262,9 @@ class QDC_Record(DC_Record):
     def extent(self):
         return self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')
 
-    # sourceResource.format
-
     @property
     def place(self):
-        try:
-            return [{'name': place} for place in self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
-        except TypeError as e:
-            raise SSDN_QDCException(e)
+        return [{'name': place} for place in self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
 
     # webResource.fileFormat
     #  TODO: file_format kicked out of SR.genre
@@ -321,9 +311,10 @@ class MODS_Record(CitrusRecord):
                     name_list.append(name)
         return [{"@id": name.uri, "name": name.text} if name.uri else {"name": name.text} for name in name_list]
 
-    def date(self, record):
-        if record.metadata.dates:
-            date = record.metadata.dates[0].text
+    @property
+    def date(self):
+        if self.record.metadata.dates:
+            date = self.record.metadata.dates[0].text
             if ' - ' in date:
                 return {"displayDate": date,
                         "begin": date[0:4],
@@ -333,55 +324,36 @@ class MODS_Record(CitrusRecord):
                         "begin": date,
                         "end": date}
 
-    def description(self, record):
-        if record.metadata.abstract:
-            return [abstract.text for abstract in record.metadata.abstract]
-        '''
-        try:
-            for toc in record.metadata.iterfind('.//{http://www.loc.gov/mods/v3}tableOfContents'):
-                sourceResource['description'].append(toc.text)
-        except KeyError:
-            sourceResource['description'] = [toc.text for toc
-                                             in record.metadata.findall('.//{http://www.loc.gov/mods/v3}tableOfContents')]
-        '''
+    @property
+    def description(self):
+        return [abstract.text for abstract in self.record.metadata.abstract]
 
-    def extent(self, record):
-        if record.metadata.extent:
-            return record.metadata.extent
+    @property
+    def extent(self):
+        return self.record.metadata.extent
 
-    def format(self, record):
-        if record.metadata.genre:
-            return [{'name': genre.text, '@id': genre.uri} if genre.uri else {'name': genre.text} for genre in
-                    record.metadata.genre]
+    @property
+    def format(self):
+        return [{'name': genre.text, '@id': genre.uri} if genre.uri else {'name': genre.text} for genre in self.record.metadata.genre]
 
-    def identifier(self, record):
-        '''
-        try:
-            sourceResource['identifier'] = record.metadata.purl[0]
-        except IndexError as err:
-            logger.error('sourceResource.identifier: {0}, {1}'.format(err, record.oai_urn))
-            continue
-        '''
+    @property
+    def identifier(self):
+        return self.record.metadata.purl[0]
 
-    def language(self, record):
-        '''
-        try:
-            if record.metadata.language:
-                return [{"name": lang.text, "iso_639_3": lang.code} for lang in record.metadata.language]
-        except AttributeError as err:
-            logger.error('sourceResource.language: {0}, {1}'.format(err, record.oai_urn))
-            pass
-        '''
+    @property
+    def language(self):
+        return [{"name": lang.text, "iso_639_3": lang.code} for lang in self.record.metadata.language]
 
-    def place(self, record):
-        for subject in record.metadata.subjects:
+    @property
+    def place(self):
+        for subject in self.record.metadata.subjects:
             for c in subject.elem.getchildren():
                 if 'eographic' in c.tag:
                     return {"name": subject.text}
 
-    def publisher(self, record):
-        if record.metadata.publisher:
-            return record.metadata.publisher
+    @property
+    def publisher(self):
+        return self.record.metadata.publisher
 
     # sourceResource.relation
 
@@ -423,8 +395,9 @@ class MODS_Record(CitrusRecord):
             continue
         '''
 
-    def type(self, record):
-        return record.metadata.type_of_resource
+    @property
+    def type(self):
+        return self.record.metadata.type_of_resource
 
     # aggregation.dataProvider
     # data_provider = dprovide
