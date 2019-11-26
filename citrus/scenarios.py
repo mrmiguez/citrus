@@ -73,8 +73,8 @@ class SSDN_MODS(Scenario):
 class CitrusRecord:
 
     def __init__(self, record):
-        ''''''
         self.record = record
+        self.oai_id = self.record.oai_urn
 
 
 class DC_Record(CitrusRecord):
@@ -214,8 +214,12 @@ class QDC_Record(DC_Record):
     def __init__(self, record):
         DC_Record.__init__(self, record)
 
-    def alternative(self, record):
-        alt_title = record.metadata.get_element('.//{0}alternative'.format(dcterms))
+    # def abstract(self, record):
+    #
+
+    @property
+    def alternative(self):
+        alt_title = self.record.metadata.get_element('.//{0}alternative'.format(dcterms))
         if alt_title:
             return alt_title
 
@@ -277,9 +281,6 @@ class QDC_Record(DC_Record):
 
     # aggregation.dataProvider
     # data_provider = dprovide
-
-
-
 
 
 class MODS_Record(CitrusRecord):
