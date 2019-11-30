@@ -2,17 +2,8 @@ import re
 from pymods import OAIReader
 from .exceptions import *
 
-nameSpace_default = {None: '{http://www.loc.gov/mods/v3}',
-                     'oai_dc': '{http://www.openarchives.org/OAI/2.0/oai_dc/}',
-                     'dc': '{http://purl.org/dc/elements/1.1/}',
-                     'mods': '{http://www.loc.gov/mods/v3}',
-                     'dcterms': '{http://purl.org/dc/terms/}',
-                     'xlink': '{http://www.w3.org/1999/xlink}',
-                     'repox': '{http://repox.ist.utl.pt}',
-                     'oai_qdc': '{http://worldcat.org/xmlschemas/qdc-1.0/}'}
-
-dc = nameSpace_default['dc']
-dcterms = nameSpace_default['dcterms']
+dc = '{http://purl.org/dc/elements/1.1/}'
+dcterms = '{http://purl.org/dc/terms/}'
 
 
 class Scenario:
@@ -106,53 +97,23 @@ class DC_Record(CitrusRecord):
 
     @property
     def date(self):
-        date = self.record.metadata.get_element('.//{0}date'.format(dc))
-        if date:
-            return {"begin": date[0], "end": date[0], "displayDate": date[0]}
+        return [date for date in self.record.metadata.get_element('.//{0}date'.format(dc))]
 
     @property
     def description(self):
-        return self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')
+        return [description for description in self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')]
 
     @property
     def format(self):
-        return self.record.metadata.get_element('.//{0}format'.format(dc))
+        return [ft for ft in self.record.metadata.get_element('.//{0}format'.format(dc))]
 
-    def identifier(self, record):
-        '''
-        dPantherPURL = re.compile('http://dpanther.fiu.edu/dpService/dpPurlService')
-        dPantherURL = re.compile('http://dpanther')
-        identifier = record.metadata.get_element('.//{0}identifier'.format(dc))
-        try:
-            for ID in identifier:
-                if dPantherPURL.search(ID):
-                    PURL_match = ID
-                    sourceResource['identifier'] = ID
-                    break
-                elif dPantherURL.search(ID):
-                    sourceResource['identifier'] = ID
-                    logger.warning('sourceResource.identifier: {0} - {1}'.format('Not a PURL',
-                                                                                 oai_id))
-            is_shown_at = sourceResource['identifier']
+    @property
+    def identifier(self):
+        return [identifier for identifier in self.record.metadata.get_element('.//{0}identifier'.format(dc))]
 
-        except (TypeError, UnboundLocalError) as err:
-            logger.error(
-                'sourceResource.identifier: {0} - {1}'.format(err,
-                                                              oai_id))
-            continue
-        '''
-
-    def language(self, record):
-        '''
-        if record.metadata.get_element('.//{0}language'.format(dc)):
-            sourceResource['language'] = []
-            for element in record.metadata.get_element(
-                    './/{0}language'.format(dc), delimiter=';'):
-                if len(element) > 3:
-                    sourceResource['language'].append({"name": element})
-                else:
-                    sourceResource['language'].append({"iso_639_3": element})
-        '''
+    @property
+    def language(self):
+        return [lang for lang in self.record.metadata.get_element('.//{0}language'.format(dc), delimiter=';')]
 
     @property
     def place(self):
@@ -160,7 +121,7 @@ class DC_Record(CitrusRecord):
 
     @property
     def publisher(self):
-        return self.record.metadata.get_element('.//{0}publisher'.format(dc))
+        return [publisher for publisher in self.record.metadata.get_element('.//{0}publisher'.format(dc))]
 
     # sourceResource.relation
 
@@ -170,34 +131,19 @@ class DC_Record(CitrusRecord):
 
     @property
     def rights(self):
-        rights = self.record.metadata.get_element('.//{0}rights'.format(dc))
-        if rights:
-            return [{'text': rights[0]}]
-        '''
-        else:
-            logger.error('No sourceResource.rights - {0}'.format(oai_id))
-            continue
-        '''
+        return [rights for rights in self.record.metadata.get_element('.//{0}rights'.format(dc))]
 
-    def subject(self, record):
-        pass
-        # '''
-        # if record.metadata.get_element('.//{0}subject'.format(dc)):
-        #     sourceResource['subject'] = []
-        #     for term in record.metadata.get_element('.//{0}subject'.format(dc),
-        #                                             delimiter=';'):
-        #         term = re.sub("\( lcsh \)$", '', term)
-        #         if len(term) > 0:
-        #             sourceResource['subject'].append({"name": term.strip(" ")})
-        # '''
+    @property
+    def subject(self):
+        return [sub for sub in self.record.metadata.get_element('.//{0}subject'.format(dc))]
 
     @property
     def title(self):
-        return self.record.metadata.get_element('.//{0}title'.format(dc))
+        return [title for title in self.record.metadata.get_element('.//{0}title'.format(dc))]
 
     @property
     def type(self):
-        return self.record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')
+        return [t for t in self.record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')]
 
     # webResource.fileFormat
 
@@ -212,11 +158,11 @@ class QDC_Record(DC_Record):
 
     @property
     def abstract(self):
-        return self.record.metadata.get_element('.//{0}abstract'.format(dcterms))
+        return [ abstract for abstract in self.record.metadata.get_element('.//{0}abstract'.format(dcterms))]
 
     @property
     def alternative(self):
-        return self.record.metadata.get_element('.//{0}alternative'.format(dcterms))
+        return [alt for alt in self.record.metadata.get_element('.//{0}alternative'.format(dcterms))]
 
     # sourceResource.collection
 
@@ -241,26 +187,9 @@ class QDC_Record(DC_Record):
         if date is not None:
             return {"begin": date[0], "end": date[0], "displayDate": date[0]}
 
-    def description(self, record):
-        '''
-        description = []
-        if record.metadata.get_element(
-                './/{0}description'.format(dc)) is not None:
-            for item in record.metadata.get_element(
-                    './/{0}description'.format(dc)):
-                description.append(item)
-        if record.metadata.get_element(
-                './/{0}abstract'.format(dcterms)) is not None:
-            for item in record.metadata.get_element(
-                    './/{0}abstract'.format(dcterms)):
-                description.append(item)
-        if description:
-            sourceResource['description'] = description
-        '''
-
     @property
     def extent(self):
-        return self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')
+        return [ extent for extent in self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')]
 
     @property
     def place(self):
