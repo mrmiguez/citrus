@@ -8,10 +8,8 @@ dcterms = '{http://purl.org/dc/terms/}'
 
 class Scenario:
 
-    def __init__(self, file_in, tn=None, dprovide=None, iprovide=None):
-        self.tn = tn
-        self.dprovide = dprovide
-        self.iprovide = iprovide
+    def __init__(self, file_in, org):
+        self.org = org
         self.records = []
         with open(file_in, encoding='utf-8') as data_in:
             records = OAIReader(data_in)
@@ -42,22 +40,22 @@ class Scenario:
 
 class SSDN_DC(Scenario):
 
-    def __init__(self, file_in, tn, dprovide, iprovide=None):
-        Scenario.__init__(self, file_in, tn, dprovide, iprovide=None)
+    def __init__(self, file_in, org):
+        Scenario.__init__(self, file_in, org)
         self.records = [DC_Record(record) for record in self.records]
 
 
 class SSDN_QDC(Scenario):
 
-    def __init__(self, file_in, tn, dprovide, iprovide=None):
-        Scenario.__init__(self, file_in, tn, dprovide, iprovide=None)
+    def __init__(self, file_in, org):
+        Scenario.__init__(self, file_in, org)
         self.records = [QDC_Record(record) for record in self.records]
 
 
 class SSDN_MODS(Scenario):
 
-    def __init__(self, file_in, tn, dprovide, iprovide=None):
-        Scenario.__init__(self, file_in, tn, dprovide, iprovide=None)
+    def __init__(self, file_in, org):
+        Scenario.__init__(self, file_in, org)
         self.records = [MODS_Record(record) for record in self.records]
 
 
@@ -69,6 +67,9 @@ class CitrusRecord:
 
 
 class DC_Record(CitrusRecord):
+
+    def __init__(self, record):
+        CitrusRecord.__init__(self, record)
 
     @property
     def contributor(self):
@@ -203,6 +204,9 @@ class QDC_Record(DC_Record):
 
 
 class MODS_Record(CitrusRecord):
+
+    def __init__(self, record):
+        CitrusRecord.__init__(self, record)
 
     def alternative(self, record):
         '''

@@ -1,5 +1,6 @@
 import os
 import unittest
+from citrus import Organization
 
 test_dir_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -8,7 +9,8 @@ class ScenariosTestCase(unittest.TestCase):
 
     def setUp(self):
         from citrus import Scenario
-        self.scenario = Scenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
+        self.org = Organization()
+        self.scenario = Scenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'), self.org)
 
     def test_deleted_records(self):
         self.assertEqual(len(self.scenario), 3)
@@ -18,7 +20,8 @@ class CitrusRecordTestCase(unittest.TestCase):
 
     def setUp(self):
         from citrus import Scenario, CitrusRecord
-        self.scenario = Scenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
+        self.org = Organization()
+        self.scenario = Scenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'), self.org)
         self.record = CitrusRecord(self.scenario.records[0])
 
     def test_citrus_record_oai_id(self):
@@ -29,7 +32,8 @@ class DC_RecordTestCase(unittest.TestCase):
 
     def setUp(self):
         from citrus import SSDN_DC
-        self.scenario = SSDN_DC(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'), None, None)
+        self.org = Organization()
+        self.scenario = SSDN_DC(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'), self.org)
         self.record = self.scenario.records[0]
 
     def test_DC_record_contributor(self):
@@ -78,7 +82,8 @@ class QDC_RecordTestCase(unittest.TestCase):
 
     def setUp(self):
         from citrus import SSDN_QDC
-        self.scenario = SSDN_QDC(os.path.join(test_dir_path, 'test_data/QDCdebugSmall.xml'), None, None)
+        self.org = Organization()
+        self.scenario = SSDN_QDC(os.path.join(test_dir_path, 'test_data/QDCdebugSmall.xml'), self.org)
         self.record = self.scenario.records[0]
 
     def test_QDC_record_abstract(self):
@@ -134,7 +139,8 @@ class MODS_RecordTestCase(unittest.TestCase):
 
     def setUp(self):
         from citrus import SSDN_MODS
-        self.scenario = SSDN_MODS(os.path.join(test_dir_path, 'test_data/MODSdebugSmall.xml'), None, None)
+        self.org = Organization()
+        self.scenario = SSDN_MODS(os.path.join(test_dir_path, 'test_data/MODSdebugSmall.xml'), self.org)
         self.record = self.scenario.records[0]
 
     # def test_MODS_record_alternative(self):

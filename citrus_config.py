@@ -65,7 +65,7 @@ REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
 
 OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
 
-OUTPUT_FORMAT = ''
+OUTPUT_FORMAT = 'jsonl'
 
 PRETTY_PRINT = True
 

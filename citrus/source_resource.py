@@ -2,21 +2,13 @@ import json
 from citrus.exceptions import SourceResourceRequiredElementException
 
 
-class SourceResource(object):
+class Record(object):
 
     def __init__(self):
-        """
-
-        """
         object.__init__(self)
 
     def __setattr__(self, key, value):
-        if key == 'rights' and not value:
-            raise SourceResourceRequiredElementException('Rights')
-        elif key == 'title' and not value:
-            raise SourceResourceRequiredElementException('Title')
-        elif value:
-            self.__dict__[key] = value
+        self.__dict__[key] = value
 
     def write_json(self):
         """
@@ -32,3 +24,20 @@ class SourceResource(object):
 
     def dumps(self, indent=None):
         return json.dumps(self.__dict__, indent=indent)
+
+
+class SourceResource(Record):
+
+    def __init__(self):
+        """
+
+        """
+        Record.__init__(self)
+
+    def __setattr__(self, key, value):
+        if key == 'rights' and not value:
+            raise SourceResourceRequiredElementException('Rights')
+        elif key == 'title' and not value:
+            raise SourceResourceRequiredElementException('Title')
+        elif value:
+            self.__dict__[key] = value
