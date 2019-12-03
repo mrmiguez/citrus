@@ -39,7 +39,7 @@ class DC_RecordTestCase(unittest.TestCase):
     #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
 
     def test_DC_record_date(self):
-        self.assertEqual(self.record.date, {"begin": "1974", "end": "1974", "displayDate": "1974"})
+        self.assertEqual(self.record.date, ['1974'])
 
     def test_DC_record_description(self):
         self.assertEqual(self.record.description, ['1 postcard, postally unused',
@@ -62,7 +62,7 @@ class DC_RecordTestCase(unittest.TestCase):
                          ['Miami, Florida: J.N. Chamberlain', 'Miami, Florida: J.N. Chamberlain'])
 
     def test_DC_record_rights(self):
-        self.assertEqual(self.record.rights, [{'text': "Rights 4A"}])
+        self.assertEqual(self.record.rights, ["Rights 4A"])
 
     # def test_DC_record_subject(self):
     #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
