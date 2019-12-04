@@ -39,8 +39,8 @@ class DC_RecordTestCase(unittest.TestCase):
     def test_DC_record_contributor(self):
         self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
 
-    # def test_DC_record_creator(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_DC_record_creator(self):
+        self.assertEqual(self.record.creator, [{'name': 'Lewis Carroll'}])
 
     def test_DC_record_date(self):
         self.assertEqual(self.record.date, ['1974'])
@@ -52,11 +52,12 @@ class DC_RecordTestCase(unittest.TestCase):
     def test_DC_record_format(self):
         self.assertEqual(self.record.format, ["Embroidery"])
 
-    # def test_DC_record_identifier(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_DC_record_identifier(self):
+        self.assertEqual(self.record.identifier, ['FI07050832',
+                                                  'http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI07050832/00001'])
 
-    # def test_DC_record_language(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_DC_record_language(self):
+        self.assertEqual(self.record.language, ['English'])
 
     def test_DC_record_place(self):
         self.assertEqual(self.record.place, [{"name": "Moon"}])
@@ -68,8 +69,8 @@ class DC_RecordTestCase(unittest.TestCase):
     def test_DC_record_rights(self):
         self.assertEqual(self.record.rights, ["Rights 4A"])
 
-    # def test_DC_record_subject(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_DC_record_subject(self):
+        self.assertEqual(self.record.subject, ['Alligators--Florida--Everglades.'])
 
     def test_DC_record_title(self):
         self.assertEqual(self.record.title, ["Alligator Joe watching the young alligators hatch"])
@@ -95,14 +96,14 @@ class QDC_RecordTestCase(unittest.TestCase):
     def test_QDC_record_contributor(self):
         self.assertEqual(self.record.contributor, [{'name': 'Thee Oh Sees'}])
 
-    # def test_QDC_record_creator(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_QDC_record_creator(self):
+        self.assertEqual(self.record.creator, [{'name': 'Gilpin, Vince'}])
 
     def test_QDC_record_date(self):
-        self.assertEqual(self.record.date, {"begin": "1933-09-03", "end": "1933-09-03", "displayDate": "1933-09-03"})
+        self.assertEqual(self.record.date, ["1933-09-03"])
 
-    # def test_QDC_record_description(self):
-    #     self.assertEqual(self.record.description, ['Test 001'])
+    def test_QDC_record_description(self):
+        self.assertEqual(self.record.description, ['Test 001'])
 
     def test_QDC_record_extent(self):
         self.assertEqual(self.record.extent, ["1 letter"])
@@ -110,11 +111,11 @@ class QDC_RecordTestCase(unittest.TestCase):
     def test_QDC_record_format(self):
         self.assertEqual(self.record.format, ["image/tiff"])
 
-    # def test_QDC_record_identifier(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_QDC_record_identifier(self):
+        self.assertEqual(self.record.identifier, ['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/31'])
 
-    # def test_QDC_record_language(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_QDC_record_language(self):
+        self.assertEqual(self.record.language, ['eng'])
 
     def test_QDC_record_place(self):
         self.assertEqual(self.record.place, [{"name": "Excelsior (Minn.)"}])
@@ -122,11 +123,12 @@ class QDC_RecordTestCase(unittest.TestCase):
     def test_QDC_record_publisher(self):
         self.assertEqual(self.record.publisher, ['Arista Records'])
 
-    # def test_QDC_record_rights(self):
-    #     self.assertEqual(self.record.rights, [{'text': "Rights 4A"}])
+    def test_QDC_record_rights(self):
+        self.assertEqual(self.record.rights,
+                         ["Rights 4A", "Copyright Undetermined http://rightsstatements.org/page/UND/1.0/"])
 
-    # def test_QDC_record_subject(self):
-    #     self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+    def test_QDC_record_subject(self):
+        self.assertEqual(self.record.subject, ['Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters'])
 
     def test_QDC_record_title(self):
         self.assertEqual(self.record.title, ["Vincent Gilpin letter to Patty Munroe, September 3, 1933"])

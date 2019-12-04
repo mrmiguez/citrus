@@ -10,6 +10,12 @@ class Record(object):
     def __setattr__(self, key, value):
         self.__dict__[key] = value
 
+    def __str__(self):
+        try:
+            return f'{self.__class__.__name__}, {self.__dict__["identifier"]}'
+        except KeyError:
+            return f'{self.__repr__()}'
+
     def write_json(self):
         """
 
@@ -41,3 +47,7 @@ class SourceResource(Record):
             raise SourceResourceRequiredElementException('Title')
         elif value:
             self.__dict__[key] = value
+
+    @property
+    def data(self):
+        return self.__dict__

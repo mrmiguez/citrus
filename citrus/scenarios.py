@@ -1,6 +1,6 @@
 import re
 from pymods import OAIReader
-from .exceptions import *
+import citrus
 
 dc = '{http://purl.org/dc/elements/1.1/}'
 dcterms = '{http://purl.org/dc/terms/}'
@@ -8,9 +8,13 @@ dcterms = '{http://purl.org/dc/terms/}'
 
 class Scenario:
 
-    def __init__(self, file_in, org):
+    def __init__(self, file_in, org: citrus.Organization):
         self.org = org
         self.records = []
+        # self.data_provider = org.data_provider
+        # self.thumbnail = org.thumbnail
+        # if org.intermediate_provider:
+        #     self.intermediate_provider = org.intermediate_provider
         with open(file_in, encoding='utf-8') as data_in:
             records = OAIReader(data_in)
             for record in records:
@@ -36,6 +40,9 @@ class Scenario:
 
     def __len__(self):
         return len(self.records)
+
+    def __str__(self):
+        return f'{self.__class__.__name__}'
 
 
 class SSDN_DC(Scenario):
@@ -65,6 +72,9 @@ class CitrusRecord:
         self.record = record
         self.oai_id = self.record.oai_urn
 
+    def __str__(self):
+        return f'{self.__class__.__name__}, {self.oai_id}'
+
 
 class DC_Record(CitrusRecord):
 
@@ -73,28 +83,19 @@ class DC_Record(CitrusRecord):
 
     @property
     def contributor(self):
-        return [{"name": name} for name in self.record.metadata.get_element('.//{0}contributor'.format(dc), delimiter=';')]
+        try:
+            return [{"name": name} for name in
+                    self.record.metadata.get_element('.//{0}contributor'.format(dc), delimiter=';')]
+        except TypeError:
+            pass
 
-    def creator(self, record):
-        '''
-        if record.metadata.get_element('.//{0}creator'.format(dc)):
-            sourceResource['creator'] = []
-            for name in record.metadata.get_element('.//{0}creator'.format(dc),
-                                                    delimiter=';'):
-                # need to test for ( Contributor ) and ( contributor )
-                if (len(name) > 0) and ("ontributor )" not in name):
-                    sourceResource['creator'].append({"name": name.strip(" ")})
-                elif "ontributor )" in name:
-                    if 'contributor' not in sourceResource.keys():
-                        sourceResource['contributor'] = []
-                        sourceResource['contributor'].append({"name": name.strip(
-                            " ").rstrip("( Contributor )").rstrip(
-                            "( contributor )")})
-                    else:
-                        sourceResource['contributor'].append(
-                            {"name": name.strip(" ").rstrip(
-                                "( Contributor )").rstrip("( contributor )")})
-        '''
+    @property
+    def creator(self):
+        try:
+            return [{"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")} for name in
+                    self.record.metadata.get_element('.//{0}creator'.format(dc), delimiter=';')]
+        except TypeError:
+            pass
 
     @property
     def date(self):
@@ -102,7 +103,8 @@ class DC_Record(CitrusRecord):
 
     @property
     def description(self):
-        return [description for description in self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')]
+        return [description for description in
+                self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')]
 
     @property
     def format(self):
@@ -146,11 +148,6 @@ class DC_Record(CitrusRecord):
     def type(self):
         return [t for t in self.record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')]
 
-    # webResource.fileFormat
-
-    # aggregation.dataProvider
-    # data_provider = dprovide
-
 
 class QDC_Record(DC_Record):
 
@@ -159,7 +156,7 @@ class QDC_Record(DC_Record):
 
     @property
     def abstract(self):
-        return [ abstract for abstract in self.record.metadata.get_element('.//{0}abstract'.format(dcterms))]
+        return [abstract for abstract in self.record.metadata.get_element('.//{0}abstract'.format(dcterms))]
 
     @property
     def alternative(self):
@@ -169,38 +166,27 @@ class QDC_Record(DC_Record):
 
     @property
     def date(self):
-        date = self.record.metadata.get_element('.//{0}created'.format(dcterms))
-        if date is None:  # TODO: there has to be a better way to do this
-            date = self.record.metadata.get_element('.//{0}issued'.format(dcterms))
-        if date is None:
-            date = self.record.metadata.get_element('.//{0}date'.format(dcterms))
-        if date is None:
-            date = self.record.metadata.get_element('.//{0}date'.format(dc))
-        if date is None:
-            date = self.record.metadata.get_element('.//{0}available'.format(dcterms))
-        if date is None:
-            date = self.record.metadata.get_element('.//{0}dateAccepted'.format(dcterms))
-        if date is None:
-            date = self.record.metadata.get_element('.//{0}dateCopyrighted'.format(dcterms))
-        if date is None:
-            date = self.record.metadata.get_element('.//{0}dateSubmitted'.format(dcterms))
-
-        if date is not None:
-            return {"begin": date[0], "end": date[0], "displayDate": date[0]}
+        date = None
+        date_list = (f'{dcterms}created', f'{dcterms}issued', f'{dcterms}date', f'{dc}date', f'{dcterms}available',
+                     f'{dcterms}dateAccepted', f'{dcterms}dateCopyrighted', f'{dcterms}dateSubmitted')
+        for d in date_list:
+            date = self.record.metadata.get_element(f'.//{d}')
+            if date:
+                break
+        return date
 
     @property
     def extent(self):
-        return [ extent for extent in self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')]
+        try:
+            return [extent for extent in
+                    self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')]
+        except TypeError:
+            pass
 
     @property
     def place(self):
-        return [{'name': place} for place in self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
-
-    # webResource.fileFormat
-    #  TODO: file_format kicked out of SR.genre
-
-    # aggregation.dataProvider
-    # data_provider = dprovide
+        return [{'name': place} for place in
+                self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
 
 
 class MODS_Record(CitrusRecord):
@@ -233,16 +219,10 @@ class MODS_Record(CitrusRecord):
             pass
         '''
 
-    def creator(self, record):
-        name_list = []
-        if record.metadata.get_creators:
-            for name in record.metadata.get_creators:
-                name_list.append(name)
-        if record.metadata.names:
-            for name in record.metadata.names:
-                if name.role.text is None or name.role.code is None:
-                    name_list.append(name)
-        return [{"@id": name.uri, "name": name.text} if name.uri else {"name": name.text} for name in name_list]
+    @property
+    def creator(self):
+        return [{"@id": name.uri, "name": name.text} if name.uri else {"name": name.text} for name in
+                self.record.metadata.get_creators]
 
     @property
     def date(self):
@@ -267,7 +247,8 @@ class MODS_Record(CitrusRecord):
 
     @property
     def format(self):
-        return [{'name': genre.text, '@id': genre.uri} if genre.uri else {'name': genre.text} for genre in self.record.metadata.genre]
+        return [{'name': genre.text, '@id': genre.uri} if genre.uri else {'name': genre.text} for genre in
+                self.record.metadata.genre]
 
     @property
     def identifier(self):
@@ -331,6 +312,3 @@ class MODS_Record(CitrusRecord):
     @property
     def type(self):
         return self.record.metadata.type_of_resource
-
-    # aggregation.dataProvider
-    # data_provider = dprovide
