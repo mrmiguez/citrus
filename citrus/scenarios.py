@@ -1,6 +1,4 @@
-import re
 from pymods import OAIReader
-import citrus
 
 dc = '{http://purl.org/dc/elements/1.1/}'
 dcterms = '{http://purl.org/dc/terms/}'
@@ -8,16 +6,16 @@ dcterms = '{http://purl.org/dc/terms/}'
 
 class Scenario:
 
-    def __init__(self, file_in, org: citrus.Organization):
-        self.org = org
+    def __init__(self, xml_path):
+        """
+        Generic class for parsing OIA-PMH XML. Serves as a iterable container for pymods.Records at self.records
+        :param xml_path: Path to an XML file of OAI-PMH records
+        """
         self.records = []
-        # self.data_provider = org.data_provider
-        # self.thumbnail = org.thumbnail
-        # if org.intermediate_provider:
-        #     self.intermediate_provider = org.intermediate_provider
-        with open(file_in, encoding='utf-8') as data_in:
+        with open(xml_path, encoding='utf-8') as data_in:
             records = OAIReader(data_in)
             for record in records:
+
                 # deleted record handling for repox
                 try:
                     if 'deleted' in record.attrib.keys():
@@ -25,6 +23,7 @@ class Scenario:
                             continue
                 except AttributeError:
                     pass
+
                 # deleted record handling for OAI-PMH
                 try:
                     if 'status' in record.find('./{*}header').attrib.keys():
@@ -32,6 +31,7 @@ class Scenario:
                             continue
                 except AttributeError:
                     pass
+
                 self.records.append(record)
 
     def __iter__(self):
@@ -47,28 +47,44 @@ class Scenario:
 
 class SSDN_DC(Scenario):
 
-    def __init__(self, file_in, org):
-        Scenario.__init__(self, file_in, org)
+    def __init__(self, xml_path):
+        """
+        Parser and container for citrus.DC_Record records
+        :param xml_path: Path to an XML file of oai_dc records
+        """
+        Scenario.__init__(self, xml_path)
         self.records = [DC_Record(record) for record in self.records]
 
 
 class SSDN_QDC(Scenario):
 
-    def __init__(self, file_in, org):
-        Scenario.__init__(self, file_in, org)
+    def __init__(self, xml_path):
+        """
+        Parser and container for citrus.QDC_Record records
+        :param xml_path: Path to an XML file of oai_qdc records
+        """
+        Scenario.__init__(self, xml_path)
         self.records = [QDC_Record(record) for record in self.records]
 
 
 class SSDN_MODS(Scenario):
 
-    def __init__(self, file_in, org):
-        Scenario.__init__(self, file_in, org)
+    def __init__(self, xml_path):
+        """
+        Parser and container for citrus.MODS_Record records
+        :param xml_path: Path to an XML file of OAI-PMH MODS records
+        """
+        Scenario.__init__(self, xml_path)
         self.records = [MODS_Record(record) for record in self.records]
 
 
 class CitrusRecord:
 
     def __init__(self, record):
+        """
+        Generic class for single records. Makes record OAI-PMH identifier available through self.oai_id attribute
+        :param record: Generic record
+        """
         self.record = record
         self.oai_id = self.record.oai_urn
 
@@ -79,6 +95,10 @@ class CitrusRecord:
 class DC_Record(CitrusRecord):
 
     def __init__(self, record):
+        """
+        Dublin Core record class. Element text is available through self.element properties
+        :param record: oai_dc record
+        """
         CitrusRecord.__init__(self, record)
 
     @property
@@ -87,7 +107,7 @@ class DC_Record(CitrusRecord):
             return [{"name": name} for name in
                     self.record.metadata.get_element('.//{0}contributor'.format(dc), delimiter=';')]
         except TypeError:
-            pass
+            return None
 
     @property
     def creator(self):
@@ -95,36 +115,57 @@ class DC_Record(CitrusRecord):
             return [{"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")} for name in
                     self.record.metadata.get_element('.//{0}creator'.format(dc), delimiter=';')]
         except TypeError:
-            pass
+            return None
 
     @property
     def date(self):
-        return [date for date in self.record.metadata.get_element('.//{0}date'.format(dc))]
+        try:
+            return [date for date in self.record.metadata.get_element('.//{0}date'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def description(self):
-        return [description for description in
-                self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')]
+        try:
+            return [description for description in
+                    self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')]
+        except TypeError:
+            return None
 
     @property
     def format(self):
-        return [ft for ft in self.record.metadata.get_element('.//{0}format'.format(dc))]
+        try:
+            return [ft for ft in self.record.metadata.get_element('.//{0}format'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def identifier(self):
-        return [identifier for identifier in self.record.metadata.get_element('.//{0}identifier'.format(dc))]
+        try:
+            return [identifier for identifier in self.record.metadata.get_element('.//{0}identifier'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def language(self):
-        return [lang for lang in self.record.metadata.get_element('.//{0}language'.format(dc), delimiter=';')]
+        try:
+            return [lang for lang in self.record.metadata.get_element('.//{0}language'.format(dc), delimiter=';')]
+        except TypeError:
+            return None
 
     @property
     def place(self):
-        return [{'name': place} for place in self.record.metadata.get_element('.//{0}coverage'.format(dc))]
+        try:
+            return [{'name': place} for place in self.record.metadata.get_element('.//{0}coverage'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def publisher(self):
-        return [publisher for publisher in self.record.metadata.get_element('.//{0}publisher'.format(dc))]
+        try:
+            return [publisher for publisher in self.record.metadata.get_element('.//{0}publisher'.format(dc))]
+        except TypeError:
+            return None
 
     # sourceResource.relation
 
@@ -134,35 +175,62 @@ class DC_Record(CitrusRecord):
 
     @property
     def rights(self):
-        return [rights for rights in self.record.metadata.get_element('.//{0}rights'.format(dc))]
+        try:
+            return [rights for rights in self.record.metadata.get_element('.//{0}rights'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def subject(self):
-        return [sub for sub in self.record.metadata.get_element('.//{0}subject'.format(dc))]
+        try:
+            return [sub for sub in self.record.metadata.get_element('.//{0}subject'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def title(self):
-        return [title for title in self.record.metadata.get_element('.//{0}title'.format(dc))]
+        try:
+            return [title for title in self.record.metadata.get_element('.//{0}title'.format(dc))]
+        except TypeError:
+            return None
 
     @property
     def type(self):
-        return [t for t in self.record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')]
+        try:
+            return [t for t in self.record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')]
+        except TypeError:
+            return None
 
 
 class QDC_Record(DC_Record):
 
     def __init__(self, record):
+        """
+        Qualified Dublin Core record class. Element text is available through self.element properties. Subclass of citrus.DC_Record
+        :param record: oai_qdc record
+        """
         DC_Record.__init__(self, record)
 
     @property
     def abstract(self):
-        return [abstract for abstract in self.record.metadata.get_element('.//{0}abstract'.format(dcterms))]
+        try:
+            return [abstract for abstract in self.record.metadata.get_element('.//{0}abstract'.format(dcterms))]
+        except TypeError:
+            return None
 
     @property
     def alternative(self):
-        return [alt for alt in self.record.metadata.get_element('.//{0}alternative'.format(dcterms))]
+        try:
+            return [alt for alt in self.record.metadata.get_element('.//{0}alternative'.format(dcterms))]
+        except TypeError:
+            return None
 
-    # sourceResource.collection
+    @property
+    def is_part_of(self):
+        try:
+            return [alt for alt in self.record.metadata.get_element('.//{0}isPartOf'.format(dcterms))]
+        except TypeError:
+            return None
 
     @property
     def date(self):
@@ -181,17 +249,24 @@ class QDC_Record(DC_Record):
             return [extent for extent in
                     self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')]
         except TypeError:
-            pass
+            return None
 
     @property
     def place(self):
-        return [{'name': place} for place in
-                self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
+        try:
+            return [{'name': place} for place in
+                    self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
+        except TypeError:
+            return None
 
 
 class MODS_Record(CitrusRecord):
 
     def __init__(self, record):
+        """
+        MODS record class making MAPv4 elements available through self.element properties
+        :param record: OAI-PMH MODS record
+        """
         CitrusRecord.__init__(self, record)
 
     def alternative(self, record):
