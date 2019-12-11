@@ -32,6 +32,13 @@
             <roleTerm authority="marcrelator" type="code">cre</roleTerm>
           </role>
         </name>
+        <name type="personal">
+         <namePart type="family">Winkler</namePart>
+          <role>
+            <roleTerm type="text" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators">Author</roleTerm>
+            <roleTerm type="code" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators">aut</roleTerm>
+          </role>
+        </name>
         <typeOfResource>still image</typeOfResource>
         <genre authority="gmgpc">Photographs</genre>
         <originInfo>
@@ -70,6 +77,15 @@
         <recordInfo>
           <recordChangeDate>2015-10-26</recordChangeDate>
         </recordInfo>
+        <relatedItem type="host">
+          <titleInfo>
+            <title>General Jean-Jacques-Germain Pelet-Clozeau Papers</title>
+          </titleInfo>
+          <location>
+            <physicalLocation>Special Collections &amp; Archives, Florida State University, Tallahassee, Florida</physicalLocation>
+            <url displayLabel="Finding Aid">https://archives.lib.fsu.edu/repositories/10/resources/531</url>
+          </location>
+        </relatedItem>
         <identifier type="fedora">fsu:24694</identifier>
         <location displayLabel="purl">
           <url>http://purl.flvc.org/fsu/fd/FSUspcn329b</url>

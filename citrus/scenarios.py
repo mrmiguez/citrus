@@ -6,6 +6,25 @@ dcterms = '{http://purl.org/dc/terms/}'
 
 class Scenario:
 
+    def __init__(self, records):
+        self.records = records
+
+    def __getitem__(self, item):
+        return self.records[item]
+
+    def __iter__(self):
+        for record in self.records:
+            yield record
+
+    def __len__(self):
+        return len(self.records)
+
+    def __str__(self):
+        return f'{self.__class__.__name__}'
+
+
+class XML_Scenario(Scenario):
+
     def __init__(self, xml_path):
         """
         Generic class for parsing OIA-PMH XML. Serves as a iterable container for pymods.Records at self.records
@@ -33,49 +52,75 @@ class Scenario:
                     pass
 
                 self.records.append(record)
-
-    def __iter__(self):
-        for record in self.records:
-            yield record
-
-    def __len__(self):
-        return len(self.records)
-
-    def __str__(self):
-        return f'{self.__class__.__name__}'
+        Scenario.__init__(self, self.records)
 
 
-class SSDN_DC(Scenario):
+class SSDN_DC(XML_Scenario):
 
     def __init__(self, xml_path):
         """
         Parser and container for citrus.DC_Record records
         :param xml_path: Path to an XML file of oai_dc records
         """
-        Scenario.__init__(self, xml_path)
+        XML_Scenario.__init__(self, xml_path)
         self.records = [DC_Record(record) for record in self.records]
 
 
-class SSDN_QDC(Scenario):
+class SSDN_QDC(XML_Scenario):
 
     def __init__(self, xml_path):
         """
         Parser and container for citrus.QDC_Record records
         :param xml_path: Path to an XML file of oai_qdc records
         """
-        Scenario.__init__(self, xml_path)
+        XML_Scenario.__init__(self, xml_path)
         self.records = [QDC_Record(record) for record in self.records]
 
 
-class SSDN_MODS(Scenario):
+class SSDN_MODS(XML_Scenario):
 
     def __init__(self, xml_path):
         """
         Parser and container for citrus.MODS_Record records
         :param xml_path: Path to an XML file of OAI-PMH MODS records
         """
-        Scenario.__init__(self, xml_path)
+        XML_Scenario.__init__(self, xml_path)
         self.records = [MODS_Record(record) for record in self.records]
+
+
+class API_Scenario(Scenario):
+
+    def __init__(self, url, record_key):
+        import requests
+        import json
+        r = requests.get(url)
+        data = json.loads(r.text)
+        self.records = [record for record in self._item_generator(data, record_key)]
+        Scenario.__init__(self, self.records)
+
+    def _item_generator(self, json_input, lookup_key):
+        if isinstance(json_input, dict):
+            for k, v in json_input.items():
+                if k == lookup_key:
+                    if isinstance(v, list):
+                        for i in v:
+                            yield i
+                    else:
+                        yield v
+                else:
+                    yield from self._item_generator(v, lookup_key)
+        elif isinstance(json_input, list):
+            for item in json_input:
+                yield from self._item_generator(item, lookup_key)
+
+
+class InternetArchive(API_Scenario):
+
+    def __init__(self, collection):
+        url = f'https://archive.org/advancedsearch.php?q=collection:{collection}&output=json&rows=10000'
+        # TODO: There's a non-dynamic 10,000 item limit in this internet archive request
+        # A collection of >10,000 items will need a more flexible request
+        API_Scenario.__init__(self, url, 'docs')
 
 
 class CitrusRecord:
@@ -278,21 +323,21 @@ class MODS_Record(CitrusRecord):
                     sourceResource['alternative'].append(alternative_title)
         '''
 
-    # sourceResource.collection
-
-    def contributor(self, record):
-        '''
+    @property
+    def collection(self):
         try:
+            return self.record.metadata.collection.title
+        except TypeError:
+            return None
 
-            for name in record.metadata.names:
-                if name.role.text != 'Creator' and name.role.code != 'cre' and name.role.text is not None and name.role.code is not None:
-                    return [{"@id": name.uri, "name": name.text}
-                                                     if name.uri else
-                                                     {"name": name.text}]
-        except KeyError as err:
-            logger.error('sourceResource.contributor: {0}, {1}'.format(err, record.oai_urn))
-            pass
-        '''
+    @property
+    def contributor(self):
+        return [{"@id": name.uri, "name": name.text} if name.uri else {"name": name.text} for name in
+                filter(self._creator_filter, self.record.metadata.names)]
+
+    def _creator_filter(self, name):
+        if name.role.text != 'Creator' and name.role.code != 'cre' and name.role.text is not None and name.role.code is not None:
+            return name
 
     @property
     def creator(self):
@@ -360,29 +405,14 @@ class MODS_Record(CitrusRecord):
             continue
         '''
 
-    def subject(self, record):
-        '''
-        try:
+    @property
+    def subject(self):
+        return [{"name": subject.text} for subject in self.record.metadata.subjects if
+                'eographic' not in subject.elem.tag]
 
-            if record.metadata.subjects:
-                sourceResource['subject'] = []
-                for subject in record.metadata.subjects:
-                    for child in subject.elem:
-                        if 'eographic' not in child.tag:
-                            sourceResource['subject'].append({"name": subject.text})
-        except (TypeError, IndexError) as err:
-            logger.error('sourceResource.subject: {0}, {1}'.format(err, record.oai_urn))
-            pass
-        '''
-
-    def title(self, record):
-        '''
-        if record.metadata.titles:
-            sourceResource['title'] = ['{}'.format(record.metadata.titles[0])]
-        else:
-            logger.error('No sourceResource.title: {0}'.format(record.oai_urn))
-            continue
-        '''
+    @property
+    def title(self):
+        return self.record.metadata.titles
 
     @property
     def type(self):
