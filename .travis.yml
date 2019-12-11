@@ -9,7 +9,7 @@ python:
 # command to install dependencies
 install: "pip install pymods requests bs4"
 # command to run tests
-script: py.test citrus/tests
+script: py.test citrus/tests/*
 notifications:
     email: 
         on_success: change
