@@ -140,8 +140,8 @@ class MODS_RecordTestCase(unittest.TestCase):
         self.scenario = SSDN_MODS(os.path.join(test_dir_path, 'test_data/MODSdebugSmall.xml'))
         self.record = self.scenario.records[0]
 
-    # def test_MODS_record_alternative(self):
-    #     pass
+    def test_MODS_record_alternative(self):
+        self.assertEqual(self.record.alternative, ['ALT: Fraternity fundraiser for injured student'])
 
     def test_MODS_record_collection(self):
         self.assertEqual(self.record.collection, 'General Jean-Jacques-Germain Pelet-Clozeau Papers')
@@ -176,14 +176,14 @@ class MODS_RecordTestCase(unittest.TestCase):
     def test_MODS_record_publisher(self):
         self.assertEqual(self.record.publisher, ["Tay Tay Frankie"])
 
-    # def test_MODS_record_rights(self):
-    #     pass
+    def test_MODS_record_rights(self):
+        self.assertEqual(self.record.rights, ['http://rightsstatements.org/vocab/NoC-US/1.0/', 'Rights 4A'])
 
     def test_MODS_record_subject(self):
         self.assertEqual(self.record.subject, [{'name': 'Students'}, {'name': 'Greek life'}, {'name': 'Fraternities and Sororities'}, {'name': 'Narnia'}])
 
     def test_MODS_record_title(self):
-        self.assertEqual(self.record.title, ['Fraternity fundraiser for injured student'])
+        self.assertEqual(self.record.title, 'Fraternity fundraiser for injured student')
 
     def test_MODS_record_type(self):
         self.assertEqual(self.record.type, "still image")

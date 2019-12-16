@@ -15,6 +15,9 @@
         <titleInfo>
           <title>Fraternity fundraiser for injured student</title>
         </titleInfo>
+        <titleInfo type="alternative">
+          <title>ALT: Fraternity fundraiser for injured student</title>
+        </titleInfo>
         <extension>
           <flvc:flvc>
             <flvc:owningInstitution>FSU</flvc:owningInstitution>
@@ -73,7 +76,8 @@
         <subject>
           <geographicCode>7013938</geographicCode>
         </subject>
-        <accessCondition type="useAndReproduction" xlink:href="http://rightsstatements.org/vocab/NoC-US/1.0/">Rights 4A</accessCondition>
+        <accessCondition type="use and reproduction" xlink:href="http://rightsstatements.org/vocab/NoC-US/1.0/">http://rightsstatements.org/vocab/NoC-US/1.0/</accessCondition>
+        <accessCondition type="use and reproduction">Rights 4A</accessCondition>
         <recordInfo>
           <recordChangeDate>2015-10-26</recordChangeDate>
         </recordInfo>

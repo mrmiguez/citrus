@@ -90,12 +90,21 @@ class SSDN_MODS(XML_Scenario):
 
 class API_Scenario(Scenario):
 
-    def __init__(self, url, record_key):
+    def __init__(self, url, record_key, count_key=None, page_key=None):
         import requests
         import json
         r = requests.get(url)
         data = json.loads(r.text)
+        if count_key:
+            record_count = [v for v in self._item_generator(data, count_key)][0]
         self.records = [record for record in self._item_generator(data, record_key)]
+        if record_count:
+            page = 1
+            while len(self.records) < record_count:
+                page += 1
+                data = json.loads(requests.get(url + f'&{page_key}={page}').text)
+                self.records = self.records + [record for record in self._item_generator(data, record_key)]
+                continue
         Scenario.__init__(self, self.records)
 
     def _item_generator(self, json_input, lookup_key):
@@ -117,10 +126,8 @@ class API_Scenario(Scenario):
 class InternetArchive(API_Scenario):
 
     def __init__(self, collection):
-        url = f'https://archive.org/advancedsearch.php?q=collection:{collection}&output=json&rows=10000'
-        # TODO: There's a non-dynamic 10,000 item limit in this internet archive request
-        # A collection of >10,000 items will need a more flexible request
-        API_Scenario.__init__(self, url, 'docs')
+        url = f'https://archive.org/advancedsearch.php?q=collection:{collection}&output=json&rows=100'
+        API_Scenario.__init__(self, url, 'docs', 'numFound', 'page')
 
 
 class CitrusRecord:
@@ -314,14 +321,9 @@ class MODS_Record(CitrusRecord):
         """
         CitrusRecord.__init__(self, record)
 
-    def alternative(self, record):
-        '''
-        if len(record.metadata.titles) > 1:
-            sourceResource['alternative'] = []
-            if len(record.metadata.titles[1:]) >= 1:
-                for alternative_title in record.metadata.titles[1:]:
-                    sourceResource['alternative'].append(alternative_title)
-        '''
+    @property
+    def alternative(self):
+        return self.record.metadata.titles[1:]
 
     @property
     def collection(self):
@@ -395,15 +397,9 @@ class MODS_Record(CitrusRecord):
 
     # sourceResource.replaces
 
-    def rights(self, record):
-        '''
-        if record.metadata.rights:
-            return [{"@id": rights.text} if "http://rightsstatements.org" in rights.text else {"text": rights.text} for rights in record.metadata.rights[:2]]
-            # slicing isn't ideal here since it depends on element order
-        else:
-            logger.error('No sourceResource.rights - {0}'.format(record.oai_urn))
-            continue
-        '''
+    @property
+    def rights(self):
+        return [rights.text for rights in self.record.metadata.rights]
 
     @property
     def subject(self):
@@ -412,7 +408,7 @@ class MODS_Record(CitrusRecord):
 
     @property
     def title(self):
-        return self.record.metadata.titles
+        return self.record.metadata.titles[0]
 
     @property
     def type(self):
