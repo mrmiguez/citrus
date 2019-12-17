@@ -1,15 +1,14 @@
 import os
 import unittest
-from citrus import DataProvider
 
 test_dir_path = os.path.abspath(os.path.dirname(__file__))
 
 
-class XML_ScenarioTestCase(unittest.TestCase):
+class XMLScenarioTestCase(unittest.TestCase):
 
     def setUp(self):
-        from citrus import XML_Scenario
-        self.scenario = XML_Scenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
+        from citrus import XMLScenario
+        self.scenario = XMLScenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
 
     def test_deleted_records(self):
         self.assertEqual(len(self.scenario), 3)
@@ -18,19 +17,19 @@ class XML_ScenarioTestCase(unittest.TestCase):
 class CitrusRecordTestCase(unittest.TestCase):
 
     def setUp(self):
-        from citrus import XML_Scenario, CitrusRecord
-        self.scenario = XML_Scenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
-        self.record = CitrusRecord(self.scenario.records[0])
+        from citrus import XMLScenario, XMLRecord
+        self.scenario = XMLScenario(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
+        self.record = XMLRecord(self.scenario.records[0])
 
-    def test_citrus_record_oai_id(self):
-        self.assertEqual(self.record.oai_id, "oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050832_00001")
+    def test_citrus_record_harvest_id(self):
+        self.assertEqual(self.record.harvest_id, "oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050832_00001")
 
 
-class DC_RecordTestCase(unittest.TestCase):
+class DCRecordTestCase(unittest.TestCase):
 
     def setUp(self):
-        from citrus import SSDN_DC
-        self.scenario = SSDN_DC(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
+        from citrus import SSDNDC
+        self.scenario = SSDNDC(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
         self.record = self.scenario.records[0]
 
     def test_DC_record_contributor(self):
@@ -76,11 +75,11 @@ class DC_RecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.type, ["Text"])
 
 
-class QDC_RecordTestCase(unittest.TestCase):
+class QDCRecordTestCase(unittest.TestCase):
 
     def setUp(self):
-        from citrus import SSDN_QDC
-        self.scenario = SSDN_QDC(os.path.join(test_dir_path, 'test_data/QDCdebugSmall.xml'))
+        from citrus import SSDNQDC
+        self.scenario = SSDNQDC(os.path.join(test_dir_path, 'test_data/QDCdebugSmall.xml'))
         self.record = self.scenario.records[0]
 
     def test_QDC_record_abstract(self):
@@ -133,11 +132,11 @@ class QDC_RecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.type, ["Tax return from a VIP"])
 
 
-class MODS_RecordTestCase(unittest.TestCase):
+class MODSRecordTestCase(unittest.TestCase):
 
     def setUp(self):
-        from citrus import SSDN_MODS
-        self.scenario = SSDN_MODS(os.path.join(test_dir_path, 'test_data/MODSdebugSmall.xml'))
+        from citrus import SSDNMODS
+        self.scenario = SSDNMODS(os.path.join(test_dir_path, 'test_data/MODSdebugSmall.xml'))
         self.record = self.scenario.records[0]
 
     def test_MODS_record_alternative(self):
@@ -193,9 +192,9 @@ class MODS_RecordTestCase(unittest.TestCase):
 #     test_suite = unittest.TestSuite(tests=ScenariosTestCase)
 #     test_suite.addTest(ScenariosTestCase)
 #     test_suite.addTest(CitrusRecordTestCase)
-#     test_suite.addTest(DC_RecordTestCase)
-#     test_suite.addTest(QDC_RecordTestCase)
-#     test_suite.addTest(MODS_RecordTestCase)
+#     test_suite.addTest(DCRecordTestCase)
+#     test_suite.addTest(QDCRecordTestCase)
+#     test_suite.addTest(MODSRecordTestCase)
 #     return test_suite
 
 

@@ -24,5 +24,5 @@ class SourceResourceException(CitrusException):
 
 class SourceResourceRequiredElementException(SourceResourceException):
 
-    def __init__(self, elem):
-        SourceResourceException.__init__(self, f"Required element {elem} is None")
+    def __init__(self, record, elem):
+        SourceResourceException.__init__(self, f"Required element {elem} is None: {record}")

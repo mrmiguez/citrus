@@ -8,7 +8,7 @@ def dc_standard_map(record):
     sr.date = record.date
     sr.description = record.description
     sr.format = record.format
-    sr.identifier = record.oai_id
+    sr.identifier = record.harvest_id
     sr.language = record.language
     sr.place = record.place
     sr.publisher = record.publisher
@@ -28,5 +28,22 @@ def qdc_standard_map(record):
     return sr
 
 
-def mods_map(record):
-    pass
+def mods_standard_map(record):
+    sr = SourceResource()
+    sr.alternative = record.alternative
+    sr.collection = record.collection
+    sr.contributor = record.contributor
+    sr.creator = record.creator
+    sr.date = record.date
+    sr.description = record.description
+    sr.extent = record.extent
+    sr.format = record.format
+    sr.identifier = record.harvest_id
+    sr.language = record.language
+    sr.place = record.place
+    sr.publisher = record.publisher
+    sr.rights = record.rights
+    sr.subject = record.subject
+    sr.title = record.title
+    sr.type = record.type
+    return sr

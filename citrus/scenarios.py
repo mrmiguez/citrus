@@ -23,7 +23,7 @@ class Scenario:
         return f'{self.__class__.__name__}'
 
 
-class XML_Scenario(Scenario):
+class XMLScenario(Scenario):
 
     def __init__(self, xml_path):
         """
@@ -55,40 +55,40 @@ class XML_Scenario(Scenario):
         Scenario.__init__(self, self.records)
 
 
-class SSDN_DC(XML_Scenario):
+class SSDNDC(XMLScenario):
 
     def __init__(self, xml_path):
         """
         Parser and container for citrus.DC_Record records
         :param xml_path: Path to an XML file of oai_dc records
         """
-        XML_Scenario.__init__(self, xml_path)
-        self.records = [DC_Record(record) for record in self.records]
+        XMLScenario.__init__(self, xml_path)
+        self.records = [DCRecord(record) for record in self.records]
 
 
-class SSDN_QDC(XML_Scenario):
+class SSDNQDC(XMLScenario):
 
     def __init__(self, xml_path):
         """
         Parser and container for citrus.QDC_Record records
         :param xml_path: Path to an XML file of oai_qdc records
         """
-        XML_Scenario.__init__(self, xml_path)
-        self.records = [QDC_Record(record) for record in self.records]
+        XMLScenario.__init__(self, xml_path)
+        self.records = [QDCRecord(record) for record in self.records]
 
 
-class SSDN_MODS(XML_Scenario):
+class SSDNMODS(XMLScenario):
 
     def __init__(self, xml_path):
         """
         Parser and container for citrus.MODS_Record records
         :param xml_path: Path to an XML file of OAI-PMH MODS records
         """
-        XML_Scenario.__init__(self, xml_path)
-        self.records = [MODS_Record(record) for record in self.records]
+        XMLScenario.__init__(self, xml_path)
+        self.records = [MODSRecord(record) for record in self.records]
 
 
-class API_Scenario(Scenario):
+class APIScenario(Scenario):
 
     def __init__(self, url, record_key, count_key=None, page_key=None):
         import requests
@@ -123,35 +123,46 @@ class API_Scenario(Scenario):
                 yield from self._item_generator(item, lookup_key)
 
 
-class InternetArchive(API_Scenario):
+class InternetArchive(APIScenario):
 
     def __init__(self, collection):
         url = f'https://archive.org/advancedsearch.php?q=collection:{collection}&output=json&rows=100'
-        API_Scenario.__init__(self, url, 'docs', 'numFound', 'page')
+        APIScenario.__init__(self, url, 'docs', 'numFound', 'page')
+        self.records = [InternetArchiveRecord(record) for record in self.records]
 
 
 class CitrusRecord:
 
     def __init__(self, record):
         """
-        Generic class for single records. Makes record OAI-PMH identifier available through self.oai_id attribute
+        Generic class for single records
         :param record: Generic record
         """
         self.record = record
-        self.oai_id = self.record.oai_urn
 
     def __str__(self):
-        return f'{self.__class__.__name__}, {self.oai_id}'
+        return f'{self.__class__.__name__}, {self.harvest_id}'
 
 
-class DC_Record(CitrusRecord):
+class XMLRecord(CitrusRecord):
+
+    def __init__(self, record):
+        """
+        Generic class for single records. Makes record OAI-PMH identifier available through self.harvest_id attribute
+        :param record: Generic record
+        """
+        CitrusRecord.__init__(self, record)
+        self.harvest_id = self.record.oai_urn
+
+
+class DCRecord(XMLRecord):
 
     def __init__(self, record):
         """
         Dublin Core record class. Element text is available through self.element properties
         :param record: oai_dc record
         """
-        CitrusRecord.__init__(self, record)
+        XMLRecord.__init__(self, record)
 
     @property
     def contributor(self):
@@ -254,14 +265,14 @@ class DC_Record(CitrusRecord):
             return None
 
 
-class QDC_Record(DC_Record):
+class QDCRecord(DCRecord):
 
     def __init__(self, record):
         """
         Qualified Dublin Core record class. Element text is available through self.element properties. Subclass of citrus.DC_Record
         :param record: oai_qdc record
         """
-        DC_Record.__init__(self, record)
+        DCRecord.__init__(self, record)
 
     @property
     def abstract(self):
@@ -312,14 +323,14 @@ class QDC_Record(DC_Record):
             return None
 
 
-class MODS_Record(CitrusRecord):
+class MODSRecord(XMLRecord):
 
     def __init__(self, record):
         """
         MODS record class making MAPv4 elements available through self.element properties
         :param record: OAI-PMH MODS record
         """
-        CitrusRecord.__init__(self, record)
+        XMLRecord.__init__(self, record)
 
     @property
     def alternative(self):
@@ -329,7 +340,7 @@ class MODS_Record(CitrusRecord):
     def collection(self):
         try:
             return self.record.metadata.collection.title
-        except TypeError:
+        except (AttributeError, TypeError):
             return None
 
     @property
@@ -413,3 +424,17 @@ class MODS_Record(CitrusRecord):
     @property
     def type(self):
         return self.record.metadata.type_of_resource
+
+
+class InternetArchiveRecord(CitrusRecord):
+
+    def __init__(self, record):
+        CitrusRecord.__init__(self, record)
+        self.harvest_id = f'ia:{self.identifier}'
+
+    @property
+    def identifier(self):
+        return self.record['identifier']
+
+    def __getattr__(self, item):
+        return self.record[item]

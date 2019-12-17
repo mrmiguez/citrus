@@ -60,9 +60,9 @@ class SourceResource(Record):
 
     def __setattr__(self, key, value):
         if key == 'rights' and not value:
-            raise SourceResourceRequiredElementException('Rights')
+            raise SourceResourceRequiredElementException(self, 'Rights')
         elif key == 'title' and not value:
-            raise SourceResourceRequiredElementException('Title')
+            raise SourceResourceRequiredElementException(self, 'Title')
         elif value:
             self.__dict__[key] = value
 
