@@ -189,12 +189,12 @@ class MODSRecordTestCase(unittest.TestCase):
 
 
 # def suite():
-#     test_suite = unittest.TestSuite(tests=ScenariosTestCase)
-#     test_suite.addTest(ScenariosTestCase)
-#     test_suite.addTest(CitrusRecordTestCase)
-#     test_suite.addTest(DCRecordTestCase)
-#     test_suite.addTest(QDCRecordTestCase)
-#     test_suite.addTest(MODSRecordTestCase)
+#     xml_scenario_suite = unittest.makeSuite(XMLScenarioTestCase, 'test')
+#     citrus_record_suite = unittest.makeSuite(CitrusRecordTestCase, 'test')
+#     dc_record_suite = unittest.makeSuite(DCRecordTestCase, 'test')
+#     qdc_record_suite = unittest.makeSuite(QDCRecordTestCase, 'test')
+#     mods_record_suite = unittest.makeSuite(MODSRecordTestCase, 'test')
+#     test_suite = unittest.TestSuite((xml_scenario_suite, citrus_record_suite, dc_record_suite, qdc_record_suite, mods_record_suite))
 #     return test_suite
 
 

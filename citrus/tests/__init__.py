@@ -1,4 +1,4 @@
 from .source_resource import *
 from .exceptions import *
-from .scenatios import *
+from .scenarios import *
 from .maps import *
