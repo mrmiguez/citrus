@@ -106,31 +106,36 @@ def main():
     import configparser
 
     parser = argparse.ArgumentParser(description='citrus - Collective Information Transformation and Reconciliation Utility Service')
-    # subcommand_parsers = parser.add_subparsers(help='sub-commands')
-    # harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions')
-    # harvest_parser.add_argument('-r', '--run', help='run harvest')
-    # harvest_parser.add_argument('--config', help='view harvest config')
-    # transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions')
-    # transformation_parser.add_argument('-r', '--run', help='run transformation')
-    # transformation_parser.add_argument('--config', help='view transformation config')
+    subcommand_parsers = parser.add_subparsers(help='sub-commands')
+    subcommand_parsers.required = False
+    harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions')
+    harvest_parser.add_argument('-r', '--run', action='store_true', help='run harvest')
+    harvest_parser.add_argument('--config', action='store_true', help='view harvest config')
+    transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions')
+    transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation')
+    transformation_parser.add_argument('--config', action='store_true', help='view transformation config')
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
     parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
-    # print(parser) # test
-    # print(parser.parse_args()) # test
+    print(parser.print_usage())
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = main()
     if args.verbose:
-        print('VVVvvVVvVVVVvv')
+        print('VVVvvVVvVVVVvv')  # test
+
+
     if args.test:
-        ### SELF-TEST
+        ### MODULE SELF-TEST
         import unittest
-        from citrus import tests
+        import citrus.tests
         loader = unittest.TestLoader()
         suite = unittest.TestSuite()
-        suite.addTests(loader.loadTestsFromModule(tests))
-        runner = unittest.TextTestRunner(verbosity=3)
+        suite.addTests(loader.loadTestsFromModule(citrus.tests))
+        if args.verbose:
+            runner = unittest.TextTestRunner(verbosity=2)
+        else:
+            runner = unittest.TextTestRunner(verbosity=1)
         runner.run(suite)
 
