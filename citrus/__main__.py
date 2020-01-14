@@ -127,6 +127,10 @@ def check():
     return 0
 
 
+def harvest():
+    print("Harvest time!")
+
+
 def transform():
     for org in ORGS:
         o = DataProvider()
@@ -161,7 +165,7 @@ def main():
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
     parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
 
-    # custom help messge
+    # custom help message
     parser._positionals.title = "commands"
 
     # hack to show help when no arguments supplied
@@ -194,3 +198,10 @@ if __name__ == '__main__':
         print('list')
     elif args.cmd == 'status':
         sys.exit(check())
+    elif args.cmd == 'harvest':
+        if args.run:
+            harvest()
+    elif args.cmd == 'transform':
+        if args.run:
+            transform()
+
