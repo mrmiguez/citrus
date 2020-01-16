@@ -1,4 +1,6 @@
 import json
+from datetime import date
+from os.path import exists, join
 from citrus.exceptions import SourceResourceRequiredElementException
 
 
@@ -20,22 +22,12 @@ class Record(object):
         except KeyError:
             return f'{self.__repr__()}'
 
-    def write_json(self):
-        """
-
-        :return:
-        """
-        raise NotImplementedError
-
-    def write_jsonl(self):
-        """
-
-        :return:
-        """
-        raise NotImplementedError
-
     def dumps(self, indent=None):
         return json.dumps(self.__dict__, indent=indent)
+
+    @property
+    def data(self):
+        return self.__dict__
 
 
 class DPLARecord(Record):
@@ -66,6 +58,48 @@ class SourceResource(Record):
         elif value:
             self.__dict__[key] = value
 
-    @property
-    def data(self):
-        return self.__dict__
+
+class RecordGroup(object):
+
+    def __init__(self, records):
+        object.__init__(self)
+        self.records = self.records + [rec for rec in records]
+
+    def write_json(self, fp, prefix=None, pretty_print=False):
+        """
+
+        :param fp:
+        :param prefix:
+        :param pretty_print:
+        :return:
+        """
+        if prefix:
+            fp = fp + prefix + '-'
+        if exists(join(fp, f'{date.today()}.json')):
+            with open(join(fp, f'{date.today()}.json'), 'r', encoding='utf-8') as json_in:
+                data = json.load(json_in)
+                for record in data:
+                    self.records.append(record)
+            with open(join(fp, f'{date.today()}.json'), 'w', encoding='utf-8') as json_out:
+                if pretty_print:
+                    json.dump(self.records, json_out, indent=2)
+                else:
+                    json.dump(self.records, json_out)
+        else:
+            with open(join(fp, f'{date.today()}.json'), 'w', encoding='utf-8') as json_out:
+                if pretty_print:
+                    json.dump(self.records, json_out, indent=2)
+                else:
+                    json.dump(self.records, json_out)
+
+    def write_jsonl(self, fp, prefix=None):
+        if prefix:
+            fp = fp + prefix + '-'
+        with open(join(fp, f'{date.today()}.jsonl'), 'a', encoding='utf-8', newline='\n') as json_out:
+            for rec in self.records:
+                json_out.write(json.dumps(rec) + '\n')
+
+
+def dedupe_record_group():
+    pass
+
