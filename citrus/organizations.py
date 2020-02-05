@@ -1,6 +1,6 @@
 class DataProvider(object):
 
-    __slots__ = ('__dict__', 'key', 'scenario', 'map', 'thumbnail', 'data_provider', 'intermediate_provider')
+    __slots__ = ('__dict__', 'key', 'scenario', 'map', 'data_provider', 'intermediate_provider')
 
     def __init__(self):
         """

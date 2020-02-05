@@ -1,9 +1,10 @@
 import os
 import sys
+import citrus
 import argparse
+import configparser
 
-from citrus import InternetArchive, SSDNDC, dc_standard_map, SSDNQDC, qdc_standard_map, DataProvider, DPLARecord, \
-    SSDNMODS, mods_standard_map, SourceResourceRequiredElementException, SourceResource
+from citrus import DataProvider, DPLARecord, RecordGroup
 
 
 ###############################################################################
@@ -14,81 +15,8 @@ from citrus import InternetArchive, SSDNDC, dc_standard_map, SSDNQDC, qdc_standa
 ###############################################################################
 
 
-### CUSTOM MAP
-def fsu_mods_map(rec):
-    sr = SourceResource()
-    # sr.alternative = rec.alternative
-    # sr.collection = rec.collection
-    # sr.contributor = rec.contributor
-    # sr.creator = rec.creator
-    # sr.date = rec.date
-    # sr.description = rec.description
-    # sr.extent = rec.extent
-    # sr.format = rec.format
-    try:
-        sr.identifier = rec.identifier
-    except IndexError:
-        pass
-    # sr.language = rec.language
-    # sr.place = rec.place
-    # sr.publisher = rec.publisher
-    try:
-        sr.rights = rec.rights
-    except SourceResourceRequiredElementException:
-        pass
-    # sr.subject = rec.subject
-    return sr
-
-
 ### XML PARSING & SR CREATION USING SCENARIOS & MAP
-IN_PATH = 'D:\\Users\\Roland\\citrus_test'
-OUT_PATH = 'D:\\Users\\Roland\\citrus_out'
-
-ORGS = [
-    # ('fiu', SSDNDC, dc_standard_map, {'name': 'custom_field',
-    #                                   'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-    #  'Florida International University Libraries', None),
-    # ('usf', SSDNDC, dc_standard_map, {'name': 'custom_field', 'prefix':
-    #     'https://digital.lib.usf.edu/content'},
-    #  'University of South Florida Libraries', None),
-    # ('um', SSDNQDC, qdc_standard_map, {'name': 'cdm', 'prefix': 'http://merrick.library.miami.edu'},
-    #  'University of Miami Libraries', None),
-    ('fsu', SSDNMODS, fsu_mods_map,
-     {'name': 'islandora', 'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
-     'Florida State University Libraries', None),
-    # ('fgcu', SSDNMODS, mods_standard_map,
-    #  {'name': "islandora", 'prefix': "http://fgcu.digital.flvc.org/islandora/object"},
-    #  "Florida Gulf Coast University Library", None)
-]
-
-
-# ### TESTING INTERNET ARCHIVE API SCENARIO
-# collection = 'statelibraryandarchivesofflorida'
-#
-# recs = InternetArchive(collection)
-# for rec in recs:
-#     print(rec.oai_id)
-
-
-# ### TESTING self.harvest_id
-# IN_PATH = 'D:\\Users\\Roland\\citrus_test'
-#
-# ORGS = [('fiu', SSDNDC, dc_standard_map, {'name': 'custom_field',
-#                 'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-#          'Florida International University Libraries', None),
-#         ('usf', SSDNDC, dc_standard_map, {'name': 'custom_field', 'prefix':
-#                      'https://digital.lib.usf.edu/content'},
-#          'University of South Florida Libraries', None),
-#         ('um', SSDNQDC, qdc_standard_map, {'name': 'cdm', 'prefix': 'http://merrick.library.miami.edu'},
-#            'University of Miami Libraries', None)]
-#
-# for org in ORGS:
-#     o = DataProvider()
-#     o.key, o.scenario, o.map, o.thumbnail, o.data_provider, o.intermediate_provider = org
-#     for f in os.listdir(os.path.join(IN_PATH, o.key)):
-#         data = o.scenario(os.path.join(IN_PATH, o.key, f))
-#         for sr in map(o.map, data):
-#             print(sr)
+CONFIG_PATH = 'D:\\Users\\Roland\\.PyCharm2019.3\\config\\scratches'  # temp
 
 
 class CustomHelpFormatter(argparse.HelpFormatter):
@@ -131,53 +59,119 @@ def harvest():
     print("Harvest time!")
 
 
-def transform():
-    for org in ORGS:
+def transform(citrus_config):
+
+    # scenarios for each data source
+    scenario_parser = configparser.ConfigParser()
+    scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios'))
+    IN_PATH = os.path.abspath(citrus_config['ssdn']['InFilePath'])
+    OUT_PATH = os.path.abspath(citrus_config['ssdn']['OutFilePath'])
+    Provider = os.path.abspath(citrus_config['ssdn']['Provider'])
+
+    ### IMPORTING CUSTOM MAPS
+    CustomMapPath = os.path.abspath(citrus_config['ssdn']['CustomMapPath'])
+    sys.path.append(CustomMapPath)
+
+    ### ITERATING OVER SCENARIO_PARSER SECTIONS
+    # Read scenarios from citrus_scenarios config
+    records = RecordGroup()
+    for section in scenario_parser.sections():
+        # import config key, value pairs are DataProvider slot attrs
         o = DataProvider()
-        o.key, o.scenario, o.map, o.thumbnail, o.data_provider, o.intermediate_provider = org
-        for f in os.listdir(os.path.join(IN_PATH, o.key)):
-            data = o.scenario(os.path.join(IN_PATH, o.key, f))
-            for sr in map(o.map, data):
-                rec = DPLARecord()
-                rec.dataProvider = o.data_provider
-                rec.intermediateProvider = o.intermediate_provider
-                rec.sourceResource = sr.data
-                print(rec.dumps())
+        o.key = section
+        o.map = scenario_parser[section]['Map']
+        o.data_provider = scenario_parser[section]['DataProvider']
+        o.intermediate_provider = scenario_parser[section]['IntermediateProvider']
+
+        ################################################################
+        # Maybe these map and scenario searches can be moved off into  #
+        # some other module                                            #
+        ################################################################
+
+        # use config scenario value to search for citrus.scenarios class
+        o.scenario = getattr(citrus, scenario_parser[section]['Scenario'])
+
+        # use config map value to search for callable module & function with that name
+        transformation = __import__(o.map)
+        transformation_function = getattr(transformation, o.map)
+
+        # check scenario subclassing
+        # XMLScenario subclasses read data from disk
+        if issubclass(o.scenario, citrus.XMLScenario):
+            for f in os.listdir(os.path.join(IN_PATH, o.key)):
+                # parse file using scenario and get records as iterable list
+                data = o.scenario(os.path.join(IN_PATH, o.key, f))
+                # apply transformation map to data iterable
+                for sr in map(transformation_function, data):
+                    dpla = DPLARecord()
+                    dpla.dataProvider = o.data_provider
+                    dpla.intermediateProvider = o.intermediate_provider
+                    dpla.sourceResource = sr
+                    # print to console
+                    # print(json.dumps(dpla.data))
+                    # or append to record group and write to disk
+                    records.append(dpla.data)
+
+        # APIScenario subclasses need to make queries and read data from responses
+        elif issubclass(o.scenario, citrus.APIScenario):
+            data = o.scenario(o.key)
+            for sr in map(transformation_function, data):
+                dpla = DPLARecord()
+                dpla.dataProvider = o.data_provider
+                dpla.intermediateProvider = o.intermediate_provider
+                dpla.sourceResource = sr
+                # print to console
+                # print(json.dumps(dpla.data))
+                # or append to record group and write to disk
+                records.append(dpla.data)
+
+    records.write_jsonl(OUT_PATH, 'SSDN_TMP')
 
 
 def main():
-    import configparser
-    parser = argparse.ArgumentParser(
+
+    ####################################
+    # Application level args & configs #
+    ####################################
+    arg_parser = argparse.ArgumentParser(
         description='citrus - Collective Information Transformation and Reconciliation Utility Service',
         usage="[-h] [-v] [--test] | <command> [-h] | <subcommand>",
         add_help=True,
         formatter_class=CustomHelpFormatter)
-    subcommand_parsers = parser.add_subparsers(help='sub-commands', dest='cmd')
+    subcommand_parsers = arg_parser.add_subparsers(help='sub-commands', dest='cmd')
     subcommand_parsers.required = False
-    # subcommand_parsers.add_parser('status', help='show status')
+    subcommand_parsers.add_parser('status', help='show status')
     # subcommand_parsers.add_parser('list', help='print list')
+
+    # citrus_harvest args
     harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions')
     harvest_parser.add_argument('-r', '--run', action='store_true', help='run harvest')
     harvest_parser.add_argument('--config', action='store_true', help='view harvest config')
+
+    # citrus_transform args
     transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions')
     transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation')
     transformation_parser.add_argument('--config', action='store_true', help='view transformation config')
-    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
-    parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
+    arg_parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
+    arg_parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
 
     # custom help message
-    parser._positionals.title = "commands"
+    arg_parser._positionals.title = "commands"
 
     # hack to show help when no arguments supplied
     if len(sys.argv) == 1:
-        parser.print_help()
+        arg_parser.print_help()
         sys.exit(0)
 
-    return parser.parse_args()
+    # citrus application config
+    citrus_parser = configparser.ConfigParser()
+    citrus_parser.read(os.path.join(CONFIG_PATH, 'citrus'))
+
+    return arg_parser.parse_args(), citrus_parser
 
 
 if __name__ == '__main__':
-    args = main()
+    args, citrus_config = main()
     if args.verbose:
         print('VVVvvVVvVVVVvv')  # test
 
@@ -194,14 +188,12 @@ if __name__ == '__main__':
         else:
             runner = unittest.TextTestRunner(verbosity=1)
         runner.run(suite)
-    if args.cmd == 'list':
-        print('list')
-    elif args.cmd == 'status':
+    if args.cmd == 'status':
         sys.exit(check())
     elif args.cmd == 'harvest':
         if args.run:
             harvest()
     elif args.cmd == 'transform':
         if args.run:
-            transform()
+            transform(citrus_config)
 

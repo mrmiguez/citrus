@@ -94,7 +94,7 @@ class APIScenario(Scenario):
         import requests
         import json
         r = requests.get(url)
-        data = json.loads(r.text)
+        data = json.loads(r.text.replace('\\u00a0', ''))
         if count_key:
             record_count = [v for v in self._item_generator(data, count_key)][0]
         self.records = [record for record in self._item_generator(data, record_key)]
@@ -102,7 +102,7 @@ class APIScenario(Scenario):
             page = 1
             while len(self.records) < record_count:
                 page += 1
-                data = json.loads(requests.get(url + f'&{page_key}={page}').text)
+                data = json.loads(requests.get(url + f'&{page_key}={page}').text.replace('\\u00a0', ''))
                 self.records = self.records + [record for record in self._item_generator(data, record_key)]
                 continue
         Scenario.__init__(self, self.records)
