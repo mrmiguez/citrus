@@ -3,8 +3,7 @@ import sys
 import citrus
 import argparse
 import configparser
-
-from citrus import DataProvider, DPLARecord, RecordGroup
+from pathlib import Path
 
 
 ###############################################################################
@@ -16,7 +15,16 @@ from citrus import DataProvider, DPLARecord, RecordGroup
 
 
 ### XML PARSING & SR CREATION USING SCENARIOS & MAP
-CONFIG_PATH = 'D:\\Users\\Roland\\.PyCharm2019.3\\config\\scratches'  # temp
+# Locating configs
+if os.getenv('CITRUS_CONFIG'):
+    CONFIG_PATH = Path(os.getenv('CITRUS_CONFIG'))
+elif os.path.exists(os.path.join(Path.home(), '.local/share/citrus/citrus.cfg')):
+    CONFIG_PATH = os.path.join(Path.home(), '.local/share/citrus')
+elif os.path.exists(os.path.join(Path(__file__).parents[0], 'citrus.cfg')):
+    CONFIG_PATH = Path(__file__).parents[0]
+else:
+    print("Cannot locate citrus configs.")  # TODO: This can return a more helpful prompt, or build default configs
+    sys.exit(1)
 
 
 class CustomHelpFormatter(argparse.HelpFormatter):
@@ -53,79 +61,6 @@ class CustomHelpFormatter(argparse.HelpFormatter):
 def check():
     print("status")
     return 0
-
-
-def harvest():
-    print("Harvest time!")
-
-
-def transform(citrus_config):
-
-    # scenarios for each data source
-    scenario_parser = configparser.ConfigParser()
-    scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios'))
-    IN_PATH = os.path.abspath(citrus_config['ssdn']['InFilePath'])
-    OUT_PATH = os.path.abspath(citrus_config['ssdn']['OutFilePath'])
-    Provider = os.path.abspath(citrus_config['ssdn']['Provider'])
-
-    ### IMPORTING CUSTOM MAPS
-    CustomMapPath = os.path.abspath(citrus_config['ssdn']['CustomMapPath'])
-    sys.path.append(CustomMapPath)
-
-    ### ITERATING OVER SCENARIO_PARSER SECTIONS
-    # Read scenarios from citrus_scenarios config
-    records = RecordGroup()
-    for section in scenario_parser.sections():
-        # import config key, value pairs are DataProvider slot attrs
-        o = DataProvider()
-        o.key = section
-        o.map = scenario_parser[section]['Map']
-        o.data_provider = scenario_parser[section]['DataProvider']
-        o.intermediate_provider = scenario_parser[section]['IntermediateProvider']
-
-        ################################################################
-        # Maybe these map and scenario searches can be moved off into  #
-        # some other module                                            #
-        ################################################################
-
-        # use config scenario value to search for citrus.scenarios class
-        o.scenario = getattr(citrus, scenario_parser[section]['Scenario'])
-
-        # use config map value to search for callable module & function with that name
-        transformation = __import__(o.map)
-        transformation_function = getattr(transformation, o.map)
-
-        # check scenario subclassing
-        # XMLScenario subclasses read data from disk
-        if issubclass(o.scenario, citrus.XMLScenario):
-            for f in os.listdir(os.path.join(IN_PATH, o.key)):
-                # parse file using scenario and get records as iterable list
-                data = o.scenario(os.path.join(IN_PATH, o.key, f))
-                # apply transformation map to data iterable
-                for sr in map(transformation_function, data):
-                    dpla = DPLARecord()
-                    dpla.dataProvider = o.data_provider
-                    dpla.intermediateProvider = o.intermediate_provider
-                    dpla.sourceResource = sr
-                    # print to console
-                    # print(json.dumps(dpla.data))
-                    # or append to record group and write to disk
-                    records.append(dpla.data)
-
-        # APIScenario subclasses need to make queries and read data from responses
-        elif issubclass(o.scenario, citrus.APIScenario):
-            data = o.scenario(o.key)
-            for sr in map(transformation_function, data):
-                dpla = DPLARecord()
-                dpla.dataProvider = o.data_provider
-                dpla.intermediateProvider = o.intermediate_provider
-                dpla.sourceResource = sr
-                # print to console
-                # print(json.dumps(dpla.data))
-                # or append to record group and write to disk
-                records.append(dpla.data)
-
-    records.write_jsonl(OUT_PATH, 'SSDN_TMP')
 
 
 def main():
@@ -165,7 +100,7 @@ def main():
 
     # citrus application config
     citrus_parser = configparser.ConfigParser()
-    citrus_parser.read(os.path.join(CONFIG_PATH, 'citrus'))
+    citrus_parser.read(os.path.join(CONFIG_PATH, 'citrus.cfg'))
 
     return arg_parser.parse_args(), citrus_parser
 
@@ -192,8 +127,9 @@ if __name__ == '__main__':
         sys.exit(check())
     elif args.cmd == 'harvest':
         if args.run:
-            harvest()
+            citrus.harvest.harvest()
     elif args.cmd == 'transform':
         if args.run:
-            transform(citrus_config)
-
+            scenario_parser = configparser.ConfigParser()
+            scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
+            citrus.transform.transform(citrus_config, scenario_parser)
