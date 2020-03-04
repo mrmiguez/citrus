@@ -29,8 +29,12 @@ def harvest(citrus_config, harvest_parser):
             for set_spec in options['SetList'].split(', '):
                 # Sickle harvester
                 harvester = Sickle(oai, iterator=OAIResponseIterator)
+                '''
                 # XML records, note ignore_deleted isn't working
-                #    might need to subclass Sickle
+                #    because ignore_deleted is a param of sickle.iterator.OAIResponseIterator
+                #    not the ListRecords method on sickle.Sickle client
+                #    Might need to write a custom iterator
+                '''
                 records = harvester.ListRecords(set=set_spec, metadataPrefix=metadata_prefix, ignore_deleted=True)
                 # write XML
                 with open(os.path.join(WRITE_PATH, section, f'{set_spec}_{datetime.date.today()}.xml'), 'wb') as fp:
