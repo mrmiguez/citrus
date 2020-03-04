@@ -13,8 +13,6 @@ from pathlib import Path
 #   3. Doing both                                                             #
 ###############################################################################
 
-
-### XML PARSING & SR CREATION USING SCENARIOS & MAP
 # Locating configs
 if os.getenv('CITRUS_CONFIG'):
     CONFIG_PATH = Path(os.getenv('CITRUS_CONFIG'))
@@ -87,6 +85,7 @@ def main():
     transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions')
     transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation')
     transformation_parser.add_argument('--config', action='store_true', help='view transformation config')
+
     arg_parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
     arg_parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
 
@@ -127,7 +126,9 @@ if __name__ == '__main__':
         sys.exit(check())
     elif args.cmd == 'harvest':
         if args.run:
-            citrus.harvest.harvest()
+            harvest_parser = configparser.ConfigParser()
+            harvest_parser.read(os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
+            citrus.harvest.harvest(citrus_config, harvest_parser)
     elif args.cmd == 'transform':
         if args.run:
             scenario_parser = configparser.ConfigParser()
