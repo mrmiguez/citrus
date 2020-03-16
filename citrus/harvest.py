@@ -1,41 +1,32 @@
-from sickle import Sickle
-from sickle.iterator import OAIResponseIterator
-import os
 import datetime
+import os
 
-###################################################
-#                                                 #
-# Some options for harvest include:               #
-#   1. customizing Sickle to work with QDC & MODS #
-#   2. rewriting pyoaiharver to python3           #
-#                                                 #
-###################################################
+from sickle import Sickle
+from sickle.iterator import OAIItemIterator
 
 
-def harvest(citrus_config, harvest_parser):
-    WRITE_PATH = os.path.abspath(citrus_config['ssdn']['InFilePath'])
-    for section, options in harvest_parser.items():
+def harvest(harvest_info, section, write_path):
 
-        # skip auto generated DEFAULT config section
-        if section != 'DEFAULT':
-            # check for dir path
-            if not os.path.exists(os.path.join(WRITE_PATH, section)):
-                os.makedirs(os.path.join(WRITE_PATH, section))
-            # OAI-PMH endpoint URL from config
-            oai = options['OAIEndpoint']
-            # metadataPrefix from config
-            metadata_prefix = options['MetadataPrefix']
-            # iterate through sets to harvest
-            for set_spec in options['SetList'].split(', '):
-                # Sickle harvester
-                harvester = Sickle(oai, iterator=OAIResponseIterator)
-                '''
-                # XML records, note ignore_deleted isn't working
-                #    because ignore_deleted is a param of sickle.iterator.OAIResponseIterator
-                #    not the ListRecords method on sickle.Sickle client
-                #    Might need to write a custom iterator
-                '''
-                records = harvester.ListRecords(set=set_spec, metadataPrefix=metadata_prefix, ignore_deleted=True)
-                # write XML
-                with open(os.path.join(WRITE_PATH, section, f'{set_spec}_{datetime.date.today()}.xml'), 'wb') as fp:
-                    fp.write(records.next().raw.encode('utf-8'))
+    # check for dir path
+    if not os.path.exists(os.path.join(write_path, section)):
+        os.makedirs(os.path.join(write_path, section))
+
+    # OAI-PMH endpoint URL from config
+    oai = harvest_info['OAIEndpoint']
+
+    # metadataPrefix from config
+    metadata_prefix = harvest_info['MetadataPrefix']
+
+    # iterate through sets to harvest
+    for set_spec in harvest_info['SetList'].split(', '):
+
+        # Sickle harvester
+        harvester = Sickle(oai, iterator=OAIItemIterator)
+        records = harvester.ListRecords(set=set_spec, metadataPrefix=metadata_prefix, ignore_deleted=True)
+
+        # write XML
+        with open(os.path.join(write_path, section, f'{set_spec}_{datetime.date.today()}.xml'), 'w') as fp:
+            fp.write('<oai>')
+            for record in records:
+                fp.write(record.raw)
+            fp.write('</oai>')

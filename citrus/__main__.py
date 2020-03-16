@@ -4,6 +4,8 @@ import citrus
 import argparse
 import configparser
 from pathlib import Path
+from citrus.harvest import harvest
+from citrus.transform import transform
 
 
 ###############################################################################
@@ -74,17 +76,21 @@ def main():
     subcommand_parsers = arg_parser.add_subparsers(help='sub-commands', dest='cmd')
     subcommand_parsers.required = False
     subcommand_parsers.add_parser('status', help='show status')
-    # subcommand_parsers.add_parser('list', help='print list')
+
+    # generic config parser
+    config_parser = argparse.ArgumentParser(add_help=False)
+    config_parser.add_argument('-n', '--new', action='store_true', help='add a new config entry')
+    config_parser.add_argument('-l', '--list', action='store_true', help='list config entries')
+    config_parser.add_argument('-i', '--interactive', action='store_true', help="select entry from config interactively")
+    config_parser.add_argument('-s', '--select', help="run action on a specific config entry", metavar='config_entry')
 
     # citrus_harvest args
-    harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions')
-    harvest_parser.add_argument('-r', '--run', action='store_true', help='run harvest')
-    harvest_parser.add_argument('--config', action='store_true', help='view harvest config')
+    harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions', parents=[config_parser])
+    harvest_parser.add_argument('-r', '--run', action='store_true', help='run harvest for all config entries')
 
     # citrus_transform args
-    transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions')
-    transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation')
-    transformation_parser.add_argument('--config', action='store_true', help='view transformation config')
+    transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions', parents=[config_parser])
+    transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation for all config entries')
 
     arg_parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
     arg_parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
@@ -123,14 +129,26 @@ if __name__ == '__main__':
             runner = unittest.TextTestRunner(verbosity=1)
         runner.run(suite)
     if args.cmd == 'status':
-        sys.exit(check())
+        print("These config files are loaded:")
+        print(f"    {os.path.join(CONFIG_PATH, 'citrus.cfg')}")
+        print(f"    {os.path.join(CONFIG_PATH, 'citrus_harvests.cfg')}")
+        print(f"    {os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg')}")
+        sys.exit(0)
     elif args.cmd == 'harvest':
+        write_path = os.path.abspath(citrus_config['ssdn']['InFilePath'])
+        harvest_parser = configparser.ConfigParser()
+        harvest_parser.read(os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
         if args.run:
-            harvest_parser = configparser.ConfigParser()
-            harvest_parser.read(os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
-            citrus.harvest.harvest(citrus_config, harvest_parser)
+            for section in harvest_parser.sections():
+                harvest(harvest_parser[section], section, write_path)
+        if args.select:
+            try:
+                harvest(harvest_parser[args.select], args.select, write_path)
+            except KeyError:
+                print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
+                sys.exit(1)
     elif args.cmd == 'transform':
         if args.run:
             scenario_parser = configparser.ConfigParser()
             scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
-            citrus.transform.transform(citrus_config, scenario_parser)
+            transform(citrus_config, scenario_parser)
