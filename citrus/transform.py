@@ -4,20 +4,25 @@ import citrus
 import citrus.maps
 
 
-def transform(citrus_config, scenario_parser):
+def build(custom_map_function, data):
+    """"""
+    pass
+
+
+def transform(citrus_config, scenario_parser, to_console=False):
     IN_PATH = os.path.abspath(citrus_config['ssdn']['InFilePath'])
     OUT_PATH = os.path.abspath(citrus_config['ssdn']['OutFilePath'])
-    Provider = os.path.abspath(citrus_config['ssdn']['Provider'])
+    provider = citrus_config['ssdn']['Provider']
 
     ### IMPORTING CUSTOM MAPS
     CustomMapPath = os.path.abspath(citrus_config['ssdn']['CustomMapPath'])
     sys.path.append(CustomMapPath)
 
-    records = citrus.RecordGroup()  # TODO: record groups should be init'd per scenario
     ### ITERATING OVER SCENARIO_PARSER SECTIONS
     # Read scenarios from citrus_scenarios config
     for section in scenario_parser.sections():
-        # records = citrus.RecordGroup()  # TODO: record groups should be init'd per scenario
+        records = citrus.RecordGroup()
+
         # import config key, value pairs into DataProvider slot attrs
         o = citrus.DataProvider()
         o.key = section
@@ -55,6 +60,7 @@ def transform(citrus_config, scenario_parser):
                     dpla = citrus.DPLARecord()             #  it can be handled in a separate function
                     dpla.dataProvider = o.data_provider
                     dpla.intermediateProvider = o.intermediate_provider
+                    dpla.provider = provider
                     dpla.sourceResource = sr.data
                     # print to console
                     # print(json.dumps(dpla.data))
@@ -68,10 +74,14 @@ def transform(citrus_config, scenario_parser):
                 dpla = citrus.DPLARecord()
                 dpla.dataProvider = o.data_provider
                 dpla.intermediateProvider = o.intermediate_provider
+                dpla.provider = provider
                 dpla.sourceResource = sr.data
                 # print to console
                 # print(json.dumps(dpla.data))
                 # or append to record group and write to disk
                 records.append(dpla.data)
 
-    records.write_jsonl(OUT_PATH, 'SSDN_TMP')  # TODO: write or print options should be separated into functions
+        if to_console:
+            records.print()
+        else:
+            records.write_jsonl(OUT_PATH, prefix='SSDN_TMP')

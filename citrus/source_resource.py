@@ -122,6 +122,10 @@ class RecordGroup(object):
             for rec in self.records:
                 json_out.write(json.dumps(rec) + '\n')
 
+    def print(self):
+        for rec in self.records:
+            print(json.dumps(rec))
+
 
 
 def dedupe_record_group():

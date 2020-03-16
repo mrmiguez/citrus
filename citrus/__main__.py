@@ -91,6 +91,7 @@ def main():
     # citrus_transform args
     transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions', parents=[config_parser])
     transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation for all config entries')
+    transformation_parser.add_argument('--to_console', action='store_true', help="print records to console, don't write to disk")
 
     arg_parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
     arg_parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
@@ -151,4 +152,7 @@ if __name__ == '__main__':
         if args.run:
             scenario_parser = configparser.ConfigParser()
             scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
-            transform(citrus_config, scenario_parser)
+            if args.to_console:
+                transform(citrus_config, scenario_parser, to_console=True)
+            else:
+                transform(citrus_config, scenario_parser)
