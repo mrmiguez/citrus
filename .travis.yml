@@ -8,9 +8,18 @@ python:
   - "3.8-dev"
   - "nightly"
 # command to install dependencies
-install: "pip install pymods requests bs4 sickle"
+install:
+  - pip install pymods
+  - pip install requests
+  - pip install bs4
+  - pip install sickle
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install coveralls
 # command to run tests
-script: py.test citrus/tests/*
+script: pytest citrus/citrus/tests
+after_success:
+  - coveralls
 notifications:
     email: 
         on_success: change

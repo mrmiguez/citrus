@@ -4,9 +4,17 @@ import citrus
 import citrus.maps
 
 
-def build(custom_map_function, data):
-    """"""
-    pass
+def build(custom_map_function, data, org, provider):
+    """apply transformation map to data iterable"""
+    records = citrus.RecordGroup()
+    for sr in map(custom_map_function, data):
+        dpla = citrus.DPLARecord()
+        dpla.dataProvider = org.data_provider
+        dpla.intermediateProvider = org.intermediate_provider
+        dpla.provider = provider
+        dpla.sourceResource = sr.data
+        records.append(dpla.data)
+    return records
 
 
 def transform(citrus_config, scenario_parser, to_console=False):
@@ -21,7 +29,7 @@ def transform(citrus_config, scenario_parser, to_console=False):
     ### ITERATING OVER SCENARIO_PARSER SECTIONS
     # Read scenarios from citrus_scenarios config
     for section in scenario_parser.sections():
-        records = citrus.RecordGroup()
+
 
         # import config key, value pairs into DataProvider slot attrs
         o = citrus.DataProvider()
@@ -55,31 +63,12 @@ def transform(citrus_config, scenario_parser, to_console=False):
             for f in os.listdir(os.path.join(IN_PATH, o.key)):
                 # parse file using scenario and get records as iterable list
                 data = o.scenario(os.path.join(IN_PATH, o.key, f))
-                # apply transformation map to data iterable
-                for sr in map(custom_map_function, data):  # TODO: once data is defined according to class
-                    dpla = citrus.DPLARecord()             #  it can be handled in a separate function
-                    dpla.dataProvider = o.data_provider
-                    dpla.intermediateProvider = o.intermediate_provider
-                    dpla.provider = provider
-                    dpla.sourceResource = sr.data
-                    # print to console
-                    # print(json.dumps(dpla.data))
-                    # or append to record group and write to disk
-                    records.append(dpla.data)
+                records = build(custom_map_function, data, o, provider)
 
         # APIScenario subclasses need to make queries and read data from responses
         elif issubclass(o.scenario, citrus.APIScenario):
             data = o.scenario(o.key)
-            for sr in map(custom_map_function, data):
-                dpla = citrus.DPLARecord()
-                dpla.dataProvider = o.data_provider
-                dpla.intermediateProvider = o.intermediate_provider
-                dpla.provider = provider
-                dpla.sourceResource = sr.data
-                # print to console
-                # print(json.dumps(dpla.data))
-                # or append to record group and write to disk
-                records.append(dpla.data)
+            records = build(custom_map_function, data, o, provider)
 
         if to_console:
             records.print()

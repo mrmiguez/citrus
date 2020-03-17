@@ -129,30 +129,59 @@ if __name__ == '__main__':
         else:
             runner = unittest.TextTestRunner(verbosity=1)
         runner.run(suite)
+
     if args.cmd == 'status':
         print("These config files are loaded:")
         print(f"    {os.path.join(CONFIG_PATH, 'citrus.cfg')}")
         print(f"    {os.path.join(CONFIG_PATH, 'citrus_harvests.cfg')}")
         print(f"    {os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg')}")
         sys.exit(0)
+
     elif args.cmd == 'harvest':
         write_path = os.path.abspath(citrus_config['ssdn']['InFilePath'])
         harvest_parser = configparser.ConfigParser()
         harvest_parser.read(os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
+
         if args.run:
             for section in harvest_parser.sections():
                 harvest(harvest_parser[section], section, write_path)
+
         if args.select:
             try:
                 harvest(harvest_parser[args.select], args.select, write_path)
             except KeyError:
                 print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
                 sys.exit(1)
+
+        if args.new:
+            pass
+
+        if args.list:
+            pass
+
+        if args.interactive:
+            pass
+
     elif args.cmd == 'transform':
+
         if args.run:
             scenario_parser = configparser.ConfigParser()
             scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
+
             if args.to_console:
                 transform(citrus_config, scenario_parser, to_console=True)
+
             else:
                 transform(citrus_config, scenario_parser)
+
+        if args.select:
+            pass
+
+        if args.new:
+            pass
+
+        if args.list:
+            pass
+
+        if args.interactive:
+            pass
