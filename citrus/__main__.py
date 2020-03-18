@@ -8,13 +8,6 @@ from citrus.harvest import harvest
 from citrus.transform import transform
 
 
-###############################################################################
-# Potential options for customizing transformation are:                       #
-#   1. Sub-classing an appropriate scenario and changing the properties       #
-#   2. Writing a custom map that manipulates the default scenario properties  #
-#   3. Doing both                                                             #
-###############################################################################
-
 # Locating configs
 if os.getenv('CITRUS_CONFIG'):
     CONFIG_PATH = Path(os.getenv('CITRUS_CONFIG'))
@@ -112,6 +105,10 @@ def main():
 
 
 if __name__ == '__main__':
+
+    ####################################
+    # Application commands and actions #
+    ####################################
     args, citrus_config = main()
     if args.verbose:
         print('VVVvvVVvVVVVvv')  # test
