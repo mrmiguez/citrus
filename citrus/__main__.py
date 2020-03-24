@@ -83,6 +83,16 @@ def interactive_run(config_parser, subcommand):
         print(f'We need ...: ')  # test
 
 
+def new_config_entry(config_file, options_list, config_fp):
+    with open(config_fp, 'w') as f:
+        org_key = str(input('What is the organization key: >>> ')).lower()
+        config_file.add_section(org_key)
+        for option in options_list:
+            setting = str(input(f'Enter a value/s for {option}: >>> ')).lower()
+            config_file.set(org_key, option, setting)
+        config_file.write(f)
+
+
 def main():
 
     ####################################
@@ -183,7 +193,7 @@ if __name__ == '__main__':
                 sys.exit(1)
 
         if args.new:
-            pass
+            new_config_entry(harvest_parser, ['oaiendpoint', 'setlist', 'metadataprefix'], os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
 
         if args.list:
             config_list(harvest_parser)
@@ -210,7 +220,7 @@ if __name__ == '__main__':
                 sys.exit(1)
 
         if args.new:
-            pass
+            new_config_entry(scenario_parser, ['scenario', 'map', 'dataprovider', 'intermediateprovider'], os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
 
         if args.list:
             config_list(scenario_parser)
