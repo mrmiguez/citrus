@@ -50,12 +50,12 @@ class CustomHelpFormatter(argparse.HelpFormatter):
             return super(CustomHelpFormatter, self)._format_action(action)
 
 
-def check():
-    print("status")
-    return 0
-
-
 def config_list(config_parser):
+    """
+    Simple printing of config options
+    :param config_parser:
+    :return:
+    """
     for section in config_parser.sections():
         print(f'\n[{section}]')
         for k, v in config_parser[section].items():
@@ -64,6 +64,12 @@ def config_list(config_parser):
 
 
 def interactive_run(config_parser, subcommand):
+    """
+    Allows interactive selection of organization to harvest/transform
+    :param config_parser:
+    :param subcommand:
+    :return:
+    """
     i = 0
     print(f'Please select the number for an organization to {subcommand} from the list below:\n')
     for section in config_parser.sections():
@@ -77,13 +83,20 @@ def interactive_run(config_parser, subcommand):
         selection = int(input('\nOrganization >>> '))
     if subcommand == 'harvest':
         harvest(config_parser[config_parser.sections()[selection - 1]], [k for k in config_parser.sections()][selection - 1], write_path)
-    elif subcommand == 'transform':
+    elif subcommand == 'transform':  # TODO
         print(f'We need ...: ')  # test
         print(f'We need ...: ')  # test
         print(f'We need ...: ')  # test
 
 
 def new_config_entry(config_file, options_list, config_fp):
+    """
+    Function to add entries to config file
+    :param config_file:
+    :param options_list:
+    :param config_fp:
+    :return:
+    """
     with open(config_fp, 'w') as f:
         org_key = str(input('What is the organization key: >>> ')).lower()
         config_file.add_section(org_key)
@@ -204,17 +217,17 @@ if __name__ == '__main__':
     elif args.cmd == 'transform':
         scenario_parser = configparser.ConfigParser()
         scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
+        to_console = False
+        if args.to_console:
+            to_console = True
 
         if args.run:
-            if args.to_console:
-                transform(citrus_config, scenario_parser, to_console=True)
-
-            else:
-                transform(citrus_config, scenario_parser)
+            for section in scenario_parser.sections():
+                transform(citrus_config, scenario_parser[section], section, to_console=to_console)
 
         if args.select:
             try:
-                transform(citrus_config, scenario_parser)  # TODO: transform isn't flexible enough to do this yet
+                transform(citrus_config, scenario_parser[args.select], args.select, to_console=to_console)
             except KeyError:
                 print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
                 sys.exit(1)
