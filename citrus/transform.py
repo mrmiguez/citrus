@@ -17,7 +17,7 @@ def build(custom_map_function, data, org, provider):
     return records
 
 
-def transform(citrus_config, transformation_info, section, to_console=False):
+def transform(citrus_config, transformation_info, section, verbosity, to_console=False):
     IN_PATH = os.path.abspath(citrus_config['ssdn']['InFilePath'])
     OUT_PATH = os.path.abspath(citrus_config['ssdn']['OutFilePath'])
     provider = citrus_config['ssdn']['Provider']
@@ -56,12 +56,16 @@ def transform(citrus_config, transformation_info, section, to_console=False):
     # XMLScenario subclasses read data from disk
     if issubclass(o.scenario, citrus.XMLScenario):
         for f in os.listdir(os.path.join(IN_PATH, o.key)):
+            if verbosity > 1:
+                print(f'Transforming {o.key} data {f}')
             # parse file using scenario and get records as iterable list
             data = o.scenario(os.path.join(IN_PATH, o.key, f))
             records = build(custom_map_function, data, o, provider)
 
     # APIScenario subclasses need to make queries and read data from responses
     elif issubclass(o.scenario, citrus.APIScenario):
+        if verbosity > 1:
+            print(f'Transforming {o.key} data from API')
         data = o.scenario(o.key)
         records = build(custom_map_function, data, o, provider)
 

@@ -6,7 +6,6 @@ from pathlib import Path
 from citrus.harvest import harvest
 from citrus.transform import transform
 
-
 # Locating configs
 if os.getenv('CITRUS_CONFIG'):
     CONFIG_PATH = Path(os.getenv('CITRUS_CONFIG'))
@@ -63,7 +62,7 @@ def config_list(config_parser):
     sys.exit(0)
 
 
-def interactive_run(config_parser, subcommand):
+def interactive_run(citrus_config, config_parser, subcommand):
     """
     Allows interactive selection of organization to harvest/transform
     :param config_parser:
@@ -82,11 +81,11 @@ def interactive_run(config_parser, subcommand):
         print('Please only input the number corresponding to the organization.')
         selection = int(input('\nOrganization >>> '))
     if subcommand == 'harvest':
-        harvest(config_parser[config_parser.sections()[selection - 1]], [k for k in config_parser.sections()][selection - 1], write_path)
-    elif subcommand == 'transform':  # TODO
-        print(f'We need ...: ')  # test
-        print(f'We need ...: ')  # test
-        print(f'We need ...: ')  # test
+        harvest(config_parser[config_parser.sections()[selection - 1]],
+                [k for k in config_parser.sections()][selection - 1], write_path, verbosity=verbosity)
+    elif subcommand == 'transform':
+        transform(citrus_config, config_parser[config_parser.sections()[selection - 1]],
+                  [k for k in config_parser.sections()][selection - 1], verbosity=verbosity, to_console=to_console)
 
 
 def new_config_entry(config_file, options_list, config_fp):
@@ -98,16 +97,15 @@ def new_config_entry(config_file, options_list, config_fp):
     :return:
     """
     with open(config_fp, 'w') as f:
-        org_key = str(input('What is the organization key: >>> ')).lower()
+        org_key = str(input('What is the organization key: >>> '))
         config_file.add_section(org_key)
         for option in options_list:
-            setting = str(input(f'Enter a value/s for {option}: >>> ')).lower()
+            setting = str(input(f'Enter a value/s for {option}: >>> '))
             config_file.set(org_key, option, setting)
         config_file.write(f)
 
 
 def main():
-
     ####################################
     # Application level args & configs #
     ####################################
@@ -125,17 +123,22 @@ def main():
     config_parser = argparse.ArgumentParser(add_help=False)
     config_parser.add_argument('-n', '--new', action='store_true', help='add a new config entry')
     config_parser.add_argument('-l', '--list', action='store_true', help='list config entries')
-    config_parser.add_argument('-i', '--interactive', action='store_true', help="select entry from config interactively")
+    config_parser.add_argument('-i', '--interactive', action='store_true',
+                               help="select entry from config interactively")
     config_parser.add_argument('-s', '--select', help="run action on a specific config entry", metavar='config_entry')
 
     # harvest subcommand & args
-    harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions', parents=[config_parser])
+    harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions',
+                                                   parents=[config_parser])
     harvest_parser.add_argument('-r', '--run', action='store_true', help='run harvest for all config entries')
 
     # transform subcommand & args
-    transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions', parents=[config_parser])
-    transformation_parser.add_argument('-r', '--run', action='store_true', help='run transformation for all config entries')
-    transformation_parser.add_argument('--to_console', action='store_true', help="print records to console, don't write to disk")
+    transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions',
+                                                          parents=[config_parser])
+    transformation_parser.add_argument('-r', '--run', action='store_true',
+                                       help='run transformation for all config entries')
+    transformation_parser.add_argument('--to_console', action='store_true',
+                                       help="print records to console, don't write to disk")
 
     arg_parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
     arg_parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
@@ -161,8 +164,9 @@ if __name__ == '__main__':
     # Application commands and actions #
     ####################################
     args, citrus_config = main()
+    verbosity = 1
     if args.verbose:
-        print('VVVvvVVvVVVVvv')  # test
+        verbosity = 2
 
     if args.test:
         ### MODULE SELF-TEST
@@ -172,10 +176,7 @@ if __name__ == '__main__':
         loader = unittest.TestLoader()
         suite = unittest.TestSuite()
         suite.addTests(loader.loadTestsFromModule(citrus))
-        if args.verbose:
-            runner = unittest.TextTestRunner(verbosity=2)
-        else:
-            runner = unittest.TextTestRunner(verbosity=1)
+        runner = unittest.TextTestRunner(verbosity=verbosity)
         runner.run(suite)
 
     if args.cmd == 'status':
@@ -196,47 +197,51 @@ if __name__ == '__main__':
 
         if args.run:
             for section in harvest_parser.sections():
-                harvest(harvest_parser[section], section, write_path)
+                harvest(harvest_parser[section], section, write_path, verbosity=verbosity)
 
         if args.select:
             try:
-                harvest(harvest_parser[args.select], args.select, write_path)
+                harvest(harvest_parser[args.select], args.select, write_path, verbosity=verbosity)
             except KeyError:
                 print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
                 sys.exit(1)
 
         if args.new:
-            new_config_entry(harvest_parser, ['oaiendpoint', 'setlist', 'metadataprefix'], os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
+            new_config_entry(harvest_parser, ['oaiendpoint', 'setlist', 'metadataprefix'],
+                             os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
 
         if args.list:
             config_list(harvest_parser)
 
         if args.interactive:
-            interactive_run(harvest_parser, 'harvest')
+            interactive_run(citrus_config, harvest_parser, 'harvest')
 
     elif args.cmd == 'transform':
         scenario_parser = configparser.ConfigParser()
         scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
+
         to_console = False
         if args.to_console:
             to_console = True
 
         if args.run:
             for section in scenario_parser.sections():
-                transform(citrus_config, scenario_parser[section], section, to_console=to_console)
+                transform(citrus_config, scenario_parser[section], section, verbosity=verbosity, to_console=to_console)
 
         if args.select:
             try:
-                transform(citrus_config, scenario_parser[args.select], args.select, to_console=to_console)
+                transform(citrus_config, scenario_parser[args.select], args.select, verbosity=verbosity,
+                          to_console=to_console)
             except KeyError:
                 print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
                 sys.exit(1)
 
         if args.new:
-            new_config_entry(scenario_parser, ['scenario', 'map', 'dataprovider', 'intermediateprovider'], os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
+            new_config_entry(scenario_parser, ['scenario', 'map', 'dataprovider', 'intermediateprovider'],
+                             os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
 
         if args.list:
             config_list(scenario_parser)
 
         if args.interactive:
-            interactive_run(scenario_parser, 'transform')
+            interactive_run(citrus_config, scenario_parser, 'transform')
