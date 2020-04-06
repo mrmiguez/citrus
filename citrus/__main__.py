@@ -158,7 +158,7 @@ def main():
     return arg_parser.parse_args(), citrus_parser
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # TODO: there's a lot of assumptions made about the profile being named SSDN/ssdn
 
     ####################################
     # Application commands and actions #
