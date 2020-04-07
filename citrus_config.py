@@ -65,9 +65,9 @@ REPOX_EXPORT_DIR = 'D:\\Users\\Roland\\citrus_test'
 
 OUTPUT_DIR = 'D:\\Users\\Roland\\citrus_out'
 
-OUTPUT_FORMAT = ''
+OUTPUT_FORMAT = 'jsonl'
 
-PRETTY_PRINT = True
+PRETTY_PRINT = False
 
 PROVIDER = {'name': 'Sunshine State Digital Network',
             '@id': 'UNDETERMINED'}
