@@ -4,5 +4,5 @@ from .organizations import *
 from .scenarios import *
 from .source_resource import *
 from .maps import *
-import citrus.transform
-import citrus.harvest
+import citrus.cli.transform
+import citrus.cli.harvest

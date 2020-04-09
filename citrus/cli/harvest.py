@@ -2,8 +2,6 @@ import datetime
 import os
 
 from sickle import Sickle
-from sickle.iterator import OAIItemIterator
-
 ##################################################################
 #                                                                #
 # Code block beginning here to END will be unnecessary if        #
@@ -11,8 +9,9 @@ from sickle.iterator import OAIItemIterator
 #                                                                #
 ##################################################################
 from sickle import models
-from sickle.utils import xml_to_dict
+from sickle.iterator import OAIItemIterator
 from sickle.models import Header
+from sickle.utils import xml_to_dict
 
 
 class SickleRecord(models.Record):
@@ -72,4 +71,3 @@ def harvest(harvest_info, section, write_path, verbosity):
             for record in records:
                 fp.write(record.raw)
             fp.write('</oai>')
-        
