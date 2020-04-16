@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from sickle import Sickle
+import sickle
 ##################################################################
 #                                                                #
 # Code block beginning here to END will be unnecessary if        #
@@ -55,7 +55,7 @@ def harvest(harvest_info, section, write_path, verbosity):
             print(f'Harvesting {section} set {set_spec}')
 
         # Sickle harvester
-        harvester = Sickle(oai, iterator=OAIItemIterator, encoding='utf-8')
+        harvester = sickle.Sickle(oai, iterator=OAIItemIterator, encoding='utf-8')
 
         ##############################################################################
         # Remove next line if PR https://github.com/mloesch/sickle/pull/38 is merged #

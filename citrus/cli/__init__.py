@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from .harvest import harvest
+from .harvest import *
 from .transform import transform
 
 

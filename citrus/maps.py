@@ -1,4 +1,4 @@
-from citrus import SourceResource
+from citrus.source_resource import SourceResource
 
 
 def dc_standard_map(record):
