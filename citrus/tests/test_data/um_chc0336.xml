@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openarchives.org/OAI/2.0/">
+  <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+      <identifier>oai:merrick.library.miami.edu:chc0336/421</identifier>
+      <datestamp>2019-03-01</datestamp>
+      <setSpec>chc0336</setSpec>
+    </header>
+    <metadata>
+      <oai_qdc:qualifieddc xmlns:oai_qdc="http://worldcat.org/xmlschemas/qdc-1.0/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://worldcat.org/xmlschemas/qdc-1.0/ http://worldcat.org/xmlschemas/qdc/1.0/qdc-1.0.xsd http://purl.org/net/oclcterms http://worldcat.org/xmlschemas/oclcterms/1.4/oclcterms-1.4.xsd">
+        <dc:title>Jes&#xFA;s Consuegra letter to Gerardo Machado, November 24, 1937</dc:title>
+        <dc:creator>Consuegra, Jes&#xFA;s</dc:creator>
+        <dc:description>Sent from Havana to New York</dc:description>
+        <dc:format>Correspondence</dc:format>
+        <dcterms:created>1937-11-24</dcterms:created>
+        <dcterms:temporal>1930-1939</dcterms:temporal>
+        <dcterms:extent>1 item (1 p.)</dcterms:extent>
+        <dcterms:isPartOf>University of Miami. Library. Cuban Heritage Collection</dcterms:isPartOf>
+        <dcterms:isPartOf>Gerardo Machado y Morales Papers</dcterms:isPartOf>
+        <dcterms:isPartOf>CHC0336</dcterms:isPartOf>
+        <dc:rights>The copyright and related rights status of this material is unknown. For additional information, please visit: http://merrick.library.miami.edu/digitalprojects/copyright.html</dc:rights>
+        <dc:rights>http://rightsstatements.org/vocab/UND/1.0/</dc:rights>
+        <dc:identifier>chc0336000606</dc:identifier>
+        <dc:type>Text</dc:type>
+        <dc:format>image/tiff</dc:format>
+        <dc:identifier>http://merrick.library.miami.edu/cdm/ref/collection/chc0336/id/421</dc:identifier>
+      </oai_qdc:qualifieddc>
+    </metadata>
+  </record>
+ </OAI-PMH>

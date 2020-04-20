@@ -20,11 +20,14 @@ elif os.path.exists(os.path.join(Path(__file__).parents[0], 'citrus.cfg')):
     CONFIG_PATH = Path(__file__).parents[0]
 else:
     print("Cannot locate citrus configs.")  # TODO: This can return a more helpful prompt, or build default configs
-    sys.exit(1)
+    CONFIG_PATH = None
 
-citrus_config = configparser.ConfigParser()
-citrus_config.read(os.path.join(CONFIG_PATH, 'citrus.cfg'))
-custom_map_test_path = citrus_config['ssdn']['CustomMapPath']
+try:
+    citrus_config = configparser.ConfigParser()
+    citrus_config.read(os.path.join(CONFIG_PATH, 'citrus.cfg'))
+    custom_map_test_path = citrus_config['ssdn']['CustomMapPath']
+except TypeError:
+    pass
 
 try:
     sys.path.append(custom_map_test_path)
