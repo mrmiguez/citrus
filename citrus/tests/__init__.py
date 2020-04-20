@@ -32,5 +32,5 @@ except TypeError:
 try:
     sys.path.append(custom_map_test_path)
     from custom_map_tests import *
-except ModuleNotFoundError:
+except (ModuleNotFoundError, NameError):
     pass
