@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import Mock
 
 from lxml import etree
-from sickle.models import Record, OAIItem, Set
+from sickle.models import Record
 
 import citrus
 
@@ -22,7 +22,7 @@ class MockSickle(unittest.mock.MagicMock):
             return [Record(data)]
 
 
-class MODSHarvestTestCase(unittest.TestCase):
+class MainHarvestTestCase(unittest.TestCase):
 
     def setUp(self):
         self.harvest_parser = {
