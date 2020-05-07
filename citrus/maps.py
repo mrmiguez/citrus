@@ -1,3 +1,9 @@
+"""
+Maps define how data exposed through `citrus.Scenarios` are manipulated to build `citrus.SourceResource` objects
+
+`citrus.cli.transform` read the configuration file `citrus_scenarios.cfg`.to determine which map to apply for which source
+"""
+
 from citrus.source_resource import SourceResource
 
 
@@ -31,7 +37,7 @@ def qdc_standard_map(record):
 def mods_standard_map(record):
     sr = SourceResource()
     sr.alternative = record.alternative
-    sr.collection = record.collection
+    sr.collection = record.collection.title
     sr.contributor = record.contributor
     sr.creator = record.creator
     sr.date = record.date

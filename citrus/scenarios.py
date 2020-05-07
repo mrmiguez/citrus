@@ -1,3 +1,7 @@
+"""
+Source document parsers and record classes for returning XML or JSON document values
+"""
+
 from pymods import OAIReader
 
 dc = '{http://purl.org/dc/elements/1.1/}'
@@ -339,7 +343,7 @@ class MODSRecord(XMLRecord):
     @property
     def collection(self):
         try:
-            return self.record.metadata.collection.title
+            return self.record.metadata.collection
         except (AttributeError, TypeError):
             return None
 
@@ -399,6 +403,13 @@ class MODSRecord(XMLRecord):
                     return {"name": subject.text}
 
     @property
+    def pid(self):
+        if self.record.metadata.pid:
+            return self.record.metadata.pid
+        else:
+            return self.record.oai_urn.split(':')[-1].replace('_', ':')
+
+    @property
     def publisher(self):
         return self.record.metadata.publisher
 
@@ -410,11 +421,18 @@ class MODSRecord(XMLRecord):
 
     @property
     def rights(self):
-        return [rights.text for rights in self.record.metadata.rights]
+        for rights in self.record.metadata.rights:
+            if rights.uri:
+                return rights.uri
+            else:
+                return rights.text
 
     @property
     def subject(self):
-        return [{"name": subject.text} for subject in self.record.metadata.subjects if
+        return [{"@id": subject.uri, "name": subject.text}
+                if subject.uri
+                else {"name": subject.text}
+                for subject in self.record.metadata.subjects if
                 'eographic' not in subject.elem.tag]
 
     @property

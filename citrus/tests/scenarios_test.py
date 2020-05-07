@@ -142,8 +142,14 @@ class MODSRecordTestCase(unittest.TestCase):
     def test_MODS_record_alternative(self):
         self.assertEqual(self.record.alternative, ['ALT: Fraternity fundraiser for injured student'])
 
-    def test_MODS_record_collection(self):
-        self.assertEqual(self.record.collection, 'General Jean-Jacques-Germain Pelet-Clozeau Papers')
+    def test_MODS_record_collection_title(self):
+        self.assertEqual(self.record.collection.title, 'General Jean-Jacques-Germain Pelet-Clozeau Papers')
+
+    def test_MODS_record_collection_location(self):
+        self.assertEqual(self.record.collection.location, 'Special Collections & Archives, Florida State University, Tallahassee, Florida')
+
+    def test_MODS_record_collection_url(self):
+        self.assertEqual(self.record.collection.url, 'https://archives.lib.fsu.edu/repositories/10/resources/531')
 
     def test_MODS_record_contributor(self):
         self.assertEqual(self.record.contributor, [{'name': 'Winkler, '}])
@@ -176,7 +182,7 @@ class MODSRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.publisher, ["Tay Tay Frankie"])
 
     def test_MODS_record_rights(self):
-        self.assertEqual(self.record.rights, ['http://rightsstatements.org/vocab/NoC-US/1.0/', 'Rights 4A'])
+        self.assertEqual(self.record.rights, 'http://rightsstatements.org/vocab/NoC-US/1.0/')
 
     def test_MODS_record_subject(self):
         self.assertEqual(self.record.subject, [{'name': 'Students'}, {'name': 'Greek life'}, {'name': 'Fraternities and Sororities'}, {'name': 'Narnia'}])

@@ -89,7 +89,7 @@ class MODSStandardMapTestCase(unittest.TestCase):
                                         'language': [{'iso_639_3': 'eng', 'name': 'English'}],
                                         'place': {'name': 'Narnia'},
                                         'publisher': ['Tay Tay Frankie'],
-                                        'rights': ['http://rightsstatements.org/vocab/NoC-US/1.0/', 'Rights 4A'],
+                                        'rights': 'http://rightsstatements.org/vocab/NoC-US/1.0/',
                                         'subject': [{'name': 'Students'},
                                                     {'name': 'Greek life'},
                                                     {'name': 'Fraternities and Sororities'},

@@ -1,3 +1,7 @@
+"""
+Container classes for the resulting DPLA MAPv4 JSON-LD document(s)
+"""
+
 import json
 from datetime import date
 from os.path import exists, join
@@ -38,8 +42,8 @@ class DPLARecord(Record):
         """
         Record.__init__(self)
         self.__dict__['@context'] = "http://api.dp.la/items/context"
-        self.provider = {"name": "Sunshine State Digital Network"}
         self.aggregatedCHO = "#sourceResource"
+        self.preview = ""
 
 
 class SourceResource(Record):

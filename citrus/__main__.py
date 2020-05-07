@@ -1,3 +1,19 @@
+"""
+Command-line interface when the module is called with `python3 -m citrus`.
+
+Most actions can be explored with the `--help` flag.
+
+The two main activities are:
+    * `harvest` (defined in `citrus.cli.harvest`)
+    * `transform` (defined in `citrus.cli.transform`)
+
+Other command options relate to setting and querying the program environment and running the module self-test.
+
+The path to the citrus configuration files must either be defined with the `CITRUS_CONFIG` environment variable or exist in one of two default locations:
+    * $HOME/.local/share/citrus
+    * the citrus module directory
+"""
+
 import argparse
 import configparser
 import os
