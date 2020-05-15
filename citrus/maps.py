@@ -16,7 +16,7 @@ def dc_standard_map(record):
     sr.format = record.format
     sr.identifier = record.harvest_id
     sr.language = record.language
-    sr.place = record.place
+    sr.spatial = record.place
     sr.publisher = record.publisher
     sr.rights = record.rights
     sr.subject = record.subject
@@ -46,7 +46,7 @@ def mods_standard_map(record):
     sr.format = record.format
     sr.identifier = record.harvest_id
     sr.language = record.language
-    sr.place = record.place
+    sr.spatial = record.place
     sr.publisher = record.publisher
     sr.rights = record.rights
     sr.subject = record.subject

@@ -29,11 +29,11 @@ class DCStandardMapTestCase(unittest.TestCase):
                                         'format': ['Embroidery'],
                                         'identifier': 'oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050832_00001',
                                         'language': ['English'],
-                                        'place': [{'name': 'Moon'}],
+                                        'spatial': [{'name': 'Moon'}],
                                         'publisher': ['Miami, Florida: J.N. Chamberlain',
                                                       'Miami, Florida: J.N. Chamberlain'],
                                         'rights': ['Rights 4A'],
-                                        'subject': ['Alligators--Florida--Everglades.'],
+                                        'subject': [{'name': 'Alligators--Florida--Everglades.'}],
                                         'title': ['Alligator Joe watching the young alligators hatch'],
                                         'type': ['Text']})
 
@@ -52,19 +52,19 @@ class QDCStandardMapTestCase(unittest.TestCase):
                                                        'Alan Crockwell Collection',
                                                        'ASM0447'],
                                         'contributor': [{'name': 'Thee Oh Sees'}],
-                                        'creator': [{'name': 'Gilpin, Vince'}],
+                                        'creator': [{'name': 'Gilpin, Vincent'}],
                                         'date': ['1933-09-03'],
                                         'description': ['Test 001'],
                                         'extent': ['1 letter'],
                                         'format': ['image/tiff'],
                                         'identifier': 'oai:lib.fsu.edu.umiami:oai:uofm.library.umiami:oai:merrick.library.miami.edu:asm0447/31',
                                         'language': ['eng'],
-                                        'place': [{'name': 'Excelsior (Minn.)'}],
+                                        'spatial': [{'name': 'Excelsior (Minn.)'}],
                                         'publisher': ['Arista Records'],
                                         'rights': ['Rights 4A',
                                                    'Copyright Undetermined http://rightsstatements.org/page/UND/1.0/'],
-                                        'subject': ['Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; '
-                                                    'Letters'],
+                                        'subject': [{
+                                                        'name': 'Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters'}],
                                         'title': ['Vincent Gilpin letter to Patty Munroe, September 3, 1933'],
                                         'type': ['Tax return from a VIP']})
 
@@ -87,7 +87,7 @@ class MODSStandardMapTestCase(unittest.TestCase):
                                         'format': [{'name': 'Photographs'}],
                                         'identifier': 'oai:lib.fsu.edu.fsu_digital_library:oai:fsu.digital.flvc.org:fsu_24694',
                                         'language': [{'iso_639_3': 'eng', 'name': 'English'}],
-                                        'place': {'name': 'Narnia'},
+                                        'spatial': {'name': 'Narnia'},
                                         'publisher': ['Tay Tay Frankie'],
                                         'rights': 'http://rightsstatements.org/vocab/NoC-US/1.0/',
                                         'subject': [{'name': 'Students'},

@@ -22,7 +22,8 @@ class CitrusRecordTestCase(unittest.TestCase):
         self.record = XMLRecord(self.scenario.records[0])
 
     def test_citrus_record_harvest_id(self):
-        self.assertEqual(self.record.harvest_id, "oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050832_00001")
+        self.assertEqual(self.record.harvest_id,
+                         "oai:lib.fsu.edu.fiu:oai:uofm.library.fiu:oai:dpsobek:FI07050832_00001")
 
 
 class DCRecordTestCase(unittest.TestCase):
@@ -66,7 +67,7 @@ class DCRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.rights, ["Rights 4A"])
 
     def test_DC_record_subject(self):
-        self.assertEqual(self.record.subject, ['Alligators--Florida--Everglades.'])
+        self.assertEqual(self.record.subject, [{'name': 'Alligators--Florida--Everglades.'}])
 
     def test_DC_record_title(self):
         self.assertEqual(self.record.title, ["Alligator Joe watching the young alligators hatch"])
@@ -92,7 +93,7 @@ class QDCRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.contributor, [{'name': 'Thee Oh Sees'}])
 
     def test_QDC_record_creator(self):
-        self.assertEqual(self.record.creator, [{'name': 'Gilpin, Vince'}])
+        self.assertEqual(self.record.creator, [{'name': 'Gilpin, Vincent'}])
 
     def test_QDC_record_date(self):
         self.assertEqual(self.record.date, ["1933-09-03"])
@@ -123,7 +124,8 @@ class QDCRecordTestCase(unittest.TestCase):
                          ["Rights 4A", "Copyright Undetermined http://rightsstatements.org/page/UND/1.0/"])
 
     def test_QDC_record_subject(self):
-        self.assertEqual(self.record.subject, ['Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters'])
+        self.assertEqual(self.record.subject,
+                         [{'name': 'Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters'}])
 
     def test_QDC_record_title(self):
         self.assertEqual(self.record.title, ["Vincent Gilpin letter to Patty Munroe, September 3, 1933"])
@@ -146,7 +148,8 @@ class MODSRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.collection.title, 'General Jean-Jacques-Germain Pelet-Clozeau Papers')
 
     def test_MODS_record_collection_location(self):
-        self.assertEqual(self.record.collection.location, 'Special Collections & Archives, Florida State University, Tallahassee, Florida')
+        self.assertEqual(self.record.collection.location,
+                         'Special Collections & Archives, Florida State University, Tallahassee, Florida')
 
     def test_MODS_record_collection_url(self):
         self.assertEqual(self.record.collection.url, 'https://archives.lib.fsu.edu/repositories/10/resources/531')
@@ -185,7 +188,9 @@ class MODSRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.rights, 'http://rightsstatements.org/vocab/NoC-US/1.0/')
 
     def test_MODS_record_subject(self):
-        self.assertEqual(self.record.subject, [{'name': 'Students'}, {'name': 'Greek life'}, {'name': 'Fraternities and Sororities'}, {'name': 'Narnia'}])
+        self.assertEqual(self.record.subject,
+                         [{'name': 'Students'}, {'name': 'Greek life'}, {'name': 'Fraternities and Sororities'},
+                          {'name': 'Narnia'}])
 
     def test_MODS_record_title(self):
         self.assertEqual(self.record.title, 'Fraternity fundraiser for injured student')

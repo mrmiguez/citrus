@@ -1,6 +1,7 @@
 """
 Source document parsers and record classes for returning XML or JSON document values
 """
+import re
 
 from pymods import OAIReader
 
@@ -92,6 +93,16 @@ class SSDNMODS(XMLScenario):
         self.records = [MODSRecord(record) for record in self.records]
 
 
+class SSDNPartnerMODSScenario(SSDNMODS):
+
+    def __init__(self, xml_path):
+        """
+        :param xml_path: Path to an XML file of OAI-PMH MODS records
+        """
+        SSDNMODS.__init__(self, xml_path)
+        self.records = [SSDNMODSRecord(record) for record in self.records]
+
+
 class APIScenario(Scenario):
 
     def __init__(self, url, record_key, count_key=None, page_key=None):
@@ -179,7 +190,8 @@ class DCRecord(XMLRecord):
     @property
     def creator(self):
         try:
-            return [{"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")} for name in
+            # return [{"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")} for name in
+            return [{"name": name.strip(" ")} for name in
                     self.record.metadata.get_element('.//{0}creator'.format(dc), delimiter=';')]
         except TypeError:
             return None
@@ -250,7 +262,8 @@ class DCRecord(XMLRecord):
     @property
     def subject(self):
         try:
-            return [sub for sub in self.record.metadata.get_element('.//{0}subject'.format(dc))]
+            return [{'name': re.sub("\( lcsh \)$", '', sub).strip(' ')} for sub in
+                    self.record.metadata.get_element('.//{0}subject'.format(dc))]
         except TypeError:
             return None
 
@@ -258,6 +271,13 @@ class DCRecord(XMLRecord):
     def title(self):
         try:
             return [title for title in self.record.metadata.get_element('.//{0}title'.format(dc))]
+        except TypeError:
+            return None
+
+    @property
+    def thumbnail(self):
+        try:
+            return self.record.metadata.get_element('.//{0}identifier.thumbnail'.format(dc))[0]
         except TypeError:
             return None
 
@@ -335,6 +355,8 @@ class MODSRecord(XMLRecord):
         :param record: OAI-PMH MODS record
         """
         XMLRecord.__init__(self, record)
+        self.oai_urn = self.record.oai_urn
+        self.metadata = self.record.metadata
 
     @property
     def alternative(self):
@@ -388,8 +410,16 @@ class MODSRecord(XMLRecord):
                 self.record.metadata.genre]
 
     @property
+    def geographic_code(self):
+        return self.record.metadata.geographic_code
+
+    @property
     def identifier(self):
         return self.record.metadata.purl[0]
+
+    @property
+    def iid(self):
+        return self.record.metadata.iid
 
     @property
     def language(self):
@@ -442,6 +472,34 @@ class MODSRecord(XMLRecord):
     @property
     def type(self):
         return self.record.metadata.type_of_resource
+
+
+class SSDNMODSRecord(MODSRecord):
+
+    def __init__(self, record):
+        MODSRecord.__init__(self, record)
+
+    @property
+    def creator(self):
+        # Case 1: Name has either role.text=Creator or role.code=cre
+        # Case 2: Name has incorrectly formed role.text=creator
+        # Case 3: Name has neither role.text nor role.code
+        names = self.record.metadata.get_creators + self.record.metadata.get_names(
+            role="creator") + self.record.metadata.get_names(role=None)
+        return [{"@id": name.uri, "name": name.text} if name.uri else {"name": name.text} for name in
+                names]
+
+    @property
+    def rights(self):
+        # TODO: this is real ugly and will break if there are no RS.org URIs to return
+        for rights in self.record.metadata.rights:
+            if rights.uri:
+                return rights.uri
+            else:
+                if rights.text.startswith('http'):
+                    return rights.text
+                else:
+                    continue
 
 
 class InternetArchiveRecord(CitrusRecord):
