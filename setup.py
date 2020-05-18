@@ -14,7 +14,7 @@ setup(
     platforms='any',
     install_requires=[
         'pymods>=2.0.6',
-        'sickle>=0.6.5',
+        'sickle>=0.7.0', 'requests'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
