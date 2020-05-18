@@ -8,24 +8,29 @@ import citrus.maps
 def build(custom_map_function, data, org, provider):
     """apply transformation map to data iterable"""
     records = citrus.RecordGroup()
-    for sr, tn, *args in map(custom_map_function, data):
-        dpla = citrus.DPLARecord()
-        if args:
-            dpla.dataProvider = args[0]
-        else:
-            dpla.dataProvider = org.data_provider
+    mapped_data = map(custom_map_function, data)
+    for mapped_rec in mapped_data:
+        if mapped_rec:
+            for sr, tn, *args in mapped_rec:
+                dpla = citrus.DPLARecord()
+                if args:
+                    dpla.dataProvider = args[0]
+                else:
+                    dpla.dataProvider = org.data_provider
 
-        if args:
-            dpla.intermediateProvider = args[1]
-        else:
-            dpla.intermediateProvider = org.intermediate_provider
+                if args:
+                    dpla.intermediateProvider = args[1]
+                else:
+                    dpla.intermediateProvider = org.intermediate_provider
 
-        dpla.provider = {'@id': 'UNDETERMINED', 'name': provider}
-        dpla.isShownAt = sr.data['identifier']
-        dpla.preview = tn
-        dpla.sourceResource = sr.data
-        records.append(dpla.data)
-    return records
+                dpla.provider = {'@id': 'UNDETERMINED', 'name': provider}
+                dpla.isShownAt = sr.data['identifier']
+                dpla.preview = tn
+                dpla.sourceResource = sr.data
+                records.append(dpla.data)
+            return records
+        else:
+            continue
 
 
 def transform(citrus_config, transformation_info, section, verbosity, to_console=False):

@@ -2,6 +2,8 @@
 Source document parsers and record classes for returning XML or JSON document values
 """
 import re
+import requests
+import json
 
 from pymods import OAIReader
 
@@ -106,8 +108,6 @@ class SSDNPartnerMODSScenario(SSDNMODS):
 class APIScenario(Scenario):
 
     def __init__(self, url, record_key, count_key=None, page_key=None):
-        import requests
-        import json
         r = requests.get(url)
         data = json.loads(r.text.replace('\\u00a0', ''))
         if count_key:
@@ -343,6 +343,13 @@ class QDCRecord(DCRecord):
         try:
             return [{'name': place} for place in
                     self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
+        except TypeError:
+            return None
+
+    @property
+    def requires(self):
+        try:
+            return [r for r in self.record.metadata.get_element('.//{0}requires'.format(dcterms), delimiter=';')]
         except TypeError:
             return None
 
