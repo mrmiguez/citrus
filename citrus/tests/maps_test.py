@@ -63,8 +63,10 @@ class QDCStandardMapTestCase(unittest.TestCase):
                                         'publisher': ['Arista Records'],
                                         'rights': ['Rights 4A',
                                                    'Copyright Undetermined http://rightsstatements.org/page/UND/1.0/'],
-                                        'subject': [{
-                                                        'name': 'Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters'}],
+                                        'subject': [{'name': 'Gilpin, Vincent'},
+                                                    {'name': 'Munroe, Patty'},
+                                                    {'name': 'Munroe, Ralph, 1851-1933'},
+                                                    {'name': 'Letters'}],
                                         'title': ['Vincent Gilpin letter to Patty Munroe, September 3, 1933'],
                                         'type': ['Tax return from a VIP']})
 

@@ -9,17 +9,17 @@ from citrus.source_resource import SourceResource
 
 def dc_standard_map(record):
     sr = SourceResource()
-    sr.contributor = record.contributor
-    sr.creator = record.creator
+    sr.contributor = [{'name': name} for name in record.contributor if record.contributor]
+    sr.creator = [{'name': name} for name in record.creator if record.creator]
     sr.date = record.date
     sr.description = record.description
     sr.format = record.format
     sr.identifier = record.harvest_id
     sr.language = record.language
-    sr.spatial = record.place
+    sr.spatial = [{'name': place} for place in record.place if record.place]
     sr.publisher = record.publisher
     sr.rights = record.rights
-    sr.subject = record.subject
+    sr.subject = [{'name': subject} for subject in record.subject if record.subject]
     sr.title = record.title
     sr.type = record.type
     return sr

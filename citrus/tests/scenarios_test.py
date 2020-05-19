@@ -34,10 +34,10 @@ class DCRecordTestCase(unittest.TestCase):
         self.record = self.scenario.records[0]
 
     def test_DC_record_contributor(self):
-        self.assertEqual(self.record.contributor, [{'name': 'Buckethead'}])
+        self.assertEqual(self.record.contributor, ['Buckethead'])
 
     def test_DC_record_creator(self):
-        self.assertEqual(self.record.creator, [{'name': 'Lewis Carroll'}])
+        self.assertEqual(self.record.creator, ['Lewis Carroll'])
 
     def test_DC_record_date(self):
         self.assertEqual(self.record.date, ['1974'])
@@ -57,7 +57,7 @@ class DCRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.language, ['English'])
 
     def test_DC_record_place(self):
-        self.assertEqual(self.record.place, [{"name": "Moon"}])
+        self.assertEqual(self.record.place, ["Moon"])
 
     def test_DC_record_publisher(self):
         self.assertEqual(self.record.publisher,
@@ -67,7 +67,7 @@ class DCRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.rights, ["Rights 4A"])
 
     def test_DC_record_subject(self):
-        self.assertEqual(self.record.subject, [{'name': 'Alligators--Florida--Everglades.'}])
+        self.assertEqual(self.record.subject, ['Alligators--Florida--Everglades.'])
 
     def test_DC_record_title(self):
         self.assertEqual(self.record.title, ["Alligator Joe watching the young alligators hatch"])
@@ -90,10 +90,10 @@ class QDCRecordTestCase(unittest.TestCase):
         self.assertEqual(self.record.alternative, ["covfefe"])
 
     def test_QDC_record_contributor(self):
-        self.assertEqual(self.record.contributor, [{'name': 'Thee Oh Sees'}])
+        self.assertEqual(self.record.contributor, ['Thee Oh Sees'])
 
     def test_QDC_record_creator(self):
-        self.assertEqual(self.record.creator, [{'name': 'Gilpin, Vincent'}])
+        self.assertEqual(self.record.creator, ['Gilpin, Vincent'])
 
     def test_QDC_record_date(self):
         self.assertEqual(self.record.date, ["1933-09-03"])
@@ -110,14 +110,25 @@ class QDCRecordTestCase(unittest.TestCase):
     def test_QDC_record_identifier(self):
         self.assertEqual(self.record.identifier, ['http://merrick.library.miami.edu/cdm/ref/collection/asm0447/id/31'])
 
+    def test_QDC_record_isPartOf(self):
+        self.assertEqual(self.record.is_part_of, ['University of Miami. Library. Special Collections',
+                                                  'Alan Crockwell Collection',
+                                                  'ASM0447'])
+
     def test_QDC_record_language(self):
         self.assertEqual(self.record.language, ['eng'])
 
+    def test_QDC_record_medium(self):
+        self.assertEqual(self.record.medium, ['found objects', 'realia'])
+
     def test_QDC_record_place(self):
-        self.assertEqual(self.record.place, [{"name": "Excelsior (Minn.)"}])
+        self.assertEqual(self.record.place, ["Excelsior (Minn.)"])
 
     def test_QDC_record_publisher(self):
         self.assertEqual(self.record.publisher, ['Arista Records'])
+
+    def test_QDC_record_requires(self):
+        self.assertEqual(self.record.requires, ['noharvest'])
 
     def test_QDC_record_rights(self):
         self.assertEqual(self.record.rights,
@@ -125,7 +136,10 @@ class QDCRecordTestCase(unittest.TestCase):
 
     def test_QDC_record_subject(self):
         self.assertEqual(self.record.subject,
-                         [{'name': 'Gilpin, Vincent; Munroe, Patty; Munroe, Ralph, 1851-1933; Letters'}])
+                         ['Gilpin, Vincent',
+                          'Munroe, Patty',
+                          'Munroe, Ralph, 1851-1933',
+                          'Letters'])
 
     def test_QDC_record_title(self):
         self.assertEqual(self.record.title, ["Vincent Gilpin letter to Patty Munroe, September 3, 1933"])

@@ -10,6 +10,7 @@ def build(custom_map_function, data, org, provider):
     records = citrus.RecordGroup()
     mapped_data = map(custom_map_function, data)
     for mapped_rec in mapped_data:
+        # map generators can return None if record is marked to be skipped
         if mapped_rec:
             for sr, tn, *args in mapped_rec:
                 dpla = citrus.DPLARecord()

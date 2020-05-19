@@ -131,7 +131,6 @@ class RecordGroup(object):
             print(json.dumps(rec))
 
 
-
 def dedupe_record_group():
     pass
 

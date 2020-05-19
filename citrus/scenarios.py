@@ -178,101 +178,66 @@ class DCRecord(XMLRecord):
         :param record: oai_dc record
         """
         XMLRecord.__init__(self, record)
+        self.ns = '{http://purl.org/dc/elements/1.1/}'
+
+    def _value_list(self, elem, ns):
+        try:
+            return [value.strip(' ') for value in
+                    self.record.metadata.get_element('.//{0}{1}'.format(ns, elem), delimiter=';')
+                    if value]
+        except TypeError:
+            return None
 
     @property
     def contributor(self):
-        try:
-            return [{"name": name} for name in
-                    self.record.metadata.get_element('.//{0}contributor'.format(dc), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('contributor', dc)
 
     @property
     def creator(self):
-        try:
-            # return [{"name": name.strip(" ").rstrip("( Contributor )").rstrip("( contributor )")} for name in
-            return [{"name": name.strip(" ")} for name in
-                    self.record.metadata.get_element('.//{0}creator'.format(dc), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('creator', dc)
 
     @property
     def date(self):
-        try:
-            return [date for date in self.record.metadata.get_element('.//{0}date'.format(dc))]
-        except TypeError:
-            return None
+        return self._value_list('date', dc)
 
     @property
     def description(self):
-        try:
-            return [description for description in
-                    self.record.metadata.get_element('.//{0}description'.format(dc), delimiter=';')]
-        except TypeError:
-            return None
-
+        return self._value_list('description', dc)
     @property
     def format(self):
-        try:
-            return [ft for ft in self.record.metadata.get_element('.//{0}format'.format(dc))]
-        except TypeError:
-            return None
+        return self._value_list('format', dc)
 
     @property
     def identifier(self):
-        try:
-            return [identifier for identifier in self.record.metadata.get_element('.//{0}identifier'.format(dc))]
-        except TypeError:
-            return None
+        return self._value_list('identifier', dc)
 
     @property
     def language(self):
-        try:
-            return [lang for lang in self.record.metadata.get_element('.//{0}language'.format(dc), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('language', dc)
 
     @property
     def place(self):
-        try:
-            return [{'name': place} for place in self.record.metadata.get_element('.//{0}coverage'.format(dc))]
-        except TypeError:
-            return None
+        return self._value_list('coverage', dc)
 
     @property
     def publisher(self):
-        try:
-            return [publisher for publisher in self.record.metadata.get_element('.//{0}publisher'.format(dc))]
-        except TypeError:
-            return None
-
-    # sourceResource.relation
-
-    # sourceResource.isReplacedBy
-
-    # sourceResource.replaces
+        return self._value_list('publisher', dc)
 
     @property
     def rights(self):
-        try:
-            return [rights for rights in self.record.metadata.get_element('.//{0}rights'.format(dc))]
-        except TypeError:
-            return None
+        return self._value_list('rights', dc)
 
     @property
     def subject(self):
         try:
-            return [{'name': re.sub("\( lcsh \)$", '', sub).strip(' ')} for sub in
-                    self.record.metadata.get_element('.//{0}subject'.format(dc))]
+            return [re.sub("\( lcsh \)$", '', sub).strip(' ') for sub in
+                    self.record.metadata.get_element('.//{0}subject'.format(dc), delimiter=';') if sub]
         except TypeError:
             return None
 
     @property
     def title(self):
-        try:
-            return [title for title in self.record.metadata.get_element('.//{0}title'.format(dc))]
-        except TypeError:
-            return None
+        return self._value_list('title', dc)
 
     @property
     def thumbnail(self):
@@ -283,10 +248,7 @@ class DCRecord(XMLRecord):
 
     @property
     def type(self):
-        try:
-            return [t for t in self.record.metadata.get_element('.//{0}type'.format(dc), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('type', dc)
 
 
 class QDCRecord(DCRecord):
@@ -300,24 +262,15 @@ class QDCRecord(DCRecord):
 
     @property
     def abstract(self):
-        try:
-            return [abstract for abstract in self.record.metadata.get_element('.//{0}abstract'.format(dcterms))]
-        except TypeError:
-            return None
+        return self._value_list('abstract', dcterms)
 
     @property
     def alternative(self):
-        try:
-            return [alt for alt in self.record.metadata.get_element('.//{0}alternative'.format(dcterms))]
-        except TypeError:
-            return None
+        return self._value_list('alternative', dcterms)
 
     @property
     def is_part_of(self):
-        try:
-            return [alt for alt in self.record.metadata.get_element('.//{0}isPartOf'.format(dcterms))]
-        except TypeError:
-            return None
+        return self._value_list('isPartOf', dcterms)
 
     @property
     def date(self):
@@ -332,26 +285,19 @@ class QDCRecord(DCRecord):
 
     @property
     def extent(self):
-        try:
-            return [extent for extent in
-                    self.record.metadata.get_element('.//{0}extent'.format(dcterms), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('extent', dcterms)
+
+    @property
+    def medium(self):
+        return self._value_list('medium', dcterms)
 
     @property
     def place(self):
-        try:
-            return [{'name': place} for place in
-                    self.record.metadata.get_element('.//{0}spatial'.format(dcterms), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('spatial', dcterms)
 
     @property
     def requires(self):
-        try:
-            return [r for r in self.record.metadata.get_element('.//{0}requires'.format(dcterms), delimiter=';')]
-        except TypeError:
-            return None
+        return self._value_list('requires', dcterms)
 
 
 class MODSRecord(XMLRecord):
