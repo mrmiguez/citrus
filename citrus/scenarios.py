@@ -182,7 +182,7 @@ class DCRecord(XMLRecord):
 
     def _value_list(self, elem, ns):
         try:
-            return [value.strip(' ') for value in
+            return [value.strip(':').strip(' ') for value in
                     self.record.metadata.get_element('.//{0}{1}'.format(ns, elem), delimiter=';')
                     if value]
         except TypeError:
