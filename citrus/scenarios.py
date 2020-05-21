@@ -95,6 +95,17 @@ class SSDNMODS(XMLScenario):
         self.records = [MODSRecord(record) for record in self.records]
 
 
+class BepressDC(SSDNDC):
+
+    def __init__(self, xml_path):
+        """
+        Bepress specific parser
+        :param xml_path: Path to an XML file of OAI-PMH MODS records
+        """
+        SSDNDC.__init__(self, xml_path)
+        self.records = [BepressDCRecord(record) for record in self.records]
+
+
 class SSDNPartnerMODSScenario(SSDNMODS):
 
     def __init__(self, xml_path):
@@ -178,7 +189,8 @@ class DCRecord(XMLRecord):
         :param record: oai_dc record
         """
         XMLRecord.__init__(self, record)
-        self.ns = '{http://purl.org/dc/elements/1.1/}'
+        self.oai_urn = self.record.oai_urn
+        self.metadata = self.record.metadata
 
     def _value_list(self, elem, ns):
         try:
@@ -187,6 +199,13 @@ class DCRecord(XMLRecord):
                     if value]
         except TypeError:
             return None
+
+    def _clean_mark_up(self, text):
+        mark_up_re = re.compile('<.*?>')
+        new_line_re = re.compile('\n')
+        clean_text = re.sub(mark_up_re, '', text)
+        clean_text = re.sub(new_line_re, ' ', clean_text)
+        return clean_text
 
     @property
     def contributor(self):
@@ -425,6 +444,25 @@ class MODSRecord(XMLRecord):
     @property
     def type(self):
         return self.record.metadata.type_of_resource
+
+
+class BepressDCRecord(DCRecord):
+
+    def __init__(self, record):
+        DCRecord.__init__(self, record)
+
+    @property
+    def description(self):
+        try:
+            return [re.sub(' {2}', ' ', self._clean_mark_up(abstract)).strip(' ') for abstract in
+                    self.record.metadata.get_element('.//{0}description.abstract'.format(dc), delimiter=';')
+                    if abstract]
+        except TypeError:
+            return None
+
+    @property
+    def date(self):
+        return re.sub('T[\\d*:]*Z', '', self._value_list('date.created', dc)[0])
 
 
 class SSDNMODSRecord(MODSRecord):
