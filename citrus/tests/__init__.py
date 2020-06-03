@@ -9,6 +9,7 @@ from .transform_test import *
 import configparser
 from pathlib import Path
 import sys
+#from citrus.__main__ import profile
 
 
 # Locating configs
@@ -25,12 +26,14 @@ else:
 try:
     citrus_config = configparser.ConfigParser()
     citrus_config.read(os.path.join(CONFIG_PATH, 'citrus.cfg'))
-    custom_map_test_path = citrus_config['ssdn']['CustomMapPath']
+    for profile in citrus_config.keys():
+        custom_map_test_path = citrus_config[profile]['CustomMapPath']
+        try:
+            sys.path.append(custom_map_test_path)
+            from custom_map_tests import *
+        except (ModuleNotFoundError, NameError):
+            pass
 except TypeError:
     pass
 
-try:
-    sys.path.append(custom_map_test_path)
-    from custom_map_tests import *
-except (ModuleNotFoundError, NameError):
-    pass
+

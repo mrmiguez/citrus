@@ -1,8 +1,10 @@
 from setuptools import setup
 
+from citrus import __version__
+
 setup(
     name='citrus',
-    version='0.0.1',
+    version=__version__,
     packages=['citrus'],
     url='http://github.com/mrmiguez/citrus',
     license='MIT',
@@ -14,7 +16,8 @@ setup(
     platforms='any',
     install_requires=[
         'pymods>=2.0.6',
-        'sickle>=0.7.0', 'requests'
+        'sickle>=0.7.0', 
+        'requests'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',

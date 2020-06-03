@@ -26,3 +26,10 @@ class SourceResourceRequiredElementException(SourceResourceException):
 
     def __init__(self, record, elem):
         SourceResourceException.__init__(self, f"Required element {elem} is None: {record}")
+
+
+class CitrusProfileError(CitrusException, KeyError):
+
+    def __init__(self, profile, config_file):
+        self.msg = f'Profile: {profile} is not listed in {config_file}'
+        KeyError.__init__(self, self.msg)

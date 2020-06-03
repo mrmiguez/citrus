@@ -68,7 +68,7 @@ class RecordGroup(object):
     def __init__(self, records=None):
         """
 
-        :param records:
+        :param records: List of :class:citrus.scenarios.CitrusRecord or subclasses
         """
         object.__init__(self)
         if records:

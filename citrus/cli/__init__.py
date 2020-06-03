@@ -36,6 +36,55 @@ class CustomHelpFormatter(argparse.HelpFormatter):
             return super(CustomHelpFormatter, self)._format_action(action)
 
 
+def argument_parser():
+    """Application level args"""
+
+    arg_parser = argparse.ArgumentParser(
+        description='citrus - Collective Information Transformation and Reconciliation Utility Service',
+        usage="[-h] [-v] [--test] | <command> [-h] | <subcommand>",
+        add_help=True,
+        formatter_class=CustomHelpFormatter)
+    subcommand_parsers = arg_parser.add_subparsers(help='sub-commands', dest='cmd')
+    subcommand_parsers.required = False
+    subcommand_parsers.add_parser('status', help='show status')
+
+    # generic config parser
+    # adds options to harvest & transform subcommands
+    config_parser = argparse.ArgumentParser(add_help=False)
+    config_parser.add_argument('-n', '--new', action='store_true', help='add a new config entry')
+    config_parser.add_argument('-l', '--list', action='store_true', help='list config entries')
+    config_parser.add_argument('-i', '--interactive', action='store_true',
+                               help="select entry from config interactively")
+    config_parser.add_argument('-s', '--select', help="run action on a specific config entry", metavar='config_entry')
+
+    # harvest subcommand & args
+    harvest_parser = subcommand_parsers.add_parser('harvest', help='citrus harvest interactions',
+                                                   parents=[config_parser])
+    harvest_parser.add_argument('-r', '--run', action='store_true', help='run harvest for all config entries')
+
+    # transform subcommand & args
+    transformation_parser = subcommand_parsers.add_parser('transform', help='citrus transformation interactions',
+                                                          parents=[config_parser])
+    transformation_parser.add_argument('-r', '--run', action='store_true',
+                                       help='run transformation for all config entries')
+    transformation_parser.add_argument('--to_console', action='store_true',
+                                       help="print records to console, don't write to disk")
+
+    arg_parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='verbose mode')
+    arg_parser.add_argument('-p', '--profile', dest='profile', help='select configuration profile to use')
+    arg_parser.add_argument('--test', dest='test', action='store_true', help='run module unit tests')
+
+    # custom help message
+    arg_parser._positionals.title = "commands"
+
+    # hack to show help when no arguments supplied
+    if len(sys.argv) == 1:
+        arg_parser.print_help()
+        sys.exit(0)
+
+    return arg_parser
+
+
 def config_list(config_parser):
     """
     Simple printing of config options

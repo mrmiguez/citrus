@@ -43,4 +43,4 @@ Thumbs.db
 .cache/*
 .pytest_cache/
 .archive/*
-*config*
+*config

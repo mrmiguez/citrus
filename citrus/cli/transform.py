@@ -34,13 +34,13 @@ def build(custom_map_function, data, org, provider):
             continue
 
 
-def transform(citrus_config, transformation_info, section, verbosity, to_console=False):
-    IN_PATH = os.path.abspath(citrus_config['ssdn']['InFilePath'])
-    OUT_PATH = os.path.abspath(citrus_config['ssdn']['OutFilePath'])
-    provider = citrus_config['ssdn']['Provider']
+def transform(citrus_config, transformation_info, section, profile, verbosity, to_console=False):
+    IN_PATH = os.path.abspath(citrus_config[profile]['InFilePath'])
+    OUT_PATH = os.path.abspath(citrus_config[profile]['OutFilePath'])
+    provider = citrus_config[profile]['Provider']
 
     ### IMPORTING CUSTOM MAPS
-    custom_map_path = os.path.abspath(citrus_config['ssdn']['CustomMapPath'])
+    custom_map_path = os.path.abspath(citrus_config[profile]['CustomMapPath'])
     sys.path.append(custom_map_path)
 
     # import config key, value pairs into DataProvider slot attrs
