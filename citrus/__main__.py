@@ -22,7 +22,7 @@ from pathlib import Path
 from citrus import cli, CitrusProfileError
 
 
-if __name__ == '__main__':  # TODO: there's a lot of assumptions made about the profile being named SSDN/ssdn
+if __name__ == '__main__':
 
     # Locating configs
     if os.getenv('CITRUS_CONFIG'):
@@ -58,7 +58,6 @@ if __name__ == '__main__':  # TODO: there's a lot of assumptions made about the 
             citrus_config[profile]
         except KeyError:
             raise CitrusProfileError(profile, os.path.join(CONFIG_PATH, 'citrus.cfg'))
-    print(profile)  # test
 
     if args.test:
         ### MODULE SELF-TEST
