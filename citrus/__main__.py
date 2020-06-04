@@ -17,10 +17,13 @@ The path to the citrus configuration files must either be defined with the `CITR
 import configparser
 import os
 import sys
+import logging
 from pathlib import Path
 
 from citrus import cli, CitrusProfileError
 
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 if __name__ == '__main__':
 

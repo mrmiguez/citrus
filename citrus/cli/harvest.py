@@ -1,10 +1,15 @@
 import datetime
 import os
+import logging
 
 import sickle
 from sickle import models
 from sickle.iterator import OAIItemIterator
 from sickle.utils import xml_to_dict
+
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class SickleRecord(models.Record):

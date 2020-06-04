@@ -1,18 +1,30 @@
 import os
 import sys
+import logging
 
 import citrus
 import citrus.maps
 
 
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
+
+
 def build(custom_map_function, data, org, provider):
     """apply transformation map to data iterable"""
+    logger.debug('cli.build called')
     records = citrus.RecordGroup()
+
+    logger.debug(f'mapping data with {custom_map_function}')
     mapped_data = map(custom_map_function, data)
+
+    logger.debug(f'mapped data with {custom_map_function}')
     for mapped_rec in mapped_data:
         # map generators can return None if record is marked to be skipped
         if mapped_rec:
             for sr, tn, *args in mapped_rec:
+
+                logger.info(f"building {sr.data['identifier']}")
                 dpla = citrus.DPLARecord()
                 if args:
                     dpla.dataProvider = args[0]
@@ -28,6 +40,8 @@ def build(custom_map_function, data, org, provider):
                 dpla.isShownAt = sr.data['identifier']
                 dpla.preview = tn
                 dpla.sourceResource = sr.data
+
+                logger.debug(f'built record {dpla.data}')
                 records.append(dpla.data)
             return records
         else:
@@ -35,6 +49,8 @@ def build(custom_map_function, data, org, provider):
 
 
 def transform(citrus_config, transformation_info, section, profile, verbosity, to_console=False):
+
+    logger.debug('cli.transform called')
     IN_PATH = os.path.abspath(citrus_config[profile]['InFilePath'])
     OUT_PATH = os.path.abspath(citrus_config[profile]['OutFilePath'])
     provider = citrus_config[profile]['Provider']
@@ -68,25 +84,41 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
     except ModuleNotFoundError:
         # if custom lookup fails, fall back to citrus default maps
         custom_map_function = getattr(citrus.maps, o.map)
+        logger.info(f'Custom map module {o.map} not found. Using default citrus map')
 
     # check scenario subclassing
     # XMLScenario subclasses read data from disk
     if issubclass(o.scenario, citrus.XMLScenario):
         for f in os.listdir(os.path.join(IN_PATH, o.key)):
+
+            logger.info(f'Transforming {o.key} data {f}')
             if verbosity > 1:
                 print(f'Transforming {o.key} data {f}')
             # parse file using scenario and get records as iterable list
+
+            logger.debug(f'loading data {f} with {o.scenario}')
             data = o.scenario(os.path.join(IN_PATH, o.key, f))
+
+            logger.debug(f'loaded data {f} with {o.scenario}')
             records = build(custom_map_function, data, o, provider)
 
     # APIScenario subclasses need to make queries and read data from responses
     elif issubclass(o.scenario, citrus.APIScenario):
+
+        logger.info(f'Transforming {o.key} data API')
         if verbosity > 1:
             print(f'Transforming {o.key} data from API')
+
+        logger.debug(f'loading API data with {o.scenario}')
         data = o.scenario(o.key)
+
+        logger.debug(f'loaded API data with {o.scenario}')
         records = build(custom_map_function, data, o, provider)
 
     if to_console:
+        logger.debug('printing records')
         records.print()
+
     else:
+        logger.debug('writing records')
         records.write_jsonl(OUT_PATH, prefix='SSDN_TMP')
