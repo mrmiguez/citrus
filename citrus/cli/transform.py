@@ -1,10 +1,9 @@
+import logging
 import os
 import sys
-import logging
 
 import citrus
 import citrus.maps
-
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -15,16 +14,16 @@ def build(custom_map_function, data, org, provider):
     logger.debug('cli.build called')
     records = citrus.RecordGroup()
 
-    logger.debug(f'mapping data with {custom_map_function}')
+    logger.debug(f'Mapping data with {custom_map_function}')
     mapped_data = map(custom_map_function, data)
 
-    logger.debug(f'mapped data with {custom_map_function}')
+    logger.debug(f'Mapped data with {custom_map_function}')
     for mapped_rec in mapped_data:
         # map generators can return None if record is marked to be skipped
         if mapped_rec:
             for sr, tn, *args in mapped_rec:
 
-                logger.info(f"building {sr.data['identifier']}")
+                logger.info(f"Building {sr.data['identifier']}")
                 dpla = citrus.DPLARecord()
                 if args:
                     dpla.dataProvider = args[0]
@@ -41,7 +40,7 @@ def build(custom_map_function, data, org, provider):
                 dpla.preview = tn
                 dpla.sourceResource = sr.data
 
-                logger.debug(f'built record {dpla.data}')
+                logger.debug(f'Built record {str(dpla.data).encode("utf-8")}')
                 records.append(dpla.data)
             return records
         else:
@@ -49,7 +48,6 @@ def build(custom_map_function, data, org, provider):
 
 
 def transform(citrus_config, transformation_info, section, profile, verbosity, to_console=False):
-
     logger.debug('cli.transform called')
     IN_PATH = os.path.abspath(citrus_config[profile]['InFilePath'])
     OUT_PATH = os.path.abspath(citrus_config[profile]['OutFilePath'])
@@ -64,7 +62,10 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
     o.key = section
     o.map = transformation_info['Map']
     o.data_provider = transformation_info['DataProvider']
-    o.intermediate_provider = transformation_info['IntermediateProvider']
+    try:
+        o.intermediate_provider = transformation_info['IntermediateProvider']
+    except KeyError:
+        o.intermediate_provider = None
 
     ###############################################################################
     # These six lines take a string and use it to search the supplied module      #
@@ -79,6 +80,7 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
     o.scenario = getattr(citrus, transformation_info['Scenario'])
     # use config map value to search for callable module & function with that name
     try:
+        logger.debug(f'Trying to find custom map module {o.map}')
         custom_map_module = __import__(o.map)
         custom_map_function = getattr(custom_map_module, o.map)
     except ModuleNotFoundError:
@@ -96,10 +98,10 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
                 print(f'Transforming {o.key} data {f}')
             # parse file using scenario and get records as iterable list
 
-            logger.debug(f'loading data {f} with {o.scenario}')
+            logger.debug(f'Loading data {f} with {o.scenario}')
             data = o.scenario(os.path.join(IN_PATH, o.key, f))
 
-            logger.debug(f'loaded data {f} with {o.scenario}')
+            logger.debug(f'Loaded data {f} with {o.scenario}')
             records = build(custom_map_function, data, o, provider)
 
     # APIScenario subclasses need to make queries and read data from responses
@@ -109,16 +111,16 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
         if verbosity > 1:
             print(f'Transforming {o.key} data from API')
 
-        logger.debug(f'loading API data with {o.scenario}')
+        logger.debug(f'Loading API data with {o.scenario}')
         data = o.scenario(o.key)
 
-        logger.debug(f'loaded API data with {o.scenario}')
+        logger.debug(f'Loaded API data with {o.scenario}')
         records = build(custom_map_function, data, o, provider)
 
     if to_console:
-        logger.debug('printing records')
+        logger.debug('Printing records')
         records.print()
 
     else:
-        logger.debug('writing records')
+        logger.debug(f'Writing records to {OUT_PATH}')
         records.write_jsonl(OUT_PATH, prefix='SSDN_TMP')

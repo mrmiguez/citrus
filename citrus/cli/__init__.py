@@ -44,7 +44,7 @@ def argument_parser():
         usage="[-h] [-v] [--test] | <command> [-h] | <subcommand>",
         add_help=True,
         formatter_class=CustomHelpFormatter)
-    subcommand_parsers = arg_parser.add_subparsers(help='sub-commands', dest='cmd')
+    subcommand_parsers = arg_parser.add_subparsers(help='sub-commands', dest='subcommand')
     subcommand_parsers.required = False
     subcommand_parsers.add_parser('status', help='show status')
 

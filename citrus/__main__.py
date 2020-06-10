@@ -15,14 +15,14 @@ The path to the citrus configuration files must either be defined with the `CITR
 """
 
 import configparser
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
 
 from citrus import cli, CitrusProfileError
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('citrus.app')
 logger.addHandler(logging.NullHandler())
 
 if __name__ == '__main__':
@@ -38,32 +38,73 @@ if __name__ == '__main__':
         print("Cannot locate citrus configs.")  # TODO: This can return a more helpful prompt, or build default configs
         sys.exit(1)
 
-    ####################################
-    # Application commands and actions #
-    ####################################
+    #############################
+    # Application configuration #
+    #############################
 
     # citrus application config
-    citrus_parser = configparser.ConfigParser()
-    citrus_parser.read(os.path.join(CONFIG_PATH, 'citrus.cfg'))
-    citrus_config = citrus_parser
+    citrus_config = configparser.ConfigParser()
+    citrus_config.read(os.path.join(CONFIG_PATH, 'citrus.cfg'))
 
-    # cli arguments
+    # cli application arguments
     args = cli.argument_parser().parse_args()
 
+    #######################
+    # Application actions #
+    #######################
+
+    # Verbosity
     verbosity = 1
     if args.verbose:
         verbosity = 2
 
+    # Profile selection
     profile = 'DEFAULT'
     if args.profile:
         profile = args.profile
         try:
             citrus_config[profile]
         except KeyError:
+            logger.error(f"Profile: {profile} is not listed in {os.path.join(CONFIG_PATH, 'citrus.cfg')}")
             raise CitrusProfileError(profile, os.path.join(CONFIG_PATH, 'citrus.cfg'))
 
+    # Set up logging
+
+    # TODO: log level (from args or config?); configing arbitrary handlers and filters
+
+    # Log path
+    try:
+        LOG_PATH = os.path.abspath(citrus_config[profile]['LogPath'])
+    except KeyError:
+        LOG_PATH = Path.home()
+    # Log level
+    try:
+        LOG_LEVEL = citrus_config[profile]['LogLevel']
+    except KeyError:
+        LOG_LEVEL = 'warning'
+    app_logger = logging.getLogger()
+
+    # default handler
+    log_fh = logging.FileHandler(os.path.join(LOG_PATH, 'citrus.log'))
+    formatter = logging.Formatter('%(name)s: %(asctime)s: %(levelname)s: %(message)s', datefmt='%Y-%m-%d, %I:%M')
+    log_fh.setFormatter(formatter)
+    log_fh.setLevel(logging.DEBUG)
+
+    # TSV handler
+    tsv_fh = logging.FileHandler(os.path.join(LOG_PATH, 'citrus_errors.tsv'))
+    tsv_formatter = logging.Formatter('%(name)s\t%(asctime)s\t%(levelname)s\t%(message)s', datefmt='%Y-%m-%d, %I:%M')
+    tsv_fh.setFormatter(tsv_formatter)
+    tsv_fh.setLevel(logging.WARNING)
+
+    app_logger.setLevel(LOG_LEVEL.upper())
+    app_logger.addHandler(log_fh)
+    app_logger.addHandler(tsv_fh)
+
+    logger.debug(f'citrus.app called with args {args}')
+    logger.info(f'Using profile: {profile}')
+
+    # Application and module self-test
     if args.test:
-        ### MODULE SELF-TEST
         import unittest
         import citrus.tests
 
@@ -73,7 +114,8 @@ if __name__ == '__main__':
         runner = unittest.TextTestRunner(verbosity=verbosity)
         runner.run(suite)
 
-    if args.cmd == 'status':
+    # Application status
+    if args.subcommand == 'status':
         print("These config files are loaded:")
         print(f"    {os.path.join(CONFIG_PATH, 'citrus.cfg')}")
         print(f"    {os.path.join(CONFIG_PATH, 'citrus_harvests.cfg')}")
@@ -84,15 +126,21 @@ if __name__ == '__main__':
         print(f"    {os.path.abspath(citrus_config[profile]['OutFilePath'])}")
         sys.exit(0)
 
-    elif args.cmd == 'harvest':
+    #######################
+    # Harvest sub-command #
+    #######################
+
+    elif args.subcommand == 'harvest':
         write_path = os.path.abspath(citrus_config[profile]['InFilePath'])
         harvest_parser = configparser.ConfigParser()
         harvest_parser.read(os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
 
+        # Run harvest
         if args.run:
             for section in harvest_parser.sections():
                 cli.harvest(harvest_parser[section], section, write_path, verbosity=verbosity)
 
+        # Run harvest selectively by config key
         if args.select:
             try:
                 cli.harvest(harvest_parser[args.select], args.select, write_path, verbosity=verbosity)
@@ -100,29 +148,39 @@ if __name__ == '__main__':
                 print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
                 sys.exit(1)
 
+        # Add new harvest config entry
         if args.new:
             cli.new_config_entry(harvest_parser, ['oaiendpoint', 'setlist', 'metadataprefix'],
                                  os.path.join(CONFIG_PATH, 'citrus_harvests.cfg'))
 
+        # List harvest config entries
         if args.list:
             cli.config_list(harvest_parser)
 
+        # Run harvest interactively
         if args.interactive:
             cli.interactive_run(citrus_config, harvest_parser, 'harvest', write_path, verbosity=verbosity)
 
-    elif args.cmd == 'transform':
+    #########################
+    # Transform sub-command #
+    #########################
+
+    elif args.subcommand == 'transform':
         scenario_parser = configparser.ConfigParser()
         scenario_parser.read(os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
 
+        # Output transformation results to console (T/F)
         to_console = False
         if args.to_console:
             to_console = True
 
+        # Run transformation
         if args.run:
             for section in scenario_parser.sections():
                 cli.transform(citrus_config, scenario_parser[section], section, profile, verbosity=verbosity,
                               to_console=to_console)
 
+        # Run transformation selectively by config key
         if args.select:
             try:
                 cli.transform(citrus_config, scenario_parser[args.select], args.select, profile, verbosity=verbosity,
@@ -131,12 +189,16 @@ if __name__ == '__main__':
                 print(f'The supplied organization key was not found in the config file.\nSupplied key: {args.select}')
                 sys.exit(1)
 
+        # Add new transformation config entry
         if args.new:
             cli.new_config_entry(scenario_parser, ['scenario', 'map', 'dataprovider', 'intermediateprovider'],
                                  os.path.join(CONFIG_PATH, 'citrus_scenarios.cfg'))
 
+        # List transformation config entries
         if args.list:
             cli.config_list(scenario_parser)
 
+        # Run transformation interactively
         if args.interactive:
-            cli.interactive_run(citrus_config, scenario_parser, 'transform', profile, verbosity=verbosity, to_console=to_console)
+            cli.interactive_run(citrus_config, scenario_parser, 'transform', profile, verbosity=verbosity,
+                                to_console=to_console)

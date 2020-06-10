@@ -1,14 +1,18 @@
 """
 Source document parsers and record classes for returning XML or JSON document values
 """
-import re
-import requests
 import json
+import logging
+import re
 
+import requests
 from pymods import OAIReader
 
 dc = '{http://purl.org/dc/elements/1.1/}'
 dcterms = '{http://purl.org/dc/terms/}'
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class Scenario:
@@ -222,6 +226,7 @@ class DCRecord(XMLRecord):
     @property
     def description(self):
         return self._value_list('description', dc)
+
     @property
     def format(self):
         return self._value_list('format', dc)

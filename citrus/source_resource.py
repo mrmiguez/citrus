@@ -3,9 +3,14 @@ Container classes for the resulting DPLA MAPv4 JSON-LD document(s)
 """
 
 import json
+import logging
 from datetime import date
 from os.path import exists, join
+
 from citrus.exceptions import SourceResourceRequiredElementException
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class Record(object):
@@ -133,4 +138,3 @@ class RecordGroup(object):
 
 def dedupe_record_group():
     pass
-
