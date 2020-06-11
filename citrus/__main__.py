@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
         # Run harvest interactively
         if args.interactive:
-            cli.interactive_run(citrus_config, harvest_parser, 'harvest', write_path, verbosity=verbosity)
+            cli.interactive_run(citrus_config, harvest_parser, 'harvest', profile, write_path, verbosity=verbosity)
 
     #########################
     # Transform sub-command #
@@ -177,8 +177,13 @@ if __name__ == '__main__':
         # Run transformation
         if args.run:
             for section in scenario_parser.sections():
-                cli.transform(citrus_config, scenario_parser[section], section, profile, verbosity=verbosity,
-                              to_console=to_console)
+                # todo: this really should be designed in reverse... read what data is available and transform from there
+                try:
+                    cli.transform(citrus_config, scenario_parser[section], section, profile, verbosity=verbosity,
+                                  to_console=to_console)
+                except FileNotFoundError:
+                    logger.warning(f"No data found for {section}")
+                    continue
 
         # Run transformation selectively by config key
         if args.select:

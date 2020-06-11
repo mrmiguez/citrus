@@ -98,9 +98,10 @@ def config_list(config_parser):
     sys.exit(0)
 
 
-def interactive_run(citrus_config, config_parser, subcommand, *args, **kwargs):
+def interactive_run(citrus_config, config_parser, subcommand, profile, *args, **kwargs):
     """
     Allows interactive selection of organization to harvest/transform
+    :param profile:
     :param citrus_config:
     :param config_parser:
     :param subcommand:
@@ -128,7 +129,7 @@ def interactive_run(citrus_config, config_parser, subcommand, *args, **kwargs):
         verbosity = kwargs['verbosity']
         to_console = kwargs['to_console']
         transform(citrus_config, config_parser[config_parser.sections()[selection - 1]],
-                  [k for k in config_parser.sections()][selection - 1], verbosity=verbosity, to_console=to_console)
+                  [k for k in config_parser.sections()][selection - 1], profile, verbosity=verbosity, to_console=to_console)
 
 
 def new_config_entry(config_file, options_list, config_fp):

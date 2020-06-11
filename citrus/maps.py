@@ -3,11 +3,16 @@ Maps define how data exposed through `citrus.Scenarios` are manipulated to build
 
 `citrus.cli.transform` read the configuration file `citrus_scenarios.cfg`.to determine which map to apply for which source
 """
+import logging
 
 from citrus.source_resource import SourceResource
 
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
+
 
 def dc_standard_map(record):
+    logger.debug(f'Loaded {__name__}.dc_standard_map map')
     sr = SourceResource()
     sr.contributor = [{'name': name} for name in record.contributor if record.contributor]
     sr.creator = [{'name': name} for name in record.creator if record.creator]
@@ -26,6 +31,7 @@ def dc_standard_map(record):
 
 
 def qdc_standard_map(record):
+    logger.debug(f'Loaded {__name__}.qdc_standard_map map')
     sr = dc_standard_map(record)
     sr.alternative = record.alternative
     sr.abstract = record.abstract
@@ -35,6 +41,7 @@ def qdc_standard_map(record):
 
 
 def mods_standard_map(record):
+    logger.debug(f'Loaded {__name__}.mods_standard_map map')
     sr = SourceResource()
     sr.alternative = record.alternative
     sr.collection = record.collection.title

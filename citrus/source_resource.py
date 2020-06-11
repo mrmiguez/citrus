@@ -81,11 +81,20 @@ class RecordGroup(object):
         else:
             self.records = []
 
+    def __iter__(self):
+        for r in self.records:
+            yield r
+
+    def __len__(self):
+        return len(self.records)
+
     def append(self, record):
         self.records.append(record)
 
     def load(self, fp):
-        return NotImplemented
+        with open(fp) as f:
+            for line in f:
+                self.append(line)
 
     def write_json(self, fp, prefix=None, pretty_print=False):
         """

@@ -41,6 +41,7 @@ class XMLScenario(Scenario):
         Generic class for parsing OIA-PMH XML. Serves as a iterable container for pymods.Records at self.records
         :param xml_path: Path to an XML file of OAI-PMH records
         """
+        logger.debug(f"Loading {xml_path} with {__name__}.XMLScenario")
         self.records = []
         with open(xml_path, encoding='utf-8') as data_in:
             records = OAIReader(data_in)
@@ -73,6 +74,7 @@ class SSDNDC(XMLScenario):
         Parser and container for citrus.DC_Record records
         :param xml_path: Path to an XML file of oai_dc records
         """
+        logger.debug(f"Loading {xml_path} with {__name__}.SSDNDC")
         XMLScenario.__init__(self, xml_path)
         self.records = [DCRecord(record) for record in self.records]
 
@@ -84,6 +86,7 @@ class SSDNQDC(XMLScenario):
         Parser and container for citrus.QDC_Record records
         :param xml_path: Path to an XML file of oai_qdc records
         """
+        logger.debug(f"Loading {xml_path} with {__name__}.SSDNQDC")
         XMLScenario.__init__(self, xml_path)
         self.records = [QDCRecord(record) for record in self.records]
 
@@ -95,6 +98,7 @@ class SSDNMODS(XMLScenario):
         Parser and container for citrus.MODS_Record records
         :param xml_path: Path to an XML file of OAI-PMH MODS records
         """
+        logger.debug(f"Loading {xml_path} with {__name__}.SSDNMODS")
         XMLScenario.__init__(self, xml_path)
         self.records = [MODSRecord(record) for record in self.records]
 
@@ -106,6 +110,7 @@ class BepressDC(SSDNDC):
         Bepress specific parser
         :param xml_path: Path to an XML file of OAI-PMH MODS records
         """
+        logger.debug(f"Loading {xml_path} with {__name__}.BepressDC")
         SSDNDC.__init__(self, xml_path)
         self.records = [BepressDCRecord(record) for record in self.records]
 
@@ -116,6 +121,7 @@ class SSDNPartnerMODSScenario(SSDNMODS):
         """
         :param xml_path: Path to an XML file of OAI-PMH MODS records
         """
+        logger.debug(f"Loading {xml_path} with {__name__}.SSDNPartnerMODSScenario")
         SSDNMODS.__init__(self, xml_path)
         self.records = [SSDNMODSRecord(record) for record in self.records]
 
@@ -123,6 +129,7 @@ class SSDNPartnerMODSScenario(SSDNMODS):
 class APIScenario(Scenario):
 
     def __init__(self, url, record_key, count_key=None, page_key=None):
+        logger.debug(f"Running {__name__}.APIScenario query to {url}")
         r = requests.get(url)
         data = json.loads(r.text.replace('\\u00a0', ''))
         if count_key:
@@ -157,6 +164,7 @@ class InternetArchive(APIScenario):
 
     def __init__(self, collection):
         url = f'https://archive.org/advancedsearch.php?q=collection:{collection}&output=json&rows=100'
+        logger.debug(f"Running {__name__}.InternetArchive query to {url}")
         APIScenario.__init__(self, url, 'docs', 'numFound', 'page')
         self.records = [InternetArchiveRecord(record) for record in self.records]
 

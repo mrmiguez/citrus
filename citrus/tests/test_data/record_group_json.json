@@ -1,0 +1,490 @@
+[
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "University of South Florida Libraries",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "https://digital.lib.usf.edu/SFS0049735/00001/",
+    "preview": "https://digital.lib.usf.edu/content/SF/S0/04/97/35/00001/B16-00036-000-001-COVERthm.jpg",
+    "sourceResource": {
+      "creator": [
+        {
+          "name": "Boucicault, Dion, 1820-1890 ( author )"
+        }
+      ],
+      "description": [
+        "Promptbook includes typed pages with extensive notes from the stenographer and minor notes from the author.",
+        "Includes cast list of performers."
+      ],
+      "format": [
+        "82 numbered leaves : plans",
+        "24 cm"
+      ],
+      "identifier": "https://digital.lib.usf.edu/SFS0049735/00001/",
+      "language": [
+        {
+          "name": "English"
+        }
+      ],
+      "rights": [
+        {
+          "text": "The University of South Florida Libraries believes that the Item is in the Public Domain under the laws of the United States, but a determination was not made as to its copyright status under the copyright laws of other countries. The Item may not be in the Public Domain under the laws of other countries."
+        }
+      ],
+      "subject": [
+        {
+          "name": "Promptbooks -- Manuscripts -- 19th century"
+        }
+      ],
+      "title": [
+        "Marriage"
+      ],
+      "type": [
+        "text"
+      ]
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "University of Miami Libraries",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "http://merrick.library.miami.edu/cdm/ref/collection/chc0336/id/421",
+    "preview": "http://merrick.library.miami.edu/utils/getthumbnail/collection/chc0336/id/421",
+    "sourceResource": {
+      "creator": [
+        {
+          "name": "Consuegra, Jes\u00fas"
+        }
+      ],
+      "date": {
+        "begin": "1937-11-24",
+        "end": "1937-11-24",
+        "displayDate": "1937-11-24"
+      },
+      "description": [
+        "Sent from Havana to New York"
+      ],
+      "genre": [
+        {
+          "name": "Correspondence"
+        }
+      ],
+      "identifier": "http://merrick.library.miami.edu/cdm/ref/collection/chc0336/id/421",
+      "rights": [
+        {
+          "@id": "http://rightsstatements.org/vocab/UND/1.0/"
+        }
+      ],
+      "title": [
+        "Jes\u00fas Consuegra letter to Gerardo Machado, November 24, 1937"
+      ],
+      "type": [
+        "Text"
+      ],
+      "collection": {
+        "host": "University of Miami. Library. Cuban Heritage Collection",
+        "name": "Gerardo Machado y Morales Papers"
+      },
+      "extent": [
+        "1 item (1 p.)"
+      ]
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "Miami-Dade Public Library System",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "http://cdm17273.contentdm.oclc.org/cdm/ref/collection/p17273coll5/id/571",
+    "preview": "http://cdm17273.contentdm.oclc.org/utils/getthumbnail/collection/p17273coll5/id/571",
+    "sourceResource": {
+      "creator": [
+        {
+          "name": "Sanchez, Emilio, 1921-1999"
+        }
+      ],
+      "date": {
+        "begin": "1981",
+        "end": "1981",
+        "displayDate": "1981"
+      },
+      "genre": [
+        {
+          "name": "sketchbooks"
+        },
+        {
+          "name": "color pencils"
+        },
+        {
+          "name": "color photographs"
+        }
+      ],
+      "identifier": "http://cdm17273.contentdm.oclc.org/cdm/ref/collection/p17273coll5/id/571",
+      "spatial": [
+        {
+          "name": "Greece (Europe, World : nation)"
+        }
+      ],
+      "rights": [
+        {
+          "@id": "http://rightsstatements.org/vocab/InC/1.0/"
+        }
+      ],
+      "subject": [
+        {
+          "name": "Architectural & site components"
+        },
+        {
+          "name": "Islands"
+        },
+        {
+          "name": "Cities & towns"
+        }
+      ],
+      "title": [
+        "Mykonos, Greece, 1981"
+      ],
+      "type": [
+        "Image"
+      ],
+      "extent": [
+        "44 pages",
+        "6 X 4 in. (15 X 10 cm)"
+      ],
+      "collection": [
+        {
+          "host": "Emilio Sanchez Artworks"
+        }
+      ]
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "Florida State University Libraries",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "http://purl.flvc.org/fsu/fd/FSU_MSS2016006_S001_I019_parent",
+    "preview": "https://fsu.digital.flvc.org/islandora/object/fsu:547356/datastream/TN/view",
+    "sourceResource": {
+      "collection": {
+        "_:id": "http://purl.fcla.edu/fsu/MSS_2016-006",
+        "host": "Special Collections & Archives, Florida State University Libraries, Tallahassee, Florida.",
+        "name": "St. John's Episcopal Church Records, 1832-2004"
+      },
+      "creator": [
+        {
+          "name": "St. John's Episcopal Church"
+        }
+      ],
+      "date": {
+        "displayDate": "1957-05-16",
+        "begin": "1957-05-16",
+        "end": "1957-05-16"
+      },
+      "genre": [
+        {
+          "name": "Records (Documents)",
+          "@id": "http://id.loc.gov/authorities/genreForms/gf2014026163.html"
+        }
+      ],
+      "identifier": "http://purl.flvc.org/fsu/fd/FSU_MSS2016006_S001_I019_parent",
+      "language": [
+        {
+          "name": "English",
+          "iso_639_3": "eng"
+        }
+      ],
+      "rights": [
+        {
+          "@id": "http://rightsstatements.org/vocab/InC/1.0/"
+        }
+      ],
+      "spatial": [
+        {
+          "lat": "30.4333",
+          "long": "-84.2667",
+          "name": "Tallahassee",
+          "_:attribution": "This record contains information from Thesaurus of Geographic Names (TGN) which is made available under the ODC Attribution License."
+        }
+      ],
+      "subject": [
+        {
+          "@id": "http://id.loc.gov/authorities/subjects/sh85025502",
+          "name": "Church"
+        },
+        {
+          "@id": "http://id.loc.gov/authorities/subjects/sh85021756",
+          "name": "Cemeteries"
+        },
+        {
+          "@id": "http://id.loc.gov/authorities/subjects/sh88002572",
+          "name": "Sacred space"
+        }
+      ],
+      "title": [
+        "St. John's Episcopal Church Interment Records"
+      ],
+      "type": "text"
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "Florida International University Libraries",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI12090331/00001",
+    "preview": "http://dpanther.fiu.edu/sobek/content/FI/12/09/03/31/00001/FI12090331thm.jpg",
+    "sourceResource": {
+      "creator": [
+        {
+          "name": "South Florida Water Management District (Fla.)"
+        },
+        {
+          "name": "Abtew, Wossenu"
+        },
+        {
+          "name": "Raymond, John H."
+        },
+        {
+          "name": "Imru, Muluneh"
+        }
+      ],
+      "date": {
+        "begin": "2000-12",
+        "end": "2000-12",
+        "displayDate": "2000-12"
+      },
+      "description": [
+        "(Bibliography)  Includes bibliographical references (page 41)",
+        "(Statement of Responsibility)  produced by Hydro Information Systems & Assessment Department, Environmental Monitoring & Assessment Division, South Florida Water Management District",
+        "\"December 2000\"",
+        "TECHNICAL PUBLICATION EMA #388",
+        "EXECUTIVE SUMMARY"
+      ],
+      "format": [
+        "vii, 63 pages. : ill."
+      ],
+      "identifier": "http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI12090331/00001",
+      "language": [
+        {
+          "name": "English"
+        }
+      ],
+      "spatial": [
+        {
+          "name": "Florida"
+        },
+        {
+          "name": "Everglades"
+        },
+        {
+          "name": "Everglades Nutrient Removal Project"
+        }
+      ],
+      "publisher": [
+        "SFWMD ( West Palm Beach, FL )",
+        "SFWMD ( West Palm Beach, FL )"
+      ],
+      "rights": [
+        {
+          "text": "Please contact the owning institution for licensing and permissions. It is the users responsibility to ensure use does not violate any third party rights."
+        }
+      ],
+      "subject": [
+        {
+          "name": "Water -- Purification -- Phosphorus removal"
+        },
+        {
+          "name": "Hydrological forecasting"
+        },
+        {
+          "name": "Restoration ecology"
+        }
+      ],
+      "title": [
+        "Water Budget Analysis for the Everglades Nutrient Removal Project, and Stormwater Treatment Area 1 West  (August 20, 1998 to August 30, 2000)",
+        "Everglades Nutrient Removal Project"
+      ],
+      "type": [
+        "text"
+      ]
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "Florida Atlantic University",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "http://purl.flvc.org/fau/fd/FAU3166876",
+    "preview": "https://fau.digital.flvc.org/islandora/object/fau:7623/datastream/TN/view",
+    "sourceResource": {
+      "creator": [
+        {
+          "name": "Kemery, Marvin E."
+        }
+      ],
+      "date": {
+        "displayDate": "1918-07-24",
+        "begin": "1918-07-24",
+        "end": "1918-07-24"
+      },
+      "description": [
+        "3-page handwritten letter with envelope; Kemery requests from Mother dates of letters written to Mother so that he could determine if all were being received to date; described stay in small French village and the way of life of the natives.  Marvin E. Kemery Digital Collection."
+      ],
+      "genre": [
+        {
+          "name": "correspondence"
+        }
+      ],
+      "identifier": "http://purl.flvc.org/fau/fd/FAU3166876",
+      "language": [
+        {
+          "name": "English",
+          "iso_639_3": null
+        }
+      ],
+      "publisher": [
+        "Florida Atlantic University Digital Library"
+      ],
+      "rights": [
+        {
+          "@id": "http://rightsstatements.org/vocab/InC/1.0/"
+        }
+      ],
+      "subject": [
+        {
+          "name": "World War, 1914-1918."
+        },
+        {
+          "name": "World War, 1914-1918 --Correspondence."
+        },
+        {
+          "name": "World War, 1914-1918 -- Campaigns -- Western Front."
+        },
+        {
+          "name": "World War, 1914-1918 -- Personal narratives, American."
+        },
+        {
+          "name": "United States. Army. Field Artillery."
+        }
+      ],
+      "title": [
+        "Letter to Mrs. A. M. Kemery, July 24, 1918"
+      ],
+      "type": "text"
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "Miami Shores Village Archives at Brockway Memorial Library",
+    "intermediateProvider": "Florida International University Libraries",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI18052510/00001",
+    "preview": "http://dpanther.fiu.edu/sobek/content/FI/18/05/25/10/00001/FI18052510thm.jpg",
+    "sourceResource": {
+      "description": [
+        "Built 1926 Shoreland Co. designated historic place in national registry interior view ceiling beams",
+        "(Funding)  This project has been funded under the provisions of the Library Cooperative Grant program, administered by the Florida Department of State\u2019s Division of Library and Information Services."
+      ],
+      "identifier": "http://dpanther.fiu.edu/dpService/dpPurlService/purl/FI18052510/00001",
+      "spatial": [
+        {
+          "name": "Miami Shores (Fla.)"
+        }
+      ],
+      "rights": [
+        {
+          "@id": "http://rightsstatements.org/vocab/UND/1.0/"
+        }
+      ],
+      "subject": [
+        {
+          "name": "Residences"
+        },
+        {
+          "name": "Houses"
+        },
+        {
+          "name": "Landmarks"
+        },
+        {
+          "name": "Historic houses"
+        }
+      ],
+      "title": [
+        "Historic Home - 284 NE 96 St. Interior View"
+      ],
+      "type": [
+        "still image"
+      ]
+    }
+  },
+  {
+    "@context": "http://api.dp.la/items/context",
+    "aggregatedCHO": "#sourceResource",
+    "dataProvider": "State Library and Archives of Florida",
+    "provider": {
+      "@id": "UNDETERMINED",
+      "name": "Sunshine State Digital Network"
+    },
+    "isShownAt": "https://archive.org/details/BiennialreportoftheFloridaDepartmentofGameandFreshWaterFish1966-68",
+    "preview": "https://archive.org/services/img/BiennialreportoftheFloridaDepartmentofGameandFreshWaterFish1966-68",
+    "sourceResource": {
+      "contributor": [
+        {
+          "name": "State Library and Archives of Florida"
+        }
+      ],
+      "creator": [
+        {
+          "name": "Florida. Department of Game and Fresh Water Fish"
+        }
+      ],
+      "date": {
+        "begin": "1968-01-01",
+        "end": "1968-01-01",
+        "displayDate": "1968-01-01"
+      },
+      "identifier": "https://archive.org/details/BiennialreportoftheFloridaDepartmentofGameandFreshWaterFish1966-68",
+      "language": "English",
+      "rights": {
+        "@id": "http://rightsstatements.org/vocab/NoC-US/1.0/"
+      },
+      "subject": [
+        {
+          "name": "Wildlife management--Florida--Periodicals"
+        },
+        {
+          "name": "Fishery management--Florida--Periodicals"
+        },
+        {
+          "name": "Nature conservation--Florida--Periodicals"
+        }
+      ],
+      "title": "Biennial report of the Florida Department of Game and Fresh Water Fish (1966-1968)"
+    }
+  }
+]

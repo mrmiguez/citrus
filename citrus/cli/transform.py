@@ -40,7 +40,7 @@ def build(custom_map_function, data, org, provider):
                 dpla.preview = tn
                 dpla.sourceResource = sr.data
 
-                logger.debug(f'Built record {str(dpla.data).encode("utf-8")}')
+                logger.debug(f"Built record {sr.data['identifier']}")
                 records.append(dpla.data)
             return records
         else:
@@ -123,4 +123,5 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
 
     else:
         logger.debug(f'Writing records to {OUT_PATH}')
+        # todo: prefix should come from config or arg
         records.write_jsonl(OUT_PATH, prefix='SSDN_TMP')
