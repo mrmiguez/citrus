@@ -4,8 +4,10 @@ Container classes for the resulting DPLA MAPv4 JSON-LD document(s)
 
 import json
 import logging
+import os
 from datetime import date
-from os.path import exists, join
+from json import JSONEncoder
+from os.path import exists, join, splitext
 
 from citrus.exceptions import SourceResourceRequiredElementException
 
@@ -21,7 +23,33 @@ class Record(object):
         """
         object.__init__(self)
 
+    def __contains__(self, item):
+        if item in self.__dict__.keys():
+            return True
+        else:
+            return False
+
+    def __iter__(self):
+        for k in self.__dict__.keys():
+            yield k
+
+    def __delitem__(self, key):
+        if key in self.__dict__.keys():
+            del self.__dict__[key]
+        else:
+            raise KeyError
+
+    def __getitem__(self, item):
+        if item in self.__dict__.keys():
+            return self.__dict__[item]
+        else:
+            raise KeyError
+
     def __setattr__(self, key, value):
+        if value:
+            self.__dict__[key] = value
+
+    def __setitem__(self, key, value):
         if value:
             self.__dict__[key] = value
 
@@ -38,17 +66,30 @@ class Record(object):
     def data(self):
         return self.__dict__
 
+    def keys(self):
+        for k in self.__dict__.keys():
+            yield k
+
 
 class DPLARecord(Record):
 
-    def __init__(self):
+    def __init__(self, record=None):
         """
-        DPLA MAPv4 record class. Serves as the JSON-LD wrapper for citrus.SourceResource. Includes some default attributes for convenience.
+        DPLA MAPv4 record class. Serves as the JSON-LD wrapper for citrus.SourceResource. Includes some default
+        attributes for convenience.
         """
         Record.__init__(self)
-        self.__dict__['@context'] = "http://api.dp.la/items/context"
-        self.aggregatedCHO = "#sourceResource"
-        self.preview = ""
+        if record:
+            try:
+                for k, v in json.loads(record).items():
+                    self.__dict__[k] = v
+            except TypeError:
+                for k, v in record.items():
+                    self.__dict__[k] = v
+        else:
+            self.__dict__['@context'] = "http://api.dp.la/items/context"
+            self.aggregatedCHO = "#sourceResource"
+            self.preview = ""
 
 
 class SourceResource(Record):
@@ -77,7 +118,7 @@ class RecordGroup(object):
         """
         object.__init__(self)
         if records:
-            self.records = self.records + [rec for rec in records]
+            self.records = self.records + [DPLARecord(rec) for rec in records]
         else:
             self.records = []
 
@@ -92,9 +133,20 @@ class RecordGroup(object):
         self.records.append(record)
 
     def load(self, fp):
-        with open(fp) as f:
-            for line in f:
-                self.append(line)
+        if exists(fp):
+            with open(fp) as f:
+                if splitext(fp)[-1] == '.jsonl':
+                    for line in f:
+                        self.append(DPLARecord(line))
+                elif splitext(fp)[-1] == '.json':
+                    recs = json.load(f)
+                    for rec in recs:
+                        self.append(DPLARecord(rec))
+                else:
+                    print("Raise some kind of file extension error I haven't written yet")  # TODO
+            return self
+        else:
+            raise FileNotFoundError
 
     def write_json(self, fp, prefix=None, pretty_print=False):
         """
@@ -104,6 +156,8 @@ class RecordGroup(object):
         :param pretty_print:
         :return:
         """
+        if not exists(fp):
+            os.mkdir(fp)
         if prefix:
             f = f'{prefix}-{date.today()}'
         else:
@@ -115,15 +169,15 @@ class RecordGroup(object):
                     self.records.append(record)
             with open(join(fp, f'{f}.json'), 'w', encoding='utf-8') as json_out:
                 if pretty_print:
-                    json.dump(self.records, json_out, indent=2)
+                    json.dump(self.records, json_out, indent=2, cls=DPLARecordEncoder)
                 else:
-                    json.dump(self.records, json_out)
+                    json.dump(self.records, json_out, cls=DPLARecordEncoder)
         else:
             with open(join(fp, f'{f}.json'), 'w', encoding='utf-8') as json_out:
                 if pretty_print:
-                    json.dump(self.records, json_out, indent=2)
+                    json.dump(self.records, json_out, indent=2, cls=DPLARecordEncoder)
                 else:
-                    json.dump(self.records, json_out)
+                    json.dump(self.records, json_out, cls=DPLARecordEncoder)
 
     def write_jsonl(self, fp, prefix=None):
         """
@@ -132,17 +186,25 @@ class RecordGroup(object):
         :param prefix:
         :return:
         """
+        if not exists(fp):
+            os.mkdir(fp)
         if prefix:
             f = f'{prefix}-{date.today()}'
         else:
             f = f'{date.today()}'
         with open(join(fp, f'{f}.jsonl'), 'a', encoding='utf-8', newline='\n') as json_out:
             for rec in self.records:
-                json_out.write(json.dumps(rec) + '\n')
+                json_out.write(json.dumps(rec, cls=DPLARecordEncoder) + '\n')
 
-    def print(self):
+    def print(self, indent=None):
         for rec in self.records:
-            print(json.dumps(rec))
+            print(json.dumps(rec.data, indent=indent, cls=DPLARecordEncoder))
+
+
+class DPLARecordEncoder(JSONEncoder):
+
+    def default(self, o):
+        return o.__dict__
 
 
 def dedupe_record_group():
