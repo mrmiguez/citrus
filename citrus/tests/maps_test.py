@@ -4,20 +4,13 @@ import unittest
 test_dir_path = os.path.abspath(os.path.dirname(__file__))
 
 
-class MapTestCase(unittest.TestCase):
-
-    def setUp(self):
-        from citrus import SSDNDC, dc_standard_map
-        self.scenario = SSDNDC(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
-        self.sr = dc_standard_map(self.scenario[1])
-
-
 class DCStandardMapTestCase(unittest.TestCase):
 
     def setUp(self):
         from citrus import SSDNDC, dc_standard_map
         self.scenario = SSDNDC(os.path.join(test_dir_path, 'test_data/DCdebugSmall.xml'))
-        self.sr = dc_standard_map(self.scenario[0])
+        for sr, _ in dc_standard_map(self.scenario[0]):
+            self.sr = sr
 
     def test_dc_standard_map(self):
         self.assertEqual(self.sr.data, {'contributor': [{'name': 'Buckethead'}],
@@ -43,7 +36,8 @@ class QDCStandardMapTestCase(unittest.TestCase):
     def setUp(self):
         from citrus import SSDNQDC, qdc_standard_map
         self.scenario = SSDNQDC(os.path.join(test_dir_path, 'test_data/QDCdebugSmall.xml'))
-        self.sr = qdc_standard_map(self.scenario[0])
+        for sr, _ in qdc_standard_map(self.scenario[0]):
+            self.sr = sr
 
     def test_qdc_standard_map(self):
         self.assertEqual(self.sr.data, {'abstract': ['Test 000'],
@@ -76,7 +70,8 @@ class MODSStandardMapTestCase(unittest.TestCase):
     def setUp(self):
         from citrus import SSDNMODS, mods_standard_map
         self.scenario = SSDNMODS(os.path.join(test_dir_path, 'test_data/MODSdebugSmall.xml'))
-        self.sr = mods_standard_map(self.scenario[0])
+        for sr, _ in mods_standard_map(self.scenario[0]):
+            self.sr = sr
 
     def test_mods_standard_map(self):
         self.assertEqual(self.sr.data, {'alternative': ['ALT: Fraternity fundraiser for injured student'],

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.openarchives.org/OAI/2.0/">
+  <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+      <identifier>oai:USFLDC:SFS0049735_00001</identifier>
+      <datestamp>2019-11-04</datestamp>
+      <setSpec>oai:USFLDC:boucicault</setSpec>
+    </header>
+    <metadata>
+      <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+        <!-- Generator version 20190624-1328 -->
+        <!-- OAI_DC record generated on [11/4/2019 3:00:36 PM] -->
+        <!-- debug mode OFF -->
+        <dc:title>Marriage</dc:title>
+        <dc:creator>Boucicault, Dion, 1820-1890 ( author )</dc:creator>
+        <dc:description>Promptbook includes typed pages with extensive notes from the stenographer and minor notes from the author.</dc:description>
+        <dc:description>Includes cast list of performers.</dc:description>
+        <dc:format>82 numbered leaves : plans : ; 24 cm</dc:format>
+        <dc:identifier>033805331</dc:identifier>
+        <dc:identifier>926064573</dc:identifier>
+        <dc:identifier>B16-036</dc:identifier>
+        <dc:identifier>b16.36</dc:identifier>
+        <dc:language>English</dc:language>
+        <dc:subject>Promptbooks -- Manuscripts -- 19th century ( lcsh )</dc:subject>
+        <dc:type>text</dc:type>
+        <dc:rights>The University of South Florida Libraries believes that the Item is in the Public Domain under the laws of the United States, but a determination was not made as to its copyright status under the copyright laws of other countries. The Item may not be in the Public Domain under the laws of other countries. </dc:rights>
+        <!-- Existing rights statement was used (and was not default all rights reserved... statement) -->
+        <dc:identifier.thumbnail>https://digital.lib.usf.edu/content/SF/S0/04/97/35/00001/B16-00036-000-001-COVERthm.jpg</dc:identifier.thumbnail>
+        <dc:identifier>https://digital.lib.usf.edu/SFS0049735/00001/</dc:identifier>
+      </oai_dc:dc>
+    </metadata>
+  </record>
+</OAI-PMH>

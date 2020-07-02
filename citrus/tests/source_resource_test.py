@@ -5,12 +5,6 @@ import unittest
 test_dir_path = os.path.abspath(os.path.dirname(__file__))
 
 
-# class SourceResourceTestCase(unittest.TestCase):
-#
-#     def test_something(self):
-#         self.assertEqual(True, True)
-
-
 class SourceResourceRecordTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -126,8 +120,6 @@ class SourceResourceRecordGroupTestCase(unittest.TestCase):
         os.remove(os.path.join(test_dir_path, f'mock_temp_dir/{date.today()}.jsonl'))
         os.removedirs(os.path.join(test_dir_path, f'mock_temp_dir'))
 
-    # def test_record_group_write_print(self):
-    #     pass
 
     def test_record_group_load_json(self):
         from citrus import RecordGroup
