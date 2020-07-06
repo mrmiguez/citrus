@@ -120,7 +120,6 @@ class SourceResourceRecordGroupTestCase(unittest.TestCase):
         os.remove(os.path.join(test_dir_path, f'mock_temp_dir/{date.today()}.jsonl'))
         os.removedirs(os.path.join(test_dir_path, f'mock_temp_dir'))
 
-
     def test_record_group_load_json(self):
         from citrus import RecordGroup
         rg = RecordGroup()
@@ -132,6 +131,15 @@ class SourceResourceRecordGroupTestCase(unittest.TestCase):
         rg = RecordGroup()
         rg.load(os.path.join(test_dir_path, 'test_data/record_group_jsonl.jsonl'))
         self.assertEqual(len(rg), 8)
+
+    def test_record_group_load_file_ext_error(self):
+        from citrus import RecordGroup, RecordGroupFileExtensionError
+        rg = RecordGroup()
+
+        def raise_error():
+            rg.load(os.path.join(test_dir_path, 'test_data/record_group_error_test'))
+
+        self.assertRaises(RecordGroupFileExtensionError, raise_error)
 
 
 if __name__ == '__main__':

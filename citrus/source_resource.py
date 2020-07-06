@@ -9,7 +9,7 @@ from datetime import date
 from json import JSONEncoder
 from os.path import exists, join, splitext
 
-from citrus.exceptions import SourceResourceRequiredElementException
+from citrus.exceptions import SourceResourceRequiredElementException, RecordGroupFileExtensionError
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -143,7 +143,7 @@ class RecordGroup(object):
                     for rec in recs:
                         self.append(DPLARecord(rec))
                 else:
-                    print("Raise some kind of file extension error I haven't written yet")  # TODO
+                    raise RecordGroupFileExtensionError(fp)
             return self
         else:
             raise FileNotFoundError
