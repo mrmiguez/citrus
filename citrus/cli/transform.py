@@ -19,7 +19,7 @@ def build(custom_map_function, data, org, provider):
 
     logger.debug(f'Mapped data with {custom_map_function}')
     for mapped_rec in mapped_data:
-        # map generators can return None if record is marked to be skipped
+        # map generators can return None if record is marked to be skipped or errors
         if mapped_rec:
             for sr, tn, *args in mapped_rec:
 
@@ -42,9 +42,11 @@ def build(custom_map_function, data, org, provider):
 
                 logger.debug(f"Built record {sr.data['identifier']}")
                 records.append(dpla.data)
-            return records
+
         else:
             continue
+
+    return records
 
 
 def transform(citrus_config, transformation_info, section, profile, verbosity, to_console=False):

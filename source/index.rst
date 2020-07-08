@@ -12,11 +12,9 @@ Welcome to citrus's documentation!
 
    cli
    configuration
-   scenarios
-   source_resource
    maps
    custom_maps
-   organizations
+   citrus_classes
 
 
 Indices and tables

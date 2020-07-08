@@ -15,7 +15,7 @@ setup(
     open('CHANGES.rst').read(),
     platforms='any',
     install_requires=[
-        'pymods>=2.0.6',
+        'pymods>=2.0.9',
         'sickle>=0.7.0', 
         'requests'
     ],

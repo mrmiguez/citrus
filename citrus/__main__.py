@@ -177,7 +177,6 @@ if __name__ == '__main__':
         # Run transformation
         if args.run:
             for section in scenario_parser.sections():
-                # todo: this really should be designed in reverse... read what data is available and transform from there
                 try:
                     cli.transform(citrus_config, scenario_parser[section], section, profile, verbosity=verbosity,
                                   to_console=to_console)
