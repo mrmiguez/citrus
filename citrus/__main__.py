@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
     # Set up logging
 
-    # TODO: log level (from args or config?); configing arbitrary handlers and filters
+    # TODO: configing arbitrary handlers and filters
 
     # Log path
     try:

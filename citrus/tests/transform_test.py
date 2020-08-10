@@ -15,6 +15,7 @@ class MainDCTransformTestCase(unittest.TestCase):
         self.config = {'ssdn': {'InFilePath': os.path.join(test_dir_path, 'test_data'),
                                 'OutFilePath': os.path.join(test_dir_path, 'test_data'),
                                 'Provider': 'Sunshine State Digital Network',
+                                'OutFilePrefix': 'SSDN_TMP',
                                 'CustomMapPath': test_dir_path}}
         self.data = json.loads(
             '{"@context": "http://api.dp.la/items/context", "aggregatedCHO": "#sourceResource", "dataProvider": \
@@ -48,6 +49,7 @@ class MainQDCTransformTestCase(unittest.TestCase):
                 self.config = {'ssdn': {'InFilePath': os.path.join(test_dir_path, 'test_data'),
                                         'OutFilePath': os.path.join(test_dir_path, 'test_data'),
                                         'Provider': 'Sunshine State Digital Network',
+                                        'OutFilePrefix': 'SSDN_TMP',
                                         'CustomMapPath': test_dir_path}}
                 self.data = json.loads(
                     '{"@context": "http://api.dp.la/items/context", "aggregatedCHO": "#sourceResource", \
@@ -82,6 +84,7 @@ class MainMODSTransformTestCase(unittest.TestCase):
         self.config = {'ssdn': {'InFilePath': os.path.join(test_dir_path, 'test_data'),
                                 'OutFilePath': os.path.join(test_dir_path, 'test_data'),
                                 'Provider': 'Sunshine State Digital Network',
+                                'OutFilePrefix': 'SSDN_TMP',
                                 'CustomMapPath': test_dir_path}}
         self.data = json.loads(
             '{"@context": "http://api.dp.la/items/context", "aggregatedCHO": "#sourceResource", "dataProvider": \
