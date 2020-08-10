@@ -147,3 +147,39 @@ def new_config_entry(config_file, options_list, config_fp):
             setting = str(input(f'Enter a value/s for {option}: >>> '))
             config_file.set(org_key, option, setting)
         config_file.write(f)
+
+
+empty_citrus_cfg = r'''# Please see citrus configuration documentation: www.example.org"
+
+[DEFAULT]
+InFilePath = 
+OutFilePath = 
+OutFilePrefix = 
+CustomMapPath = 
+CustomMapTestPath = 
+CustomMapTestName = 
+LogPath = 
+LogLevel =
+Provider = 
+CustomMapPath =  
+
+[named_profile]
+# For profile specific options
+'''
+
+empty_harvest_cfg = r'''# Please see citrus configuration documentation: www.example.org"
+
+[citrus_provider_key]
+oaiendpoint = 
+setlist = 
+metadataprefix =                     
+'''
+
+empty_scenario_cfg = r'''# Please see citrus configuration documentation: www.example.org"
+
+[citrus_provider_key]
+scenario = 
+map = 
+dataprovider = 
+intermediateprovider =                    
+'''

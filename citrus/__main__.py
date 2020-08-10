@@ -35,8 +35,25 @@ if __name__ == '__main__':
     elif os.path.exists(os.path.join(Path(__file__).parents[0], 'citrus.cfg')):
         CONFIG_PATH = Path(__file__).parents[0]
     else:
-        print("Cannot locate citrus configs.")  # TODO: This can return a more helpful prompt, or build default configs
-        sys.exit(1)
+        print("Cannot locate citrus configs.")
+        build_configs = str(input('\nBuild empty configs? (y/n) >>> ')).lower()
+        if build_configs == 'y':
+            os.makedirs(os.path.join(Path.home(), '.local/share/citrus/'), exist_ok=True)
+            with open(os.path.join(Path.home(), '.local/share/citrus/citrus.cfg'), 'w') as citrus_cfg:
+                citrus_cfg.write(cli.empty_citrus_cfg)
+            with open(os.path.join(Path.home(), '.local/share/citrus/citrus_harvests.cfg'), 'w') as harvest_cfg:
+                harvest_cfg.write(cli.empty_harvest_cfg)
+            with open(os.path.join(Path.home(), '.local/share/citrus/citrus_scenarios.cfg'), 'w') as scenario_cfg:
+                scenario_cfg.write(cli.empty_scenario_cfg)
+            print(f"\nEmpty config files are located at {os.path.join(Path.home(), '.local/share/citrus/')}")
+            sys.exit(0)
+        elif build_configs == 'n':
+            print('\nOk. Please see citrus configuration documentation: www.example.org')
+            sys.exit(0)
+        else:
+            print(
+                "\nI'm sorry, I didn't understand that.\nPlease see citrus configuration documentation: www.example.org")
+            sys.exit(1)
 
     #############################
     # Application configuration #

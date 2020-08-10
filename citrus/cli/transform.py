@@ -53,7 +53,6 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
     logger.debug('cli.transform called')
     IN_PATH = os.path.abspath(citrus_config[profile]['InFilePath'])
     OUT_PATH = os.path.abspath(citrus_config[profile]['OutFilePath'])
-    prefix = os.path.abspath(citrus_config[profile]['OutFilePrefix'])
     provider = citrus_config[profile]['Provider']
 
     ### IMPORTING CUSTOM MAPS
@@ -126,4 +125,5 @@ def transform(citrus_config, transformation_info, section, profile, verbosity, t
 
     else:
         logger.debug(f'Writing records to {OUT_PATH}')
-        records.write_jsonl(OUT_PATH, prefix=prefix)
+        # todo: prefix should come from config or arg
+        records.write_jsonl(OUT_PATH, prefix='SSDN_TMP')
