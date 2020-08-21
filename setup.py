@@ -1,11 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from citrus import __version__
 
 setup(
     name='citrus',
     version=__version__,
-    packages=['citrus'],
+    packages=find_packages(),
     url='http://github.com/mrmiguez/citrus',
     license='MIT',
     author='Matthew Miguez',
