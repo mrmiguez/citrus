@@ -19,6 +19,7 @@ setup(
         'sickle>=0.7.0', 
         'requests'
     ],
+    include_package_data=True,
     package_data={
         "tests": ["*.xml", "*.json", "*.jsonl", "*.cfg"]
     },

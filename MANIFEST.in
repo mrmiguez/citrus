@@ -1,5 +1,6 @@
 include LICENSE AUTHORS.rst CHANGES.rst README.rst
 recursive-include docs *
+recursive-include test_data *
 recursive-exclude docs *.pyc
 recursive-exclude docs *.pyo
 prune source
