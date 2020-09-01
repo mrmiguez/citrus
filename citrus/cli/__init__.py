@@ -41,7 +41,7 @@ def argument_parser():
 
     arg_parser = argparse.ArgumentParser(
         description='citrus - Collective Information Transformation and Reconciliation Utility Service',
-        usage="[-h] [-v] [--test] | <command> [-h] | <subcommand>",
+        usage="[-p | --profile <profile> ] | [-h] [-v] [--test] | <command> [-h] | <subcommand>",
         add_help=True,
         formatter_class=CustomHelpFormatter)
     subcommand_parsers = arg_parser.add_subparsers(help='sub-commands', dest='subcommand')
