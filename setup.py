@@ -20,9 +20,6 @@ setup(
         'requests'
     ],
     include_package_data=True,
-    package_data={
-        "tests": ["*.xml", "*.json", "*.jsonl", "*.cfg"]
-    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
