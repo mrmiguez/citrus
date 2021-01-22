@@ -1,4 +1,5 @@
 import re
+
 import requests
 from bs4 import BeautifulSoup
 from pymods import OAIReader
@@ -654,6 +655,13 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
 
 
 def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
+    def clean_mark_up(text):
+        mark_up_re = re.compile('<.*?>')
+        new_line_re = re.compile('\n')
+        clean_text = re.sub(mark_up_re, '', text)
+        clean_text = re.sub(new_line_re, ' ', clean_text)
+        return clean_text
+
     with open(file_in, encoding='utf-8') as data_in:
         logger = assets.CSVLogger('FlaLD_BepressDC', provider=dprovide)
         records = OAIReader(data_in)
@@ -723,8 +731,8 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
 
             # sourceResource.description
             if record.metadata.get_element('.//{0}description.abstract'.format(dc)):
-                sourceResource['description'] = record.metadata.get_element(
-                    './/{0}description.abstract'.format(dc), delimiter=';')
+                sourceResource['description'] = [clean_mark_up(desc) for desc in record.metadata.get_element(
+                    './/{0}description.abstract'.format(dc), delimiter=';')]
 
             # sourceResource.extent
 
@@ -832,8 +840,8 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.preview
             preview = None
-            if record.metadata.get_element('.//{0}description'.format(dc)):
-                preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
+            # if record.metadata.get_element('.//{0}description'.format(dc)):
+            #     preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
 
             # aggregation.provider
 

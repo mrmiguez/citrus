@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*
 
 import unittest
-import json  # test
-
 from os.path import abspath, dirname, join
+
 from citrus import FlaLD_DC, FlaLD_MODS, FlaLD_QDC
-from custom_mods import FlMem
 
 PATH = abspath(dirname(__file__))
 
-
+""" Florida Memory not accessible by bots 
 class FlMemTests(unittest.TestCase):
 
     def setUp(self):
@@ -164,7 +162,7 @@ class FlMemTests(unittest.TestCase):
         self.assertTrue(all(x in results for x in expected))
 
     # #   def test_dc_AggregationProvider(self):
-
+"""
 
 class DCTests(unittest.TestCase):
     """
