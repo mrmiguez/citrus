@@ -518,16 +518,20 @@ def SSDN_MODS(file_in, tn, dprovide, iprovide=None):
                                          for name in name_list]
 
             # sourceResource.date
-            if record.metadata.dates:
-                date = record.metadata.dates[0].text
-                if ' - ' in date:
-                    sourceResource['date'] = {"displayDate": date,
-                                              "begin": date[0:4],
-                                              "end": date[-4:]}
-                else:
-                    sourceResource['date'] = {"displayDate": date,
-                                              "begin": date,
-                                              "end": date}
+            try:
+                if record.metadata.dates:
+                    date = record.metadata.dates[0].text
+                    if ' - ' in date:
+                        sourceResource['date'] = {"displayDate": date,
+                                                  "begin": date[0:4],
+                                                  "end": date[-4:]}
+                    else:
+                        sourceResource['date'] = {"displayDate": date,
+                                                  "begin": date,
+                                                  "end": date}
+            except (TypeError, UnboundLocalError) as err:
+                logger.warning('sourceResource.date: {0}'.format(err))
+                pass
 
             # sourceResource.description
             if record.metadata.abstract:
