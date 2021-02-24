@@ -424,9 +424,13 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
             # aggregation.intermediateProvider
 
             # aggregation.isShownAt
-            for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
-                if 'http' in identifier:
-                    is_shown_at = identifier
+            try:
+                for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
+                    if 'http' in identifier:
+                        is_shown_at = identifier
+            except (TypeError, UnboundLocalError) as err:
+                logger.warning('aggregation.isShownAt: {0} - {1}'.format(err, oai_id))
+                pass
 
             # aggregation.preview
             preview = None
