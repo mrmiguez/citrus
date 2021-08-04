@@ -1,4 +1,5 @@
 import re
+
 import bs4
 import requests
 
@@ -41,6 +42,12 @@ def thumbnail_service(identifier, tn):
         collection_list = identifier.split('/')[-4:]
         cdm_tn_path = '/utils/getthumbnail/collection/{0}/id/{1}'.format(collection_list[1], collection_list[3])
         return prefix + cdm_tn_path
+
+    # BePress thumbnail service
+    elif tn['name'] == 'bepress':
+        for desc in identifier.metadata.get_element('{*}description'):
+            if prefix in desc:
+                return desc
 
     # Web-scraping thumbnail service
     elif tn['name'] == 'web-scrape':
