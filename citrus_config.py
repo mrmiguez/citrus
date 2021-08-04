@@ -45,9 +45,9 @@ CONFIG_DICT = {
     ### mbvm must come before fiu, or FIU will be credited with these
     ### records instead of the Miami Design Preservation League
     ### RIP alphabet
-    'fiu': ('dc', {'name': 'custom_field',
-                   'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-            'Florida International University Libraries', None),
+    #    'fiu': ('dc', {'name': 'custom_field',
+    #                   'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+    #            'Florida International University Libraries', None),
     'flmem': ('custom', {'name': 'web-scrape',
                          'prefix': 'https://www.floridamemory.com'},
               'Florida Memory', None),
@@ -62,7 +62,7 @@ CONFIG_DICT = {
                      'prefix': 'http://dpanther.fiu.edu/sobek/content'},
               'Greater North Miami Historical Society',
               'Florida International University Libraries'),
-    'ir_fiu': ('dcq', {'name': None, 'prefix': None},
+    'ir_fiu': ('dcq', {'name': 'bepress', 'prefix': 'https://digitalcommons'},
                'Florida International University Libraries', None),
     'mcpl': ('dc', {'name': 'custom_field',
                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
@@ -72,6 +72,7 @@ CONFIG_DICT = {
              'Miami-Dade Public Library System', None),
     'um': ('qdc', {'name': 'cdm', 'prefix': 'http://cdm17191.contentdm.oclc.org'},
            'University of Miami Libraries', None),
+    #    "unf": ("ssdn_dc", {'name': 'bepress', 'prefix': 'https://digitalcommons'}, "University of North Florida", None),
     'usf': ('ssdn_dc', {'name': 'custom_field', 'prefix': 'https://digital.lib.usf.edu/content'},
             'University of South Florida Libraries', None),           
     'vhlf': ('dc', {'name': 'custom_field',
