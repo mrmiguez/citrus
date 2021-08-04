@@ -44,3 +44,4 @@ Thumbs.db
 .pytest_cache/
 .archive/*
 *config*
+*errors*
