@@ -840,8 +840,11 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
 
             # aggregation.preview
             preview = None
-            # if record.metadata.get_element('.//{0}description'.format(dc)):
-            #     preview = record.metadata.get_element('.//{0}description'.format(dc))[0]
+            try:
+                preview = assets.thumbnail_service(record, tn)
+            except (TypeError, UnboundLocalError) as err:
+                logger.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                pass
 
             # aggregation.provider
 
