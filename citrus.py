@@ -551,7 +551,7 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
                 if record.metadata.geographic_code and len(record.metadata.geographic_code) > 0:
                     sourceResource['spatial'] = []
                     for geo_code in record.metadata.geographic_code:
-                        code, lat, long, label = assets.tgn_cache(geo_code)
+                        code, lat, long, label = assets.tgn_cache(geo_code.strip())
                         sourceResource['spatial'].append({"lat": lat,
                                                           "long": long,
                                                           "name": label,
@@ -608,12 +608,12 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             leon_high = re.compile('^FSU_LeonHigh')
             godby_high = re.compile('^FSU_Godby')
             havana_hhs = re.compile('^FSU_HHHS')
-            ringling = re.compile('^FSU_Ringling')
+            # ringling = re.compile('^FSU_Ringling')
             first_baptist_iid = first_baptist.search(record.metadata.iid)
             leon_high_iid = leon_high.search(record.metadata.iid)
             godby_high_iid = godby_high.search(record.metadata.iid)
             havana_hhs_iid = havana_hhs.search(record.metadata.iid)
-            ringling_iid = ringling.search(record.metadata.iid)
+            # ringling_iid = ringling.search(record.metadata.iid)
             if first_baptist_iid:
                 data_provider = 'First Baptist Church of Tallahassee'
                 iprovide = 'Florida State University Libraries'
@@ -626,9 +626,9 @@ def FlaLD_MODS(file_in, tn, dprovide, iprovide=None):
             elif havana_hhs_iid:
                 data_provider = 'Havana History & Heritage Society, Havana, Florida'
                 iprovide = 'Florida State University Libraries'
-            elif ringling_iid:
-                data_provider = 'John and Mable Ringling Museum of Art'
-                iprovide = 'Florida State University Libraries'
+            # elif ringling_iid:
+            #     data_provider = 'John and Mable Ringling Museum of Art'
+            #     iprovide = 'Florida State University Libraries'
             else:
                 data_provider = dprovide
 

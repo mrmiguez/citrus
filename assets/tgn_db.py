@@ -1,7 +1,8 @@
 import json
 import sqlite3
-import requests
 from os.path import abspath, dirname, join
+
+import requests
 
 tgn_path = abspath(dirname(__file__))
 tgn_prefix = 'http://vocab.getty.edu/tgn/'
@@ -25,7 +26,7 @@ def db_query(geo_code):
     
 
 def db_write(geo_code):
-    tgn_place = geo_code + '-place.jsonld'
+    tgn_place = geo_code + '.jsonld'
     place = requests.get(tgn_prefix + tgn_place)
     pref_label = requests.get(tgn_prefix + '{0}.jsonld'.format(geo_code))
     if place.status_code == 200:
