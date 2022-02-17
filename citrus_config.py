@@ -45,9 +45,9 @@ CONFIG_DICT = {
     ### mbvm must come before fiu, or FIU will be credited with these
     ### records instead of the Miami Design Preservation League
     ### RIP alphabet
-    #    'fiu': ('dc', {'name': 'custom_field',
-    #                   'prefix': 'http://dpanther.fiu.edu/sobek/content'},
-    #            'Florida International University Libraries', None),
+    'fiu': ('dc', {'name': 'custom_field',
+                   'prefix': 'http://dpanther.fiu.edu/sobek/content'},
+            'Florida International University Libraries', None),
     'flmem': ('custom', {'name': 'web-scrape',
                          'prefix': 'https://www.floridamemory.com'},
               'Florida Memory', None),
@@ -55,6 +55,8 @@ CONFIG_DICT = {
              {'name': "islandora",
               'prefix': "https://fscj.digital.flvc.org/islandora/object"},
              "Florida State College at Jacksonville", None),
+    "ringling": ("mods", {'name': "islandora", 'prefix': "http://fsu.digital.flvc.org/islandora/object"},
+                 "John and Mable Ringling Museum of Art", "Florida State University Libraries"),
     'fsu': ('mods', {'name': 'islandora',
                      'prefix': 'http://fsu.digital.flvc.org/islandora/object'},
             'Florida State University Libraries', None),
@@ -72,9 +74,9 @@ CONFIG_DICT = {
              'Miami-Dade Public Library System', None),
     'um': ('qdc', {'name': 'cdm', 'prefix': 'http://cdm17191.contentdm.oclc.org'},
            'University of Miami Libraries', None),
-    #    "unf": ("ssdn_dc", {'name': 'bepress', 'prefix': 'https://digitalcommons'}, "University of North Florida", None),
+    "unf": ("ssdn_dc", {'name': 'bepress', 'prefix': 'https://digitalcommons'}, "University of North Florida", None),
     'usf': ('ssdn_dc', {'name': 'custom_field', 'prefix': 'https://digital.lib.usf.edu/content'},
-            'University of South Florida Libraries', None),           
+            'University of South Florida Libraries', None),
     'vhlf': ('dc', {'name': 'custom_field',
                     'prefix': 'http://dpanther.fiu.edu/sobek/content'},
              'Vaclav Havel Library Foundation',
