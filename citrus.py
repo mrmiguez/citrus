@@ -362,7 +362,7 @@ def FlaLD_QDC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.replaces
 
             # sourceResource.rights
-            rightsURI = re.compile('http://rightsstatements')
+            rightsURI = re.compile('^http[s]*://rightsstatements')
             if record.metadata.get_element('.//{0}rights'.format(dc)):
                 for rights_statement in record.metadata.get_element(
                         './/{0}rights'.format(dc)):
@@ -780,7 +780,7 @@ def FlaLD_BepressDC(file_in, tn, dprovide, iprovide=None):
             # sourceResource.replaces
 
             # sourceResource.rights
-            rightsURI = re.compile('http://rightsstatements')
+            rightsURI = re.compile('^http[s]*://rightsstatements')
             if record.metadata.get_element('.//{0}rights'.format(dc)):
                 for rights_statement in record.metadata.get_element(
                         './/{0}rights'.format(dc)):
