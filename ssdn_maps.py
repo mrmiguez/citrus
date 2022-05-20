@@ -455,6 +455,208 @@ def SSDN_DC(file_in, tn, dprovide, iprovide=None):
     return docs
 
 
+def SSDN_OMEKA_DC(file_in, tn, dprovide, iprovide=None):
+    def clean_mark_up(text):
+        mark_up_re = re.compile('<.*?>')
+        new_line_re = re.compile('\n')
+        clean_text = re.sub(mark_up_re, '', text)
+        clean_text = re.sub(new_line_re, ' ', clean_text)
+        return clean_text
+
+    with open(file_in, encoding='utf-8') as data_in:
+        logger = assets.CSVLogger('SSDN_DC', provider=dprovide)
+        records = OAIReader(data_in)
+        docs = []
+        for record in records:
+
+            # deleted record handling for repox
+            try:
+                if 'deleted' in record.attrib.keys():
+                    if record.attrib['deleted'] == 'true':
+                        continue
+            except AttributeError:
+                pass
+
+            # deleted record handling for OAI-PMH
+            try:
+                if 'status' in record.find('./{*}header').attrib.keys():
+                    if record.find('./{*}header').attrib['status'] == 'deleted':
+                        continue
+            except AttributeError:
+                pass
+
+            oai_id = record.oai_urn
+
+            if VERBOSE:
+                print(oai_id)
+            logger.debug(oai_id)
+            sourceResource = {}
+
+            # sourceResource.alternative
+
+            # sourceResource.collection
+            if record.metadata.get_element('.//{0}relation'.format(dc)):
+                sourceResource['collection'] = record.metadata.get_element('.//{0}relation'.format(dc))
+
+            # sourceResource.contributor
+            if record.metadata.get_element('.//{0}contributor'.format(dc)):
+                sourceResource['contributor'] = [{"name": name}
+                                                 for name in
+                                                 record.metadata.get_element(
+                                                     './/{0}contributor'.format(dc),
+                                                     delimiter=';')]
+
+            # sourceResource.creator
+            if record.metadata.get_element('.//{0}creator'.format(dc)):
+                sourceResource['creator'] = []
+                for name in record.metadata.get_element('.//{0}creator'.format(dc),
+                                                        delimiter=';'):
+                    # need to test for ( Contributor ) and ( contributor )
+                    if (len(name) > 0) and ("ontributor )" not in name):
+                        sourceResource['creator'].append({"name": name.strip(" ")})
+                    elif "ontributor )" in name:
+                        if 'contributor' not in sourceResource.keys():
+                            sourceResource['contributor'] = []
+                            sourceResource['contributor'].append({"name": name.strip(
+                                " ").rstrip("( Contributor )").rstrip(
+                                "( contributor )")})
+                        else:
+                            sourceResource['contributor'].append(
+                                {"name": name.strip(" ").rstrip(
+                                    "( Contributor )").rstrip("( contributor )")})
+
+            # sourceResource.date
+            date = record.metadata.get_element('.//{0}date'.format(dc))
+            if date:
+                try:
+                    d = dateparser.parse(date[0], languages=['en']).date().isoformat()
+                    sourceResource['date'] = {"begin": d, "end": d, "displayDate": d}
+                except AttributeError as err:
+                    logger.warning('sourceResource.date: {0}, {1}'.format(err, record.oai_urn))
+                    sourceResource['date'] = date[0]
+
+            # sourceResource.description
+            if record.metadata.get_element('.//{0}description'.format(dc)):
+                sourceResource['description'] = [clean_mark_up(desc) for desc in record.metadata.get_element(
+                    './/{0}description'.format(dc), delimiter=';')]
+
+            # sourceResource.extent
+
+            # sourceResource.format
+            if record.metadata.get_element('.//{0}format'.format(dc)):
+                sourceResource['format'] = record.metadata.get_element(
+                    './/{0}format'.format(dc))
+
+            # sourceResource.genre
+
+            # sourceResource.identifier
+            sourceResource['identifier'] = oai_id
+
+            # sourceResource.language
+            if record.metadata.get_element('.//{0}language'.format(dc)):
+                sourceResource['language'] = []
+                for lang in record.metadata.get_element('.//{0}language'.format(dc), delimiter=';'):
+                    sourceResource['language'].append(lang)
+
+            # sourceResource.place : sourceResource['spatial']
+            if record.metadata.get_element('.//{0}coverage'.format(dc)):
+                sourceResource['spatial'] = [{'name': place}
+                                             for place in
+                                             record.metadata.get_element(
+                                                 './/{0}coverage'.format(dc))]
+
+            # sourceResource.publisher
+            publisher = record.metadata.get_element('.//{0}publisher'.format(dc))
+            if publisher:
+                sourceResource['publisher'] = publisher
+
+            # sourceResource.relation
+
+            # sourceResource.isReplacedBy
+
+            # sourceResource.replaces
+
+            # sourceResource.rights
+            rights_uri = re.compile('^http[s]*://rightsstatements')
+            if record.metadata.get_element('.//{0}rights'.format(dc)):
+                for rights_statement in record.metadata.get_element(
+                        './/{0}rights'.format(dc)):
+                    uri = rights_uri.search(clean_mark_up(rights_statement)[
+                                            clean_mark_up(rights_statement).rfind('http://rightsstatements.org'):-1])
+                    if uri:
+                        sourceResource['rights'] = [{"@id": uri.string.strip()}]
+                        break
+                    else:
+                        sourceResource['rights'] = [{"text": clean_mark_up(rights_statement).strip()}]
+
+            else:
+                logger.error('No sourceResource.rights - {0}'.format(oai_id))
+                continue
+
+            # sourceResource.subject
+            if record.metadata.get_element('.//{0}subject'.format(dc)):
+                sourceResource['subject'] = []
+                for term in record.metadata.get_element('.//{0}subject'.format(dc),
+                                                        delimiter=';'):
+                    term = re.sub("\( lcsh \)$", '', term)
+                    if len(term) > 0:
+                        sourceResource['subject'].append({"name": term.strip(". ")})
+
+            # sourceResource.temporal
+
+            # sourceResource.title
+            title = record.metadata.get_element('.//{0}title'.format(dc))
+            if title is not None:
+                sourceResource['title'] = title
+            else:
+                logger.error('No sourceResource.title - {0}'.format(oai_id))
+                continue
+
+            # sourceResource.type
+            if record.metadata.get_element('.//{0}type'.format(dc)):
+                sourceResource['type'] = record.metadata.get_element(
+                    './/{0}type'.format(dc), delimiter=';')
+
+            # webResource.fileFormat
+            #  TODO: file_format kicked out of SR.genre
+
+            # aggregation.dataProvider
+            data_provider = dprovide
+
+            # aggregation.intermediateProvider
+
+            # aggregation.isShownAt
+            try:
+                for identifier in record.metadata.get_element('.//{0}identifier'.format(dc)):
+                    if 'omeka.net/' in identifier:
+                        is_shown_at = identifier
+            except (TypeError, UnboundLocalError) as err:
+                logger.warning('aggregation.isShownAt: {0} - {1}'.format(err, oai_id))
+                pass
+
+            # aggregation.preview
+            preview = None
+            try:
+                preview = assets.thumbnail_service(record, tn)
+            except (TypeError, UnboundLocalError) as err:
+                logger.warning('aggregation.preview: {0} - {1}'.format(err, oai_id))
+                pass
+
+            # aggregation.provider
+
+            # build record
+            try:
+                if is_shown_at:
+                    doc = assets.build(oai_id, sourceResource, data_provider, is_shown_at, preview, iprovide)
+
+                docs.append(doc)
+            except (NameError, UnboundLocalError):
+                logger.error('No aggregation.isShownAt - {0}'.format(oai_id))
+                continue
+
+    return docs
+
+
 def SSDN_MODS(file_in, tn, dprovide, iprovide=None):
     with open(file_in, encoding='utf-8') as data_in:
         logger = assets.CSVLogger('SSDN_MODS', provider=dprovide)

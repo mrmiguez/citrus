@@ -61,3 +61,8 @@ def thumbnail_service(identifier, tn):
     elif tn['name'] == 'custom_field':
         return identifier.metadata.get_element('{*}identifier.thumbnail')[0]
 
+    # AWS Omeka CDN
+    elif tn['name'] == 'aws_cdn':
+        for i in identifier.metadata.get_element('{*}identifier'):
+            if i.startswith(prefix):
+                return i
