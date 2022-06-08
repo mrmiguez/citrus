@@ -689,11 +689,14 @@ def SSDN_MODS(file_in, tn, dprovide, iprovide=None):
                 continue
 
             # sourceResource.alternative
-            if len(record.metadata.titles) > 1:
-                sourceResource['alternative'] = []
-                if len(record.metadata.titles[1:]) >= 1:
-                    for alternative_title in record.metadata.titles[1:]:
-                        sourceResource['alternative'].append(alternative_title)
+            try:
+                if len(record.metadata.titles) > 1:
+                    sourceResource['alternative'] = []
+                    if len(record.metadata.titles[1:]) >= 1:
+                        for alternative_title in record.metadata.titles[1:]:
+                            sourceResource['alternative'].append(alternative_title)
+            except AttributeError:
+                print(record.oai_urn)
 
             # sourceResource.collection
 
